@@ -1,5 +1,5 @@
 # NPC---Nexus-Gadgets
-members :
+Members :
 -Dumabok, Gian
 -Ramos, Kian Jed
 -Ebale, Kent
