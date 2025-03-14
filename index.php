@@ -10,7 +10,7 @@
 <body>
     <div class="d-flex justify-content-center align-items-center vh-100">
     	
-    	<form class="shadow w-450 p-5" 
+    	<form class="shadow w-450 p-5 rounded-4" 
     	      action="php/login.php" 
     	      method="post">
 
