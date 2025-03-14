@@ -18,7 +18,7 @@ if (isset($_POST['login'])) {
 	    exit;
     }else {
 
-    	$sql = "SELECT * FROM users WHERE username = ?";
+    	$sql = "SELECT * FROM employees WHERE username = ?";
     	$stmt = $conn->prepare($sql);
     	$stmt->execute([$uname]);
 
