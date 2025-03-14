@@ -8,10 +8,9 @@
     <title>Login</title>
 </head>
 <body>
-    <h1>Login</h1>
     <div class="d-flex justify-content-center align-items-center vh-100">
     	
-    	<form class="shadow w-450 p-3" 
+    	<form class="shadow w-450 p-5" 
     	      action="php/login.php" 
     	      method="post">
 
