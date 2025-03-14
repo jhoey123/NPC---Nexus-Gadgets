@@ -1,8 +1,8 @@
 # NPC---Nexus-Gadgets
-members :
-Dumabok, Gian
-Ramos, Kian Jed
-Ebale, Kent
-Yocut, Lyniel Jhoey 
-Flores, Vhon Arwil
-Moradas, Kevin Jake
+Members :
+-Yocut, Lyniel Jhoey 
+-Dumabok, Gian
+-Ramos, Kian Jed
+-Ebale, Khent Vincent
+-Flores, Vhon Arwil
+-Moradas, Kevin Jake
