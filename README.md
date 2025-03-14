@@ -2,7 +2,7 @@
 Members :
 -Dumabok, Gian
 -Ramos, Kian Jed
--Ebale, Kent
+-Ebale, Khent Vincent
 -Yocut, Lyniel Jhoey 
 -Flores, Vhon Arwil
 -Moradas, Kevin Jake
