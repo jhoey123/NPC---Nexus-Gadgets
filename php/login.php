@@ -1,70 +1,43 @@
 <?php 
-session_start();
-if (isset($_POST['login'])) {
-    include "conn_db.php";
+   session_start();
 
-    $uname = $_POST['uname'];
-    $pass = $_POST['pass'];
+   if(isset($_POST['submit'])) {
+      include "conn_db.php";
+      $username = $_POST['username'];
+      $password = $_POST['password'];
 
-    $data = "uname=".$uname;
-    
-    if(empty($uname)){
-    	$em = "User name is required";
-    	header("Location: ../login.php?error=$em&$data");
-	    exit;
-    }else if(empty($pass)){
-    	$em = "Password is required";
-    	header("Location: ../login.php?error=$em&$data");
-	    exit;
-    }else {
+      $stmt = $conn->prepare("SELECT * FROM users WHERE username = ?");
+      $stmt->bind_param("s", $username);
+      $stmt->execute();
+      $result = $stmt->get_result();
 
-    	$sql = "SELECT * FROM employees WHERE username = ?";
-    	$stmt = $conn->prepare($sql);
-    	$stmt->execute([$uname]);
+      if ($result->num_rows == 1) {
+         $user = $result->fetch_assoc();
 
-      if($stmt->rowCount() == 1){
-          $user = $stmt->fetch();
+         $username_db = $user['username'];
+         $password_db = $user['password'];
 
-          $username =  $user['username'];
-          $password =  $user['password'];
-          $fname =  $user['fname'];
-          $id =  $user['id'];
-          $pp =  $user['pp'];
+         if ($username_db === $username) {
+            if (password_verify($password, $password_db)) {
+               session_regenerate_id(true);
+               $_SESSION['user'] = $username;
 
-          if($username === $uname){
-             if(password_verify($pass, $password)){
-                 $_SESSION['id'] = $id;
-                 $_SESSION['fname'] = $fname;
-                 $_SESSION['pp'] = $pp;
-
-                 header("Location: ../home.php");
-                 exit;
-             }else {
-               $em = "Incorect User name or password";
-               header("Location: ../login.php?error=$em&$data");
+               header("Location: ../home.php");
+               exit;
+            } else {
+               header("Location: ../index.php?error=Invalid_credentials1");
                exit;
             }
-
-          }else {
-            $em = "Incorect User name or password";
-            header("Location: ../login.php?error=$em&$data");
+         } else {
+            header("Location: ../index.php?error=Invalid_credentials2");
             exit;
          }
-
-      }else {
-         $em = "Incorect User name or password";
-         header("Location: ../login.php?error=$em&$data");
+      } else {
+         header("Location: ../index.php?error=Invalid_credentials3");
          exit;
       }
-    }
-
-
-}else {
-	header("Location: ../login.php?error=error");
-	exit;
-}
-
-
-
-
+   } else {
+      header("Location: ../index.php?error=login_error");
+      exit;
+   }
 ?>
