@@ -6,9 +6,7 @@ Members:
 4. Ebale, Khent Vincent5
 5. Flores, Vhon Arwil
 6. Moradas, Kevin Jake
-
-
-
+----------------------------------------------------------
 work to do in vscode:
 
 1. landing page index.php 
