@@ -22,7 +22,26 @@
                session_regenerate_id(true);
                $_SESSION['user'] = $username;
 
-               header("Location: ../home.php");
+               $stmt = $conn->prepare("SELECT u.username, r.rank_name FROM users u JOIN rank r ON u.rank_id = r.rank_id WHERE u.username = ?");
+               $stmt->bind_param("s", $username);
+               $stmt->execute();
+               $result = $stmt->get_result();
+               $user_rank = $result->fetch_assoc();
+               
+               if ($user_rank) {
+                  $rank = $user_rank['rank_name'];
+
+                  if ($rank === "Owner") {
+                     $conn->close();
+                     header("Location: ../adminpanel.php");
+                     exit;
+                  } else if ($rank === "staff") {
+                     $conn->close();
+                     header("Location: ../defaultpanel.php");
+                  } else {
+                     
+                  }
+               }
                exit;
             } else {
                header("Location: ../index.php?error=Invalid_credentials1");

@@ -6,6 +6,6 @@
     <title>Admin Panel</title>
 </head>
 <body>
-    
+    <h1>THIS IS ADMIN</h1>
 </body>
 </html>

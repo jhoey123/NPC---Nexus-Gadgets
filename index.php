@@ -43,7 +43,7 @@ if (isset($_GET['error'])) {
                   <button type="submit" name="submit">login</button>
                </div>
                <div class="signup-link">
-                  Not a member? <a href="#">Signup now</a>
+                  Not a member? <a href="php/register.php">Signup now</a>
                </div>
             </form>
          </div>

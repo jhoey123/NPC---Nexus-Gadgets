@@ -9,7 +9,11 @@
 body{
   height: 100vh;
   width: 100%;
-  background: linear-gradient(115deg, #56d8e4 10%, #9f01ea 90%);
+  /*background: linear-gradient(115deg, #56d8e4 10%, #9f01ea 90%);*/
+  background-image: url(../images/background_image.jpg);
+  background-size: cover; /* Ensures the image covers the entire screen */
+  background-position: center; /* Centers the image */
+  background-repeat: no-repeat; /* Prevents image repetition */
 }
 .show-btn{
   display: none;
