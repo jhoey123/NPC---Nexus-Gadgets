@@ -2,7 +2,7 @@
 
 if (isset($_GET['error'])) {
 	switch ($_GET['error']) {
-   		case 'Invalid_username_or_password':
+   		case 'Invalid_credentials':
 	  		$error = "Invalid username or password";
 	  		break;
    		case 'login_error':
