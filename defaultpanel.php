@@ -6,6 +6,6 @@
     <title>Default Panel</title>
 </head>
 <body>
-    
+<h1>THIS IS STAFF PANEL</h1>
 </body>
 </html>

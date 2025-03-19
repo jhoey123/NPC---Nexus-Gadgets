@@ -1,3 +1,15 @@
+<?php 
+session_start();
+
+if (!isset($_SESSION['user'])) {
+    header("Location: index.php");
+    exit();
+}
+?>
+
+
+
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -6,6 +18,6 @@
     <title>Admin Panel</title>
 </head>
 <body>
-    
+    <h1>THIS IS ADMIN</h1>
 </body>
 </html>
