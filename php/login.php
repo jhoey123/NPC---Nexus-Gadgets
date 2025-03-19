@@ -16,9 +16,11 @@
       $stmt->bind_param("s", $username);
       $stmt->execute();
       $result = $stmt->get_result();
+      
 
       if ($result->num_rows == 1) {
          $user = $result->fetch_assoc();
+         $conn->close();
 
          $username_db = $user['username'];
          $password_db = $user['password'];
@@ -56,6 +58,7 @@
             exit;
          }
       } else {
+         $conn->close();
          header("Location: ../index.php?error=Invalid_credentials");
          exit;
       }
