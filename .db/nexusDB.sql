@@ -34,3 +34,4 @@ CREATE table category(
     PRIMARY KEY (product_id),
     foreign key (product_id) references products(barcode_id)
 );
+--i copy and paste lang ni sa sql file sa nexusDB.sql
