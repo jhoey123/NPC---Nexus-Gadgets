@@ -23,6 +23,7 @@ CREATE table orders(
     barcode_id int(11) NOT NULL,
     quantity int(11) NOT NULL,
     PRIMARY KEY (order_id),
+    Index (user_id),
     FOREIGN KEY (barcode_id) REFERENCES products(barcode_id),
     FOREIGN KEY (user_id) REFERENCES users(id)
 );
