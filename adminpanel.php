@@ -88,10 +88,8 @@
                         <img src='{$row['image']}' alt='{$row['Product_name']}' class='item-image'>
                         <div class='item-details'>
                             <div class='item-name'>{$row['Product_name']}</div>
-                            <div class='item-price-add'>
-                                <div class='item-price'>₱" . number_format($row['Product_price'], 2) . "</div>
-                                <button class='add-btn' onclick=\"addToCart('{$row['Product_name']}', {$row['Product_price']}, '{$row['image']}', {$row['Product_quantity']})\">+</button>
-                            </div>
+                            <div class='item-price'>₱" . number_format($row['Product_price'], 2) . "</div>
+                            <button class='add-btn' onclick=\"addToCart('{$row['Product_name']}', {$row['Product_price']}, '{$row['image']}', {$row['Product_quantity']})\">ADD</button>
                         </div>
                     </div>";
                 }
@@ -210,9 +208,9 @@
                 cartItemElement.innerHTML = `
                     <div class="cart-item-info">
                         <img src="${item.image}" alt="${item.name}" class="cart-item-image">
-                        <div>
-                            <div>${item.name}</div>
-                            <div>₱${item.price.toFixed(2)}</div>
+                        <div class="cart-item-details">
+                            <div class="cart-item-name">${item.name}</div>
+                            <div class="cart-item-price">₱${item.price.toFixed(2)}</div>
                         </div>
                     </div>
                     <div class="cart-item-quantity">
@@ -279,21 +277,28 @@
         }
 
         function switchView(view) {
+            // Hide all content sections
             document.getElementById('dashboard-content').style.display = 'none';
             document.getElementById('upload-content').style.display = 'none';
             document.getElementById('products-content').style.display = 'none';
             document.getElementById('settings-content').style.display = 'none';
             document.getElementById('logout-content').style.display = 'none';
 
+            // Show the selected content section
             document.getElementById(`${view}-content`).style.display = 'block';
 
-            
+            // Remove active class from all sidebar icons
             document.querySelectorAll('.sidebar-icon').forEach(icon => {
                 icon.classList.remove('active');
             });
 
-            
+            // Add active class to the selected sidebar icon
             document.getElementById(`${view}-button`).classList.add('active');
+
+            // Update the URL to remove the category parameter
+            const url = new URL(window.location.href);
+            url.searchParams.delete('category');
+            window.history.pushState({}, '', url);
         }
 
         
