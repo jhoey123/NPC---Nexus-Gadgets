@@ -6,9 +6,10 @@ Members:
 4. Ebale, Khent Vincent5
 5. Flores, Vhon Arwil
 6. Moradas, Kevin Jake
-----------------------------------------------------------
-work to do in vscode:
 
+----------------------------------------------------------
+
+work to do in vscode:
 1. landing page index.php 
 2. login, register, and logout
 3. user profile
@@ -25,7 +26,7 @@ work to do in dbms:
 1. make employee table (check)
 2. make users table (check)
 3. make products table (check)
-4. make categories tables
+4. make categories tables (√)
 5. link employee table and users using foreign key
 6. link products and categories using foreign key
 
