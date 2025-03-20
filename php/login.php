@@ -6,7 +6,7 @@
       $username = trim($_POST['username']);
       $password = trim($_POST['password']);
 
-      // Check if username and password are not empty
+      
       if (empty($username) || empty($password)) {
          header("Location: ../index.php?error=Invalid_credentials");
          exit;
