@@ -28,6 +28,4 @@ function barcodeGenerator($id): string {
     return $barcode;
 }
 
-$id = 7;
-echo barcodeGenerator($id);
 ?>
