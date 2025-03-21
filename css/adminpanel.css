@@ -499,3 +499,29 @@ body {
 .add-btn:hover {
     background-color: #2A1B3D;
 }
+
+
+
+.dropdown-btn {
+    margin-left: 145px;
+    background-color: #007bff;
+    border: none;
+    border-radius: 75%;
+    width: 39px;
+    height: 39px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    color: white;
+    transition: background-color 0.3s ease;
+}
+
+.dropdown-btn:hover {
+    background-color: #0056b3;
+}
+
+.dropdown-btn svg {
+    width: 16px;
+    height: 16px;
+}

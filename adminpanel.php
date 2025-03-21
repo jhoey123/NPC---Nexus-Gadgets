@@ -93,40 +93,48 @@
         </div>
 
         
-        <div class="cart-container">
+        <div class="cart-container" id="cart-container">
             <div class="cart-header">
                 <h2>Current Order</h2>
             </div>
-            <div class="cart-user">
-                <div class="cart-user-avatar">EW</div>
-                <div>Emma Wang</div>
-            </div>
-            <div class="cart-items" id="cart-items">
-            </div>
-            <div class="cart-summary">
-                <div class="cart-row">
-                    <div>Subtotal</div>
-                    <div id="subtotal">₱0.00</div>
-                </div>
-                <div class="cart-row">
-                    <div>Discount</div>
-                    <div id="discount">₱0.00</div>
-                </div>
-                <div class="cart-row">
-                    <div>Service Charge</div>
-                    <div id="service-charge">20%</div>
-                </div>
-                <div class="cart-row">
-                    <div>Tax</div>
-                    <div id="tax">₱0.00</div>
-                </div>
-                <div class="cart-row cart-total">
-                    <div>Total</div>
-                    <div id="total">₱0.00</div>
-                </div>
-            </div>
-            <button class="checkout-btn">Continue</button>
+    <div class="cart-user">
+        <div class="cart-user-avatar">EW</div>
+        <div>Emma Wang</div>
+                <button class="dropdown-btn" id="dropdown-btn">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-chevron-down" viewBox="0 0 16 16">
+                        <path fill-rule="evenodd" d="M1.646 4.646a.5.5 0 0 1 .708 0L8 10.293l5.646-5.647a.5.5 0 0 1 .708.708l-6 6a.5.5 0 0 1-.708 0l-6-6a.5.5 0 0 1 0-.708z"/>
+                    </svg>
+                </button>
+    </div>
+    <div class="cart-summary">
+        <div class="cart-row cart-total">
+            <div>Total</div>
+            <div id="total">₱0.00</div>
         </div>
+    </div>
+    <div class="cart-details" id="cart-details" style="display: none;">
+        <div class="cart-items" id="cart-items"></div>
+        <div class="cart-summary">
+            <div class="cart-row">
+                <div>Subtotal</div>
+                <div id="subtotal">₱0.00</div>
+            </div>
+            <div class="cart-row">
+                <div>Discount</div>
+                <div id="discount">₱0.00</div>
+            </div>
+            <div class="cart-row">
+                <div>Service Charge</div>
+                <div id="service-charge">20%</div>
+            </div>
+            <div class="cart-row">
+                <div>Tax</div>
+                <div id="tax">₱0.00</div>
+            </div>
+        </div>
+        <button class="checkout-btn">Continue</button>
+    </div>
+
     </div>
 
     
@@ -148,6 +156,41 @@
     <div class="logout-content" id="logout-content" style="display: none;">
         <h1>Logout Section</h1>
     </div>
+
+    <script>
+    function toggleCart() {
+        const cartContainer = document.getElementById('cart-container');
+        const cartDetails = document.getElementById('cart-details');
+        const dropdownBtn = document.getElementById('dropdown-btn');
+
+        if (cartDetails.style.display === 'none') {
+            cartDetails.style.display = 'block';
+            cartContainer.classList.add('expanded');
+            dropdownBtn.innerHTML = `
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-chevron-up" viewBox="0 0 16 16">
+                    <path fill-rule="evenodd" d="M1.646 11.354a.5.5 0 0 1 .708 0L8 5.707l5.646 5.647a.5.5 0 0 1-.708.708l-6-6a.5.5 0 0 1-.708 0l-6 6a.5.5 0 0 1 0 .708z"/>
+                </svg>
+            `;
+        } else {
+            cartDetails.style.display = 'none';
+            cartContainer.classList.remove('expanded');
+            dropdownBtn.innerHTML = `
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-chevron-down" viewBox="0 0 16 16">
+                    <path fill-rule="evenodd" d="M1.646 4.646a.5.5 0 0 1 .708 0L8 10.293l5.646-5.647a.5.5 0 0 1 .708.708l-6 6a.5.5 0 0 1-.708 0l-6-6a.5.5 0 0 1 0-.708z"/>
+                </svg>
+            `;
+        }
+    }
+    document.addEventListener('DOMContentLoaded', () => {
+        const cartHeader = document.querySelector('.cart-header');
+        const dropdownBtn = document.getElementById('dropdown-btn');
+
+        cartHeader.addEventListener('click', toggleCart);
+        dropdownBtn.addEventListener('click', toggleCart);
+    });
+    </script>
+	
+
 
     <script>
         let cart = [];
