@@ -5,12 +5,17 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="css/adminpanel.css">
     <title>Dessert Ordering System</title>
+    <style>
+        .sidebar-icon.logo img {
+            border-radius: 50%;
+        }
+    </style>
 </head>
 <body>
     
     <div class="sidebar">
         <div class="sidebar-icon logo">
-            <img src="path/to/logo.png" alt="Logo" width="24" height="24">
+            <img src="images/logo.png" alt="Logo" width="24" height="24">
             <span class="sidebar-text">Logo</span>
         </div>
         <div class="sidebar-icon active" id="dashboard-button" onclick="switchView('dashboard')">
@@ -84,7 +89,7 @@
             if ($result->num_rows > 0) {
                 while ($row = $result->fetch_assoc()) {
                     echo "
-                    <div class='item-card' data-name='{$row['Product_name']}'>
+                    <div class='item-card hidden' data-name='{$row['Product_name']}'>
                         <img src='{$row['image']}' alt='{$row['Product_name']}' class='item-image'>
                         <div class='item-details'>
                             <div class='item-name'>{$row['Product_name']}</div>
@@ -158,7 +163,7 @@
     </div>
 
     <script>
-        let cart = [];
+        let cart = JSON.parse(localStorage.getItem('cart')) || [];
         const serviceChargePercentage = 0.20;
         const taxRate = 0.05;
 
@@ -223,7 +228,6 @@
                 cartItemsContainer.appendChild(cartItemElement);
             });
             
-            
             const discount = 0;
             const serviceCharge = subtotal * serviceChargePercentage;
             const tax = subtotal * taxRate;
@@ -233,11 +237,31 @@
             document.getElementById('discount').textContent = `₱${discount.toFixed(2)}`;
             document.getElementById('tax').textContent = `₱${tax.toFixed(2)}`;
             document.getElementById('total').textContent = `₱${total.toFixed(2)}`;
+
+            localStorage.setItem('cart', JSON.stringify(cart)); // Save cart to local storage
         }
 
         function filterItems(category) {
-            window.location.href = `?category=${category}`;
+            const items = document.querySelectorAll('.item-card');
+            items.forEach(item => {
+                item.classList.add('hidden'); // Add hidden class for smooth transition
+            });
+
+            setTimeout(() => {
+                window.location.href = `?category=${category}`;
+            }, 100); // Shorter delay to allow transition to complete
         }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const items = document.querySelectorAll('.item-card');
+            setTimeout(() => {
+                items.forEach(item => {
+                    item.classList.remove('hidden'); // Remove hidden class after delay
+                });
+            }, 100); // Shorter delay to allow transition to complete
+
+            updateCart(); // Update cart on page load
+        });
 
         function searchItems() {
             const query = document.getElementById('search-input').value.toLowerCase();
@@ -267,12 +291,10 @@
             if (barcodeInput.style.display === 'none') {
                 barcodeInput.style.display = 'block';
                 barcodeScanner.classList.add('expanded');
-                searchBar.classList.add('shrink');
                 barcodeInput.focus();
             } else {
                 barcodeInput.style.display = 'none';
                 barcodeScanner.classList.remove('expanded');
-                searchBar.classList.remove('shrink');
             }
         }
 
@@ -308,15 +330,6 @@
                 this.classList.add('active');
                 filterItems(this.textContent);
             });
-        });
-
-        
-        const sidebar = document.querySelector('.sidebar');
-        sidebar.addEventListener('mouseenter', () => {
-            sidebar.classList.add('expanded');
-        });
-        sidebar.addEventListener('mouseleave', () => {
-            sidebar.classList.remove('expanded');
         });
     </script>
 </body>

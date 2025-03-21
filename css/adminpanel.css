@@ -6,20 +6,21 @@
 }
 
 body {
-    background-color: #f5f5f5;
+    background-color: #A4B3B6;
     display: flex;
     min-height: 100vh;
 }
 
 .sidebar {
     width: 70px;
-    background-color: white;
-    border-right: 1px solid #eee;
+    background: linear-gradient(180deg, #4b4b4b 10%, #000000 90%);
+    color: #FFFFFF;
+    border-right: 1px solid #44318D;
     display: flex;
     flex-direction: column;
     align-items: center;
     padding: 20px 0;
-    transition: width 0.3s;
+    transition: width 0.5s; /* Increased duration for smoother transition */
 }
 
 .sidebar:hover {
@@ -35,12 +36,19 @@ body {
     justify-content: center;
     margin-bottom: 15px;
     cursor: pointer;
-    color: #333;
-    transition: width 0.3s;
+    color: #FFFFFF;
+    transition: width 0.5s, padding-left 0.5s; /* Removed opacity transition */
+    opacity: 1; /* Ensure icons are visible */
 }
 
 .sidebar-icon.logo {
     justify-content: center;
+}
+
+.sidebar-icon.logo img {
+    width: 30px; /* Adjust the width as needed */
+    height: 30px; /* Adjust the height as needed */
+    border-radius: 50%;
 }
 
 .sidebar:hover .sidebar-icon.logo {
@@ -51,50 +59,57 @@ body {
 .sidebar:hover .sidebar-icon {
     width: 100%;
     justify-content: flex-start;
-    padding-left: 20px;
+    padding-left: 20px; /* Maintain padding on hover */
+    margin-bottom: 15px; /* Ensure consistent spacing */
+    transition: width 0.5s, padding-left 0.5s; /* Removed opacity transition */
+    opacity: 1; /* Ensure icons are visible */
 }
 
 .sidebar-icon.active {
-    background-color: #5931c2;
-    color: white;
+    background-color: #44318D;
+    color: #FFFFFF;
 }
 
 .sidebar-icon.active .sidebar-text {
-    color: white;
+    color: #FFFFFF;
 }
 
 .sidebar-icon:active,
 .sidebar-icon.active:active {
-    background-color: #3e1a8a;
-    color: white;
+    background-color: #2A1B3D;
+    color: #FFFFFF;
 }
 
 .sidebar-icon:active .sidebar-text,
 .sidebar-icon.active:active .sidebar-text {
-    color: white;
+    color: #FFFFFF;
 }
 
 .sidebar-icon:hover:not(.active) {
-    background-color: #f0f0f0;
+    background-color: #44318D;
 }
 
 .sidebar-icon:active {
-    background-color: #dcdcdc;
+    background-color: #2A1B3D;
 }
 
 .sidebar-text {
-    display: none;
+    display: none; /* Reverted to 'none' */
     margin-left: 10px;
     font-size: 14px;
-    color: #333;
+    color: #FFFFFF;
+    transition: margin-left 0.5s; /* Removed opacity transition */
 }
 
 .sidebar:hover .sidebar-text {
-    display: inline;
+    display: inline; /* Reverted to 'inline' */
+    transition: margin-left 0.5s; /* Removed opacity transition */
 }
 
 .main-content {
     flex: 1;
+    background: linear-gradient(135deg, #4b4b4b 10%, #000000 90%);
+    color: #2A1B3D;
     padding: 20px;
 }
 
@@ -111,7 +126,7 @@ body {
 }
 
 .header-titles .items-label {
-    color: #5931c2;
+    color: #D83F87;
     font-size: 16px;
     margin-bottom: 5px;
     font-weight: 500;
@@ -119,7 +134,7 @@ body {
 
 .header-titles h1 {
     font-size: 24px;
-    color: #333;
+    color: #D83F87;
 }
 
 .search-container {
@@ -134,11 +149,12 @@ body {
 .search-bar {
     display: flex;
     align-items: center;
-    background-color: white;
+    background-color: #2A1B3D;
+    color: #FFFFFF;
     border-radius: 25px;
     padding: 0 15px;
     height: 40px;
-    width: 300px;
+    width: 250px;
     box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
     transition: width 0.3s;
     border: none;
@@ -150,6 +166,8 @@ body {
     flex: 1;
     margin-left: 10px;
     font-size: 14px;
+    background-color: #2A1B3D;
+    color: #FFFFFF;
 }
 
 .search-bar.shrink {
@@ -159,15 +177,16 @@ body {
 .barcode-scanner {
     display: flex;
     align-items: center;
-    background-color: white;
+    background-color: #44318D;
     border-radius: 25px;
     padding: 0 15px;
     height: 40px;
     width: 40px;
     box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
     margin-left: 10px;
-    transition: width 0.3s;
+    transition: width 0.3s ease-in-out;
     border: none;
+    overflow: hidden;
 }
 
 .barcode-icon-wrapper {
@@ -184,23 +203,35 @@ body {
     position: absolute;
     top: 50%;
     left: 50%;
-    transform: translate(-50%, -50%);
+     transform: translate(-50%, -50%);
 }
 
 .barcode-scanner input {
+    flex-grow: 1;
+    background-color: transparent;
     border: none;
     outline: none;
-    flex: 1;
-    margin-left: 10px;
     font-size: 14px;
+    opacity: 0;
+    width: 1px;
+    transition: opacity 0.2s ease-in-out 0.1s, width 0.3s ease-in-out;
 }
 
 .barcode-scanner.expanded {
-    width: 300px;
+    width: 250px;
+}
+
+.barcode-scanner.expanded input {
+    opacity: 1;
+    width: 100%;
+}
+
+.barcode-scanner.expanded .barcode-icon-wrapper {
+    margin-left: -10px;
 }
 
 .filter-btn {
-    background-color: white;
+    background-color: #44318D;
     border: none;
     border-radius: 5px;
     width: 40px;
@@ -227,37 +258,49 @@ body {
 }
 
 .category {
-    background-color: white;
+    background-color: #2A1B3D;
+    color: #FFFFFF;
     padding: 10px 20px;
     border-radius: 20px;
     white-space: nowrap;
     cursor: pointer;
     font-size: 14px;
     box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    transition: background-color 0.3s, color 0.3s; /* Added transition for smooth effect */
 }
 
 .category.active {
-    background-color: #1a1a1a;
-    color: white;
+    background-color: #44318D;
+    color: #FFFFFF;
+    transition: background-color 0.3s, color 0.3s; /* Added transition for smooth effect */
 }
 
 .items-grid {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
     gap: 20px;
+    padding-right: 420px; /* Add padding to prevent items from being hidden behind the cart */
 }
 
 .item-card {
-    background-color: white;
+    background-color: #2A1B3D;
+    color: #FFFFFF;
     border-radius: 15px;
     overflow: hidden;
     box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-    transition: transform 0.2s;
+    transition: transform 0.2s, opacity 0.3s; /* Added opacity transition */
     display: flex;
     flex-direction: column;
     height: 320px;
     width: 220px;
     margin: 10px;
+    opacity: 1; /* Ensure items are visible */
+}
+
+.item-card.hidden {
+    opacity: 0; /* Hide items smoothly */
+    pointer-events: none; /* Disable interaction */
+    transition: opacity 0.3s; /* Ensure smooth transition */
 }
 
 .item-card:hover {
@@ -293,7 +336,7 @@ body {
 .item-price {
     font-size: 18px;
     font-weight: bold;
-    color: #333;
+    color: #FFFFFF;
     margin-top: auto;
     margin-bottom: 12px;
     margin: 0;
@@ -304,7 +347,8 @@ body {
     right: 20px;
     top: 20px;
     width: 400px;
-    background-color: white;
+    background-color: #2A1B3D;
+    color: #FFFFFF;
     border-radius: 15px;
     padding: 30px;
     box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
@@ -327,8 +371,8 @@ body {
     width: 40px;
     height: 40px;
     border-radius: 50%;
-    background-color: #5931c2;
-    color: white;
+    background-color: #44318D;
+    color: #FFFFFF;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -368,7 +412,7 @@ body {
 }
 
 .cart-item-price {
-    color: #666;
+    color: #FFFFFF;
 }
 
 .cart-item-quantity {
@@ -390,7 +434,7 @@ body {
     width: 30px;
     height: 30px;
     border-radius: 50%;
-    background-color: #eee;
+    background-color: #44318D;
     border: none;
     cursor: pointer;
     display: flex;
@@ -404,7 +448,7 @@ body {
 }
 
 .cart-summary {
-    border-top: 1px solid #eee;
+    border-top: 1px solid #44318D;
     padding-top: 20px;
     font-size: 18px;
 }
@@ -422,8 +466,8 @@ body {
 
 .checkout-btn {
     width: 100%;
-    background-color: #5931c2;
-    color: white;
+    background-color: #44318D;
+    color: #FFFFFF;
     border: none;
     border-radius: 25px;
     padding: 20px;
@@ -433,15 +477,15 @@ body {
 }
 
 .checkout-btn:hover {
-    background-color: #4920a9;
+    background-color: #2A1B3D;
 }
 
 .add-btn {
     width: 100%;
     height: 45px;
     border-radius: 8px;
-    background-color: #000;
-    color: #fff;
+    background-color: #44318D;
+    color: #FFFFFF;
     border: none;
     cursor: pointer;
     display: flex;
@@ -453,5 +497,5 @@ body {
 }
 
 .add-btn:hover {
-    background-color: #333;
+    background-color: #2A1B3D;
 }
