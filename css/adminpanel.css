@@ -500,7 +500,17 @@ body {
     background-color: #2A1B3D;
 }
 
+.cart-details {
+    transition: max-height 0.3s ease-out, opacity 0.3s ease-out;
+    max-height: 0;
+    overflow: hidden;
+    opacity: 0;
+}
 
+.cart-details.expanded {
+    max-height: 500px; /* Adjust as needed */
+    opacity: 1;
+}
 
 .dropdown-btn {
     margin-left: 145px;

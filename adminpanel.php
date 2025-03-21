@@ -9,6 +9,17 @@
         .sidebar-icon.logo img {
             border-radius: 50%;
         }
+        /* Add transition for smooth opening of cart details */
+        .cart-details {
+            transition: max-height 0.3s ease-out, opacity 0.3s ease-out;
+            max-height: 0;
+            overflow: hidden;
+            opacity: 0;
+        }
+        .cart-details.expanded {
+            max-height: 500px; /* Adjust as needed */
+            opacity: 1;
+        }
     </style>
 </head>
 <body>
@@ -106,13 +117,7 @@
                     </svg>
                 </button>
     </div>
-    <div class="cart-summary">
-        <div class="cart-row cart-total">
-            <div>Total</div>
-            <div id="total">₱0.00</div>
-        </div>
-    </div>
-    <div class="cart-details" id="cart-details" style="display: none;">
+    <div class="cart-details" id="cart-details">
         <div class="cart-items" id="cart-items"></div>
         <div class="cart-summary">
             <div class="cart-row">
@@ -131,6 +136,12 @@
                 <div>Tax</div>
                 <div id="tax">₱0.00</div>
             </div>
+        </div>
+    </div>
+    <div class="cart-summary">
+        <div class="cart-row cart-total">
+            <div>Total</div>
+            <div id="total">₱0.00</div>
         </div>
         <button class="checkout-btn">Continue</button>
     </div>
@@ -159,24 +170,21 @@
 
     <script>
     function toggleCart() {
-        const cartContainer = document.getElementById('cart-container');
         const cartDetails = document.getElementById('cart-details');
         const dropdownBtn = document.getElementById('dropdown-btn');
 
-        if (cartDetails.style.display === 'none') {
-            cartDetails.style.display = 'block';
-            cartContainer.classList.add('expanded');
-            dropdownBtn.innerHTML = `
-                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-chevron-up" viewBox="0 0 16 16">
-                    <path fill-rule="evenodd" d="M1.646 11.354a.5.5 0 0 1 .708 0L8 5.707l5.646 5.647a.5.5 0 0 1-.708.708l-6-6a.5.5 0 0 1-.708 0l-6 6a.5.5 0 0 1 0 .708z"/>
-                </svg>
-            `;
-        } else {
-            cartDetails.style.display = 'none';
-            cartContainer.classList.remove('expanded');
+        if (cartDetails.classList.contains('expanded')) {
+            cartDetails.classList.remove('expanded');
             dropdownBtn.innerHTML = `
                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-chevron-down" viewBox="0 0 16 16">
                     <path fill-rule="evenodd" d="M1.646 4.646a.5.5 0 0 1 .708 0L8 10.293l5.646-5.647a.5.5 0 0 1 .708.708l-6 6a.5.5 0 0 1-.708 0l-6-6a.5.5 0 0 1 0-.708z"/>
+                </svg>
+            `;
+        } else {
+            cartDetails.classList.add('expanded');
+            dropdownBtn.innerHTML = `
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-chevron-up" viewBox="0 0 16 16">
+                    <path fill-rule="evenodd" d="M1.646 11.354a.5.5 0 0 1 .708 0L8 5.707l5.646 5.647a.5.5 0 0 1-.708.708l-6-6a.5.5 0 0 1-.708 0l-6-6a.5.5 0 0 1 0 .708z"/>
                 </svg>
             `;
         }
