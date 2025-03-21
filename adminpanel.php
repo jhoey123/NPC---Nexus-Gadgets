@@ -74,35 +74,22 @@
         </div>
 
         <div class="items-grid" id="items-grid">
-            <?php
-            include "php/conn_db.php";
-
-            $sql = "SELECT c.Category_name, c.Category_desc, p.Product_name, p.Product_brand, p.Product_price, p.Product_desc AS image, p.Product_quantity 
-                    FROM categories c 
-                    LEFT JOIN products p ON c.Category_id = p.Category_id 
-                    WHERE c.Category_name = ? AND p.Product_name IS NOT NULL";
-            $stmt = $conn->prepare($sql);
-            $stmt->bind_param("s", $currentCategory);
-            $stmt->execute();
-            $result = $stmt->get_result();
-
-            if ($result->num_rows > 0) {
-                while ($row = $result->fetch_assoc()) {
-                    echo "
-                    <div class='item-card hidden' data-name='{$row['Product_name']}'>
-                        <img src='{$row['image']}' alt='{$row['Product_name']}' class='item-image'>
-                        <div class='item-details'>
-                            <div class='item-name'>{$row['Product_name']}</div>
-                            <div class='item-price'>₱" . number_format($row['Product_price'], 2) . "</div>
-                            <button class='add-btn' onclick=\"addToCart('{$row['Product_name']}', {$row['Product_price']}, '{$row['image']}', {$row['Product_quantity']})\">ADD</button>
-                        </div>
-                    </div>";
-                }
-            }
-
-            $stmt->close();
-            $conn->close();
-            ?>
+            <script>
+                document.addEventListener('DOMContentLoaded', () => {
+                    const currentCategory = "<?php echo $currentCategory; ?>";
+                    fetch(`php/get_items.php?category=${currentCategory}`)
+                        .then(response => response.text())
+                        .then(data => {
+                            document.getElementById('items-grid').innerHTML = data;
+                            setTimeout(() => {
+                                const newItems = document.querySelectorAll('.item-card');
+                                newItems.forEach(item => {
+                                    item.classList.remove('hidden'); // Remove hidden class after delay
+                                });
+                            }, 100); // Shorter delay to allow transition to complete
+                        });
+                });
+            </script>
         </div>
 
         
@@ -163,7 +150,7 @@
     </div>
 
     <script>
-        let cart = JSON.parse(localStorage.getItem('cart')) || [];
+        let cart = [];
         const serviceChargePercentage = 0.20;
         const taxRate = 0.05;
 
@@ -228,6 +215,7 @@
                 cartItemsContainer.appendChild(cartItemElement);
             });
             
+            
             const discount = 0;
             const serviceCharge = subtotal * serviceChargePercentage;
             const tax = subtotal * taxRate;
@@ -237,8 +225,6 @@
             document.getElementById('discount').textContent = `₱${discount.toFixed(2)}`;
             document.getElementById('tax').textContent = `₱${tax.toFixed(2)}`;
             document.getElementById('total').textContent = `₱${total.toFixed(2)}`;
-
-            localStorage.setItem('cart', JSON.stringify(cart)); // Save cart to local storage
         }
 
         function filterItems(category) {
@@ -247,9 +233,23 @@
                 item.classList.add('hidden'); // Add hidden class for smooth transition
             });
 
-            setTimeout(() => {
-                window.location.href = `?category=${category}`;
-            }, 100); // Shorter delay to allow transition to complete
+            // Fetch new items based on the selected category
+            fetch(`php/get_items.php?category=${category}`)
+                .then(response => response.text())
+                .then(data => {
+                    document.getElementById('items-grid').innerHTML = data;
+                    setTimeout(() => {
+                        const newItems = document.querySelectorAll('.item-card');
+                        newItems.forEach(item => {
+                            item.classList.remove('hidden'); // Remove hidden class after delay
+                        });
+                    }, 100); // Shorter delay to allow transition to complete
+                });
+
+            // Update the URL to reflect the selected category
+            const url = new URL(window.location.href);
+            url.searchParams.set('category', category);
+            window.history.pushState({}, '', url);
         }
 
         document.addEventListener('DOMContentLoaded', () => {
@@ -259,8 +259,6 @@
                     item.classList.remove('hidden'); // Remove hidden class after delay
                 });
             }, 100); // Shorter delay to allow transition to complete
-
-            updateCart(); // Update cart on page load
         });
 
         function searchItems() {
