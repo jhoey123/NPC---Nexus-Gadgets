@@ -1,3 +1,32 @@
+<?php
+
+session_start();
+if (!isset($_SESSION['username'])) {
+    header("Location: index.php"); // Redirect to login page if not logged in
+    exit();
+} else {
+    include "php/conn_db.php";
+    $username = $_SESSION['username'];
+    $stmt = $conn->prepare("SELECT u.username, r.rank_name FROM users u JOIN ranks r ON u.rank_id = r.rank_id WHERE u.username = ?");
+    $stmt->bind_param("s", $username);
+    $stmt->execute();
+    $result = $stmt->get_result();
+    $user_rank = $result->fetch_assoc();
+    $conn->close();
+
+    if ($user_rank) {
+        $rank = $user_rank['rank_name'];
+        if ($rank === "Staff") {
+            header("Location: defaultpanel.php"); // Redirect to default panel if not owner
+            exit();
+        }
+    } else {
+        header("Location: index.php");
+        exit();
+    }
+}
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
