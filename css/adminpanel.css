@@ -142,7 +142,7 @@ body {
 }
 
 .header-titles .items-label {
-    color: #D83F87;
+    color: #2fe0ff;
     text-shadow: #ff0000 4px 3px 2px;
     font-size: 27px;
     margin-bottom: 5px;
@@ -618,7 +618,7 @@ body {
 }
 
 .modal-content {
-    background-color: #fff;
+    background: linear-gradient(180deg, #0a3144 10%, #0d64b6 90%);
     padding: 20px;
     border-radius: 8px;
     text-align: center;
@@ -628,7 +628,7 @@ body {
 .payment-btn {
     margin: 10px;
     padding: 10px 20px;
-    background-color: #007bff;
+    background: linear-gradient(0deg, #0a3144 10%, #0d64b6 90%);
     color: white;
     border: none;
     border-radius: 5px;
