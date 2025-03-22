@@ -142,14 +142,16 @@ body {
 
 .header-titles .items-label {
     color: #D83F87;
-    font-size: 16px;
+    text-shadow: #ff0000 4px 3px 2px;
+    font-size: 27px;
     margin-bottom: 5px;
     font-weight: 500;
 }
 
 .header-titles h1 {
-    font-size: 24px;
-    color: #D83F87;
+    font-size: 53px;
+    color: #2fe0ff;
+    text-shadow: #ff0000 4px 3px 2px;
 }
 
 .search-container {
@@ -164,8 +166,8 @@ body {
 .search-bar {
     display: flex;
     align-items: center;
-    background-color: #2A1B3D;
-    color: #FFFFFF;
+    background-color: #40a3ff;
+    color: #000000;
     border-radius: 25px;
     padding: 0 15px;
     height: 40px;
@@ -181,8 +183,8 @@ body {
     flex: 1;
     margin-left: 10px;
     font-size: 14px;
-    background-color: #2A1B3D;
-    color: #FFFFFF;
+    background-color: #40a3ff;
+    color: #000000;
 }
 
 .search-bar.shrink {
@@ -273,7 +275,7 @@ body {
 }
 
 .category {
-    background-color: #2A1B3D;
+    background: linear-gradient(190deg, #0a3144 10%, #0d64b6 90%);
     color: #FFFFFF;
     padding: 10px 20px;
     border-radius: 20px;
@@ -285,7 +287,6 @@ body {
 }
 
 .category.active {
-    background-color: #44318D;
     color: #FFFFFF;
     transition: background-color 0.3s, color 0.3s;
 }
@@ -298,7 +299,7 @@ body {
 }
 
 .item-card {
-    background-color: #2A1B3D;
+    background: linear-gradient(180deg, #525252 10%, #161616 90%);
     color: #FFFFFF;
     border-radius: 15px;
     overflow: hidden;
@@ -362,7 +363,7 @@ body {
     right: 20px;
     top: 20px;
     width: 400px;
-    background-color: #2A1B3D;
+    background: linear-gradient(180deg, #525252 10%, #161616 90%);
     color: #FFFFFF;
     border-radius: 15px;
     padding: 30px;
@@ -485,7 +486,7 @@ body {
 
 .checkout-btn {
     width: 100%;
-    background-color: #44318D;
+    background: linear-gradient(0deg, #0a3144 10%, #0d64b6 90%);
     color: #FFFFFF;
     border: none;
     border-radius: 25px;
@@ -503,7 +504,7 @@ body {
     width: 100%;
     height: 45px;
     border-radius: 8px;
-    background-color: #44318D;
+    background: linear-gradient(180deg, #0a3144 10%, #0d64b6 90%);
     color: #FFFFFF;
     border: none;
     cursor: pointer;

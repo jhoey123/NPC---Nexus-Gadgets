@@ -70,8 +70,8 @@ if (!isset($_SESSION['user'])) {
     <div class="main-content" id="dashboard-content">
         <div class="header">
             <div class="header-titles">
-                <div class="items-label">Items</div>
-                <h1>Gadgets</h1>
+                <div class="items-label"><p><b>WELCOME</b></p> </div>
+                <h1>Nexus Gadgets</h1>
             </div>
             <div class="search-container">
                 <div class="search-bar" id="search-bar">
