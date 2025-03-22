@@ -6,7 +6,8 @@
 }
 
 body {
-    background-color: #A4B3B6;
+    background: linear-gradient(135deg, #4b4b4b 10%, #000000 90%);
+    background-attachment: fixed;
     display: flex;
     min-height: 100vh;
 }
@@ -113,10 +114,14 @@ body {
 
 .main-content {
     flex: 1;
-    background: linear-gradient(135deg, #4b4b4b 10%, #000000 90%);
     color: #2A1B3D;
     padding: 20px;
     padding-left: 90px;
+    transition: margin-left 0.5s;
+}   
+
+.sidebar:hover ~ .main-content {
+    margin-left: 130px; 
 }
 
 .header {
@@ -383,7 +388,11 @@ body {
     align-items: center;
     justify-content: center;
     font-size: 16px;
-    margin-right: 15px;
+    margin-right: 10px;
+}
+
+.cart-user-name {
+    flex: 1;
 }
 
 .cart-items {
@@ -519,8 +528,8 @@ body {
 }
 
 .dropdown-btn {
-    margin-left: 145px;
-    background-color: #007bff;
+    margin-left: 10px;
+    background-color: #44318D;
     border: none;
     border-radius: 75%;
     width: 39px;

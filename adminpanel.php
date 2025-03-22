@@ -120,12 +120,12 @@ if (!isset($_SESSION['user'])) {
             </div>
     <div class="cart-user">
         <div class="cart-user-avatar"><?php echo strtoupper(substr($_SESSION['user'], 0, 1)); ?></div>
-        <div> <?php echo $_SESSION['user'] ?></div>
-                <button class="dropdown-btn" id="dropdown-btn">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-caret-down-fill" viewBox="0 0 16 16">
-                        <path d="M3.204 5h9.592L8 10.481 3.204 5z"/>
-                    </svg>
-                </button>
+        <div class="cart-user-name"><?php echo $_SESSION['user']; ?></div>
+        <button class="dropdown-btn" id="dropdown-btn">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-caret-down-fill" viewBox="0 0 16 16">
+                <path d="M3.204 5h9.592L8 10.481 3.204 5z"/>
+            </svg>
+        </button>
     </div>
     <div class="cart-details" id="cart-details">
         <div class="cart-items" id="cart-items"></div>
