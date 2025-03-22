@@ -170,8 +170,8 @@ body {
     color: #000000;
     border-radius: 25px;
     padding: 0 15px;
-    height: 40px;
-    width: 250px;
+    height: 50px;
+    width: 300px;
     box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
     transition: width 0.3s;
     border: none;
@@ -182,23 +182,19 @@ body {
     outline: none;
     flex: 1;
     margin-left: 10px;
-    font-size: 14px;
+    font-size: 20px;
     background-color: transparent;
-    color: #000000;
-}
-
-.search-bar.shrink {
-    width: 200px;
+    color: #ffffff;
 }
 
 .barcode-scanner {
     display: flex;
     align-items: center;
-    background-color: #ffffff;
+    background-color: #00395a;
     border-radius: 25px;
     padding: 0 15px;
-    height: 40px;
-    width: 40px;
+    height: 50px;
+    width: 50px;
     box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
     margin-left: 10px;
     transition: width 0.3s ease-in-out;
@@ -210,32 +206,39 @@ body {
     display: flex;
     align-items: center;
     justify-content: center;
-    width: 40px;
-    height: 40px;
+    width: 20px;
+    height: 50px;
     cursor: pointer;
     position: relative;
+    flex-shrink: 0;
 }
 
 .barcode-icon-wrapper svg {
     position: absolute;
     top: 50%;
     left: 50%;
-    transform: translate(-50%, -50%);
+    transform: translate(-50%, -50%) scale(1.2); /* Added scale to make icon 20% larger */
+}
+
+.search-bar svg {
+    transform: scale(1.2); /* Added scale to make search icon 20% larger too */
 }
 
 .barcode-scanner input {
+    color: #FFFFFF;
     flex-grow: 1;
     background-color: transparent;
     border: none;
     outline: none;
-    font-size: 14px;
+    font-size: 20px;
     opacity: 0;
     width: 1px;
+    margin-left: 10px;
     transition: opacity 0.2s ease-in-out 0.1s, width 0.3s ease-in-out;
 }
 
 .barcode-scanner.expanded {
-    width: 250px;
+    width: 300px;
 }
 
 .barcode-scanner.expanded input {
@@ -244,7 +247,7 @@ body {
 }
 
 .barcode-scanner.expanded .barcode-icon-wrapper {
-    margin-left: -10px;
+    margin-left: 0;
 }
 
 .filter-btn {
