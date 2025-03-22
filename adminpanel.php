@@ -36,7 +36,7 @@ if (!isset($_SESSION['user'])) {
     <title>NexusGadgets POS</title>
 </head>
 <body>
-    <div class="sidebar">
+    <div class="sidebar" id="sidebar">
         <div class="sidebar-icon logo">
             <img src="images/logo.png" alt="Logo" width="24" height="24">
             <span class="sidebar-text">Logo</span>
@@ -63,7 +63,7 @@ if (!isset($_SESSION['user'])) {
             <span class="sidebar-text">Logout</span>
         </div>
     </div>
-    <div class="main-content" id="dashboard-content">
+    <div class="main-content" id="main-content">
         <div class="header">
             <div class="header-titles">
                 <div class="items-label">Items</div>
@@ -381,6 +381,19 @@ if (!isset($_SESSION['user'])) {
             url.searchParams.delete('category');
             window.history.pushState({}, '', url);
         }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const sidebar = document.getElementById('sidebar');
+            const mainContent = document.getElementById('main-content');
+
+            sidebar.addEventListener('mouseover', () => {
+                mainContent.classList.add('sidebar-expanded');
+            });
+
+            sidebar.addEventListener('mouseout', () => {
+                mainContent.classList.remove('sidebar-expanded');
+            });
+        });
 
         
         document.querySelectorAll('.category').forEach(category => {
