@@ -20,7 +20,7 @@
 
       if ($result->num_rows == 1) {
          $user = $result->fetch_assoc();
-         $conn->close();
+         
 
          $username_db = $user['username'];
          $password_db = $user['password'];
@@ -42,24 +42,24 @@
                if ($rank === "Owner") {
                   header("Location: ../adminpanel.php");
                   exit;
-               } else if ($rank === "Staff") {
+               } else if ($rank === "staff") {
                   header("Location: ../defaultpanel.php");
                   exit;
                } else {
-                  header("Location: ../index.php?error=Invalid_credentials");
+                  header("Location: ../index.php?error=Invalid_credentials1");
                   exit;
                }
             } else {
-               header("Location: ../index.php?error=Invalid_credentials");
+               header("Location: ../index.php?error=Invalid_credentials2");
                exit;
             }
          } else {
-            header("Location: ../index.php?error=Invalid_credentials");
+            header("Location: ../index.php?error=Invalid_credentials3");
             exit;
          }
       } else {
          $conn->close();
-         header("Location: ../index.php?error=Invalid_credentials");
+         header("Location: ../index.php?error=Invalid_credentials4");
          exit;
       }
    } else {

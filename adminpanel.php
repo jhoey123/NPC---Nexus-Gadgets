@@ -1,12 +1,12 @@
 <?php
 
 session_start();
-if (!isset($_SESSION['username'])) {
+if (!isset($_SESSION['user'])) {
     header("Location: index.php"); // Redirect to login page if not logged in
     exit();
 } else {
     include "php/conn_db.php";
-    $username = $_SESSION['username'];
+    $username = $_SESSION['user'];
     $stmt = $conn->prepare("SELECT u.username, r.rank_name FROM users u JOIN ranks r ON u.rank_id = r.rank_id WHERE u.username = ?");
     $stmt->bind_param("s", $username);
     $stmt->execute();
@@ -16,7 +16,7 @@ if (!isset($_SESSION['username'])) {
 
     if ($user_rank) {
         $rank = $user_rank['rank_name'];
-        if ($rank === "Staff") {
+        if ($rank === "staff") {
             header("Location: defaultpanel.php"); // Redirect to default panel if not owner
             exit();
         }
@@ -75,7 +75,7 @@ if (!isset($_SESSION['username'])) {
             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
             <span class="sidebar-text">Settings</span>
         </div>
-        <div class="sidebar-icon" id="logout-button" onclick="switchView('logout')">
+        <div class="sidebar-icon" id="logout-button" onclick="logout()">
             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
             <span class="sidebar-text">Logout</span>
         </div>
@@ -138,11 +138,11 @@ if (!isset($_SESSION['username'])) {
                 <h2>Current Order</h2>
             </div>
     <div class="cart-user">
-        <div class="cart-user-avatar">EW</div>
-        <div>Emma Wang</div>
+        <div class="cart-user-avatar"></div>
+        <div> <?php echo $_SESSION['user'] ?></div>
                 <button class="dropdown-btn" id="dropdown-btn">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-chevron-down" viewBox="0 0 16 16">
-                        <path fill-rule="evenodd" d="M1.646 4.646a.5.5 0 0 1 .708 0L8 10.293l5.646-5.647a.5.5 0 0 1 .708.708l-6 6a.5.5 0 0 1-.708 0l-6-6a.5.5 0 0 1 0-.708z"/>
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-caret-down-fill" viewBox="0 0 16 16">
+                        <path d="M3.204 5h9.592L8 10.481 3.204 5z"/>
                     </svg>
                 </button>
     </div>
@@ -205,15 +205,15 @@ if (!isset($_SESSION['username'])) {
         if (cartDetails.classList.contains('expanded')) {
             cartDetails.classList.remove('expanded');
             dropdownBtn.innerHTML = `
-                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-chevron-down" viewBox="0 0 16 16">
-                    <path fill-rule="evenodd" d="M1.646 4.646a.5.5 0 0 1 .708 0L8 10.293l5.646-5.647a.5.5 0 0 1 .708.708l-6 6a.5.5 0 0 1-.708 0l-6-6a.5.5 0 0 1 0-.708z"/>
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-caret-down-fill" viewBox="0 0 16 16">
+                    <path d="M3.204 5h9.592L8 10.481 3.204 5z"/>
                 </svg>
             `;
         } else {
             cartDetails.classList.add('expanded');
             dropdownBtn.innerHTML = `
-                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-chevron-up" viewBox="0 0 16 16">
-                    <path fill-rule="evenodd" d="M1.646 11.354a.5.5 0 0 1 .708 0L8 5.707l5.646 5.647a.5.5 0 0 1-.708.708l-6-6a.5.5 0 0 1-.708 0l-6-6a.5.5 0 0 1 0 .708z"/>
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-caret-up-fill" viewBox="0 0 16 16">
+                    <path d="M3.204 11h9.592L8 5.519 3.204 11z"/>
                 </svg>
             `;
         }
@@ -409,6 +409,18 @@ if (!isset($_SESSION['username'])) {
                 filterItems(this.textContent);
             });
         });
+
+        function logout() {
+            const form = document.createElement('form');
+            form.method = 'POST';
+            form.action = 'php/logout.php';
+            const input = document.createElement('input');
+            input.type = 'hidden';
+            input.name = 'logout';
+            form.appendChild(input);
+            document.body.appendChild(form);
+            form.submit();
+        }
     </script>
 </body>
 </html>
