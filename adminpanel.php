@@ -162,6 +162,10 @@ if (!isset($_SESSION['user'])) {
     </div>
 
     
+    <div class="dashboard-content" id="dashboard-content">
+        <h1>Dashboard Section</h1>
+    </div>
+
     <div class="upload-content" id="upload-content" style="display: none;">
         <h1>Upload Section</h1>
     </div>
@@ -382,11 +386,9 @@ if (!isset($_SESSION['user'])) {
 
         function switchView(view) {
             // Hide all content sections
-            document.getElementById('dashboard-content').style.display = 'none';
-            document.getElementById('upload-content').style.display = 'none';
-            document.getElementById('products-content').style.display = 'none';
-            document.getElementById('settings-content').style.display = 'none';
-            document.getElementById('logout-content').style.display = 'none';
+            document.querySelectorAll('.main-content > div').forEach(section => {
+                section.style.display = 'none';
+            });
 
             // Show the selected content section
             document.getElementById(`${view}-content`).style.display = 'block';
@@ -416,6 +418,13 @@ if (!isset($_SESSION['user'])) {
             sidebar.addEventListener('mouseout', () => {
                 mainContent.classList.remove('sidebar-expanded');
             });
+
+            // Add event listeners to sidebar buttons
+            document.getElementById('dashboard-button').addEventListener('click', () => switchView('dashboard'));
+            document.getElementById('upload-button').addEventListener('click', () => switchView('upload'));
+            document.getElementById('products-button').addEventListener('click', () => switchView('products'));
+            document.getElementById('settings-button').addEventListener('click', () => switchView('settings'));
+            document.getElementById('logout-button').addEventListener('click', () => switchView('logout'));
         });
 
         
