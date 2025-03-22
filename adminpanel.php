@@ -158,8 +158,16 @@ if (!isset($_SESSION['user'])) {
             <div>Total</div>
             <div id="total">₱0.00</div>
         </div>
-        <button class="checkout-btn">Continue</button>
+        <button class="checkout-btn"onclick="showPaymentModal()">Continue</button>
         
+    </div>
+    <!-- Payment Modal -->
+    <div id="payment-modal" class="modal" style="display: none;">
+    <div class="modal-content">
+        <h2>Select Payment Method</h2>
+        <button class="payment-btn" onclick="processPayment('cash')">Pay with Cash</button>
+        <button class="payment-btn" onclick="processPayment('card')">Pay with Card</button>
+        <button class="close-btn" onclick="closePaymentModal()">Cancel</button>
     </div>
 
     </div>
@@ -432,6 +440,23 @@ if (!isset($_SESSION['user'])) {
             document.body.appendChild(form);
             form.submit();
         }
+
+        function showPaymentModal() {
+        document.getElementById('payment-modal').style.display = 'flex';
+    }
+
+    // Close the payment modal
+    function closePaymentModal() {
+        document.getElementById('payment-modal').style.display = 'none';
+    }
+
+    // Process payment based on the selected method
+    function processPayment(method) {
+        closePaymentModal();
+        alert(`You selected to pay with ${method}.`);
+        // Add further logic here to handle payment processing
+    }
+	
     </script>
 </body>
 </html>
