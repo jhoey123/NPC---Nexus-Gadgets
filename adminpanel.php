@@ -391,6 +391,7 @@ if (!isset($_SESSION['user'])) {
             document.getElementById('dashboard-content').style.display = 'none';
             document.getElementById('upload-content').style.display = 'none';
             document.getElementById('products-content').style.display = 'none';
+            document.getElementById('inventory-content').style.display = 'none';
             document.getElementById('settings-content').style.display = 'none';
             document.getElementById('logout-content').style.display = 'none';
 
