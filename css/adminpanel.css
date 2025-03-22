@@ -2,7 +2,7 @@
     margin: 0;
     padding: 0;
     box-sizing: border-box;
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    font-family: sans-serif;
 }
 
 body {
@@ -404,7 +404,7 @@ body {
     justify-content: space-between;
     align-items: center;
     margin-bottom: 20px;
-    font-size: 18px;
+    font-size: 16px;
 }
 
 .cart-item-info {
@@ -446,8 +446,8 @@ body {
 }
 
 .qty-btn {
-    width: 30px;
-    height: 30px;
+    width: 50px;
+    height: 25px;
     border-radius: 50%;
     background-color: #44318D;
     border: none;
@@ -549,4 +549,16 @@ body {
 .dropdown-btn svg {
     width: 16px;
     height: 16px;
+}
+
+.remove-btn {
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: #ff4d4d; 
+    margin-left: 5px;
+}
+
+.remove-btn svg {
+    vertical-align: middle;
 }

@@ -53,6 +53,10 @@ if (!isset($_SESSION['user'])) {
             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg>
             <span class="sidebar-text">Products</span>
         </div>
+        <div class="sidebar-icon" id="inventory-button" onclick="switchView('inventory')">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3h18v18H3z"/><path d="M3 9h18"/><path d="M9 21V9"/></svg>
+        <span class="sidebar-text">Inventory</span>
+    </div>
         <div style="flex: 1;"></div>
         <div class="sidebar-icon" id="settings-button" onclick="switchView('settings')">
             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
@@ -117,6 +121,7 @@ if (!isset($_SESSION['user'])) {
         <div class="cart-container" id="cart-container">
             <div class="cart-header">
                 <h2>Current Order</h2>
+            
             </div>
     <div class="cart-user">
         <div class="cart-user-avatar"><?php echo strtoupper(substr($_SESSION['user'], 0, 1)); ?></div>
@@ -154,6 +159,7 @@ if (!isset($_SESSION['user'])) {
             <div id="total">₱0.00</div>
         </div>
         <button class="checkout-btn">Continue</button>
+        
     </div>
 
     </div>
@@ -168,6 +174,9 @@ if (!isset($_SESSION['user'])) {
         <h1>Products Section</h1>
     </div>
 
+    <div class="inventory-content" id="inventory-content" style="display: none;">
+        <h1>Inventory Section</h1>
+    </div>
     
     <div class="settings-content" id="settings-content" style="display: none;">
         <h1>Settings Section</h1>
@@ -247,6 +256,16 @@ if (!isset($_SESSION['user'])) {
             updateCart();
         }
 
+        function removeItemFromCart(index) {
+            cart.splice(index, 1); // Remove the item at the specified index
+            updateCart(); // Update the cart display
+        }
+
+        function removeAllFromCart() {
+            cart = []; // Clear the cart array
+            updateCart(); // Update the cart display
+        }
+
         function updateCart() {
             const cartItemsContainer = document.getElementById('cart-items');
             cartItemsContainer.innerHTML = '';
@@ -270,12 +289,17 @@ if (!isset($_SESSION['user'])) {
                         <button class="qty-btn" onclick="removeFromCart(${index})">-</button>
                         <div class="cart-item-qty">${item.quantity}</div>
                         <button class="qty-btn" onclick="addToCart('${item.name}', ${item.price}, '${item.image}', ${item.maxQuantity})">+</button>
+                        <button class="remove-btn" onclick="removeItemFromCart(${index})">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-x-circle" viewBox="0 0 16 16">
+                                <path d="M8 15A7 7 0 1 0 8 1a7 7 0 0 0 0 14zm0 1A8 8 0 1 1 8 0a8 8 0 0 1 0 16z"/>
+                                <path d="M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708z"/>
+                            </svg>
+                        </button>
                     </div>
                 `;
                 
                 cartItemsContainer.appendChild(cartItemElement);
             });
-            
             
             const discount = 0;
             const serviceCharge = subtotal * serviceChargePercentage;
@@ -286,6 +310,11 @@ if (!isset($_SESSION['user'])) {
             document.getElementById('discount').textContent = `₱${discount.toFixed(2)}`;
             document.getElementById('tax').textContent = `₱${tax.toFixed(2)}`;
             document.getElementById('total').textContent = `₱${total.toFixed(2)}`;
+            
+            // If the cart is empty, show a message
+            if (cart.length === 0) {
+                cartItemsContainer.innerHTML = '<div class="empty-cart">Your cart is empty.</div>';
+            }
         }
 
         function filterItems(category) {
