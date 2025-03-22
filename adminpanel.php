@@ -91,7 +91,7 @@ if (!isset($_SESSION['user'])) {
 
         <div class="categories">
             <?php
-            $categories = ["All", "Keyboards", "Monitors", "Mice", "Laptops", "Smartphones"];
+            $categories = ["All", "Keyboards", "Monitors", "Mouse", "Laptops", "Smartphones"];
             $currentCategory = isset($_GET['category']) ? $_GET['category'] : 'All';
             foreach ($categories as $category) {
                 $activeClass = $category === $currentCategory ? 'active' : '';
