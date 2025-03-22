@@ -20,7 +20,12 @@ body {
     flex-direction: column;
     align-items: center;
     padding: 20px 0;
-    transition: width 0.5s; /* Increased duration for smoother transition */
+    transition: width 0.5s;
+    position: fixed;
+    height: 100%;
+    top: 0;
+    left: 0;
+    z-index: 1000;
 }
 
 .sidebar:hover {
@@ -37,8 +42,8 @@ body {
     margin-bottom: 15px;
     cursor: pointer;
     color: #FFFFFF;
-    transition: width 0.5s, padding-left 0.5s; /* Removed opacity transition */
-    opacity: 1; /* Ensure icons are visible */
+    transition: width 0.5s, padding-left 0.5s;
+    opacity: 1;
 }
 
 .sidebar-icon.logo {
@@ -46,8 +51,8 @@ body {
 }
 
 .sidebar-icon.logo img {
-    width: 30px; /* Adjust the width as needed */
-    height: 30px; /* Adjust the height as needed */
+    width: 30px;
+    height: 30px;
     border-radius: 50%;
 }
 
@@ -59,10 +64,10 @@ body {
 .sidebar:hover .sidebar-icon {
     width: 100%;
     justify-content: flex-start;
-    padding-left: 20px; /* Maintain padding on hover */
-    margin-bottom: 15px; /* Ensure consistent spacing */
-    transition: width 0.5s, padding-left 0.5s; /* Removed opacity transition */
-    opacity: 1; /* Ensure icons are visible */
+    padding-left: 20px;
+    margin-bottom: 15px;
+    transition: width 0.5s, padding-left 0.5s;
+    opacity: 1;
 }
 
 .sidebar-icon.active {
@@ -94,16 +99,16 @@ body {
 }
 
 .sidebar-text {
-    display: none; /* Reverted to 'none' */
+    display: none;
     margin-left: 10px;
     font-size: 14px;
     color: #FFFFFF;
-    transition: margin-left 0.5s; /* Removed opacity transition */
+    transition: margin-left 0.5s;
 }
 
 .sidebar:hover .sidebar-text {
-    display: inline; /* Reverted to 'inline' */
-    transition: margin-left 0.5s; /* Removed opacity transition */
+    display: inline;
+    transition: margin-left 0.5s;
 }
 
 .main-content {
@@ -111,6 +116,7 @@ body {
     background: linear-gradient(135deg, #4b4b4b 10%, #000000 90%);
     color: #2A1B3D;
     padding: 20px;
+    padding-left: 90px;
 }
 
 .header {
@@ -203,7 +209,7 @@ body {
     position: absolute;
     top: 50%;
     left: 50%;
-     transform: translate(-50%, -50%);
+    transform: translate(-50%, -50%);
 }
 
 .barcode-scanner input {
@@ -266,20 +272,20 @@ body {
     cursor: pointer;
     font-size: 14px;
     box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-    transition: background-color 0.3s, color 0.3s; /* Added transition for smooth effect */
+    transition: background-color 0.3s, color 0.3s;
 }
 
 .category.active {
     background-color: #44318D;
     color: #FFFFFF;
-    transition: background-color 0.3s, color 0.3s; /* Added transition for smooth effect */
+    transition: background-color 0.3s, color 0.3s;
 }
 
 .items-grid {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
     gap: 20px;
-    padding-right: 420px; /* Add padding to prevent items from being hidden behind the cart */
+    padding-right: 420px;
 }
 
 .item-card {
@@ -288,19 +294,19 @@ body {
     border-radius: 15px;
     overflow: hidden;
     box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-    transition: transform 0.2s, opacity 0.3s; /* Added opacity transition */
+    transition: transform 0.2s, opacity 0.3s;
     display: flex;
     flex-direction: column;
     height: 320px;
     width: 220px;
     margin: 10px;
-    opacity: 1; /* Ensure items are visible */
+    opacity: 1;
 }
 
 .item-card.hidden {
-    opacity: 0; /* Hide items smoothly */
-    pointer-events: none; /* Disable interaction */
-    transition: opacity 0.3s; /* Ensure smooth transition */
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.3s;
 }
 
 .item-card:hover {
@@ -508,7 +514,7 @@ body {
 }
 
 .cart-details.expanded {
-    max-height: 500px; /* Adjust as needed */
+    max-height: 500px;
     opacity: 1;
 }
 

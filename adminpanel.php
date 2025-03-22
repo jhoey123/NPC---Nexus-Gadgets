@@ -33,26 +33,9 @@ if (!isset($_SESSION['user'])) {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="css/adminpanel.css">
-    <title>Dessert Ordering System</title>
-    <style>
-        .sidebar-icon.logo img {
-            border-radius: 50%;
-        }
-        /* Add transition for smooth opening of cart details */
-        .cart-details {
-            transition: max-height 0.3s ease-out, opacity 0.3s ease-out;
-            max-height: 0;
-            overflow: hidden;
-            opacity: 0;
-        }
-        .cart-details.expanded {
-            max-height: 500px; /* Adjust as needed */
-            opacity: 1;
-        }
-    </style>
+    <title>NexusGadgets POS</title>
 </head>
 <body>
-    
     <div class="sidebar">
         <div class="sidebar-icon logo">
             <img src="images/logo.png" alt="Logo" width="24" height="24">
@@ -80,8 +63,6 @@ if (!isset($_SESSION['user'])) {
             <span class="sidebar-text">Logout</span>
         </div>
     </div>
-
-    
     <div class="main-content" id="dashboard-content">
         <div class="header">
             <div class="header-titles">
