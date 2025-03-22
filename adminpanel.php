@@ -36,7 +36,7 @@ if (!isset($_SESSION['user'])) {
     <title>NexusGadgets POS</title>
 </head>
 <body>
-    <div class="sidebar" id="sidebar">
+    <div class="sidebar">
         <div class="sidebar-icon logo">
             <img src="images/logo.png" alt="Logo" width="24" height="24">
             <span class="sidebar-text">Logo</span>
@@ -63,7 +63,7 @@ if (!isset($_SESSION['user'])) {
             <span class="sidebar-text">Logout</span>
         </div>
     </div>
-    <div class="main-content" id="main-content">
+    <div class="main-content" id="dashboard-content">
         <div class="header">
             <div class="header-titles">
                 <div class="items-label">Items</div>
@@ -119,10 +119,7 @@ if (!isset($_SESSION['user'])) {
                 <h2>Current Order</h2>
             </div>
     <div class="cart-user">
-        <div class="cart-user-avatar">
-        <?php echo strtoupper(substr($_SESSION['user'], 0, 1)); ?>
-        </div>
-
+        <div class="cart-user-avatar"><?php echo strtoupper(substr($_SESSION['user'], 0, 1)); ?></div>
         <div> <?php echo $_SESSION['user'] ?></div>
                 <button class="dropdown-btn" id="dropdown-btn">
                     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-caret-down-fill" viewBox="0 0 16 16">
@@ -162,10 +159,6 @@ if (!isset($_SESSION['user'])) {
     </div>
 
     
-    <div class="dashboard-content" id="dashboard-content">
-        <h1>Dashboard Section</h1>
-    </div>
-
     <div class="upload-content" id="upload-content" style="display: none;">
         <h1>Upload Section</h1>
     </div>
@@ -254,16 +247,6 @@ if (!isset($_SESSION['user'])) {
             updateCart();
         }
 
-        function removeAllFromCart() {
-            cart = [];
-            updateCart();
-        }
-
-        function removeItemFromCart(index) {
-            cart.splice(index, 1); // Remove the item at the specified index
-            updateCart(); // Update the cart display
-        }
-
         function updateCart() {
             const cartItemsContainer = document.getElementById('cart-items');
             cartItemsContainer.innerHTML = '';
@@ -287,17 +270,12 @@ if (!isset($_SESSION['user'])) {
                         <button class="qty-btn" onclick="removeFromCart(${index})">-</button>
                         <div class="cart-item-qty">${item.quantity}</div>
                         <button class="qty-btn" onclick="addToCart('${item.name}', ${item.price}, '${item.image}', ${item.maxQuantity})">+</button>
-                        <button class="remove-btn" onclick="removeItemFromCart(${index})">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-x-circle" viewBox="0 0 16 16">
-                                <path d="M8 15A7 7 0 1 0 8 1a7 7 0 0 0 0 14zm0 1A8 8 0 1 1 8 0a8 8 0 0 1 0 16z"/>
-                                <path d="M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708z"/>
-                            </svg>
-                        </button>
                     </div>
                 `;
                 
                 cartItemsContainer.appendChild(cartItemElement);
             });
+            
             
             const discount = 0;
             const serviceCharge = subtotal * serviceChargePercentage;
@@ -308,11 +286,6 @@ if (!isset($_SESSION['user'])) {
             document.getElementById('discount').textContent = `₱${discount.toFixed(2)}`;
             document.getElementById('tax').textContent = `₱${tax.toFixed(2)}`;
             document.getElementById('total').textContent = `₱${total.toFixed(2)}`;
-            
-            // If the cart is empty, show a message
-            if (cart.length === 0) {
-                cartItemsContainer.innerHTML = '<div class="empty-cart">Your cart is empty.</div>';
-            }
         }
 
         function filterItems(category) {
@@ -386,9 +359,11 @@ if (!isset($_SESSION['user'])) {
 
         function switchView(view) {
             // Hide all content sections
-            document.querySelectorAll('.main-content > div').forEach(section => {
-                section.style.display = 'none';
-            });
+            document.getElementById('dashboard-content').style.display = 'none';
+            document.getElementById('upload-content').style.display = 'none';
+            document.getElementById('products-content').style.display = 'none';
+            document.getElementById('settings-content').style.display = 'none';
+            document.getElementById('logout-content').style.display = 'none';
 
             // Show the selected content section
             document.getElementById(`${view}-content`).style.display = 'block';
@@ -406,26 +381,6 @@ if (!isset($_SESSION['user'])) {
             url.searchParams.delete('category');
             window.history.pushState({}, '', url);
         }
-
-        document.addEventListener('DOMContentLoaded', () => {
-            const sidebar = document.getElementById('sidebar');
-            const mainContent = document.getElementById('main-content');
-
-            sidebar.addEventListener('mouseover', () => {
-                mainContent.classList.add('sidebar-expanded');
-            });
-
-            sidebar.addEventListener('mouseout', () => {
-                mainContent.classList.remove('sidebar-expanded');
-            });
-
-            // Add event listeners to sidebar buttons
-            document.getElementById('dashboard-button').addEventListener('click', () => switchView('dashboard'));
-            document.getElementById('upload-button').addEventListener('click', () => switchView('upload'));
-            document.getElementById('products-button').addEventListener('click', () => switchView('products'));
-            document.getElementById('settings-button').addEventListener('click', () => switchView('settings'));
-            document.getElementById('logout-button').addEventListener('click', () => switchView('logout'));
-        });
 
         
         document.querySelectorAll('.category').forEach(category => {

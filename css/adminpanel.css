@@ -2,15 +2,13 @@
     margin: 0;
     padding: 0;
     box-sizing: border-box;
-    font-family: sans-serif;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
 
 body {
-
-    background: linear-gradient(135deg, #4b4b4b 10%, #000000 90%);
+    background-color: #A4B3B6;
     display: flex;
     min-height: 100vh;
-    background-attachment: fixed;
 }
 
 .sidebar {
@@ -115,14 +113,10 @@ body {
 
 .main-content {
     flex: 1;
+    background: linear-gradient(135deg, #4b4b4b 10%, #000000 90%);
     color: #2A1B3D;
     padding: 20px;
     padding-left: 90px;
-    transition: margin-left 0.5s;
-}
-
-.main-content.sidebar-expanded {
-    margin-left: 140px;
 }
 
 .header {
@@ -401,7 +395,7 @@ body {
     justify-content: space-between;
     align-items: center;
     margin-bottom: 20px;
-    font-size: 16px;
+    font-size: 18px;
 }
 
 .cart-item-info {
@@ -443,8 +437,8 @@ body {
 }
 
 .qty-btn {
-    width: 100px;
-    height: 20px;
+    width: 30px;
+    height: 30px;
     border-radius: 50%;
     background-color: #44318D;
     border: none;
@@ -526,7 +520,7 @@ body {
 
 .dropdown-btn {
     margin-left: 145px;
-    background-color: #44318D;
+    background-color: #007bff;
     border: none;
     border-radius: 75%;
     width: 39px;
@@ -546,16 +540,4 @@ body {
 .dropdown-btn svg {
     width: 16px;
     height: 16px;
-}
-
-.remove-btn {
-    background: none;
-    border: none;
-    cursor: pointer;
-    color: #ff4d4d; /* Red color for the trash icon */
-    margin-left: 5px;
-}
-
-.remove-btn svg {
-    vertical-align: middle;
 }
