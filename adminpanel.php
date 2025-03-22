@@ -119,7 +119,10 @@ if (!isset($_SESSION['user'])) {
                 <h2>Current Order</h2>
             </div>
     <div class="cart-user">
-        <div class="cart-user-avatar"></div>
+        <div class="cart-user-avatar">
+        <?php echo strtoupper(substr($_SESSION['user'], 0, 1)); ?>
+        </div>
+
         <div> <?php echo $_SESSION['user'] ?></div>
                 <button class="dropdown-btn" id="dropdown-btn">
                     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-caret-down-fill" viewBox="0 0 16 16">
