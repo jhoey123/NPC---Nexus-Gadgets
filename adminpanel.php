@@ -250,6 +250,16 @@ if (!isset($_SESSION['user'])) {
             updateCart();
         }
 
+        function removeAllFromCart() {
+            cart = [];
+            updateCart();
+        }
+
+        function removeItemFromCart(index) {
+            cart.splice(index, 1); // Remove the item at the specified index
+            updateCart(); // Update the cart display
+        }
+
         function updateCart() {
             const cartItemsContainer = document.getElementById('cart-items');
             cartItemsContainer.innerHTML = '';
@@ -273,12 +283,17 @@ if (!isset($_SESSION['user'])) {
                         <button class="qty-btn" onclick="removeFromCart(${index})">-</button>
                         <div class="cart-item-qty">${item.quantity}</div>
                         <button class="qty-btn" onclick="addToCart('${item.name}', ${item.price}, '${item.image}', ${item.maxQuantity})">+</button>
+                        <button class="remove-btn" onclick="removeItemFromCart(${index})">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-x-circle" viewBox="0 0 16 16">
+                                <path d="M8 15A7 7 0 1 0 8 1a7 7 0 0 0 0 14zm0 1A8 8 0 1 1 8 0a8 8 0 0 1 0 16z"/>
+                                <path d="M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708z"/>
+                            </svg>
+                        </button>
                     </div>
                 `;
                 
                 cartItemsContainer.appendChild(cartItemElement);
             });
-            
             
             const discount = 0;
             const serviceCharge = subtotal * serviceChargePercentage;
@@ -289,6 +304,11 @@ if (!isset($_SESSION['user'])) {
             document.getElementById('discount').textContent = `₱${discount.toFixed(2)}`;
             document.getElementById('tax').textContent = `₱${tax.toFixed(2)}`;
             document.getElementById('total').textContent = `₱${total.toFixed(2)}`;
+            
+            // If the cart is empty, show a message
+            if (cart.length === 0) {
+                cartItemsContainer.innerHTML = '<div class="empty-cart">Your cart is empty.</div>';
+            }
         }
 
         function filterItems(category) {
