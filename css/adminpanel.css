@@ -166,7 +166,7 @@ body {
 .search-bar {
     display: flex;
     align-items: center;
-    background-color: #40a3ff;
+    background-color: #00395a;
     color: #000000;
     border-radius: 25px;
     padding: 0 15px;
@@ -183,7 +183,7 @@ body {
     flex: 1;
     margin-left: 10px;
     font-size: 14px;
-    background-color: #40a3ff;
+    background-color: transparent;
     color: #000000;
 }
 
@@ -194,7 +194,7 @@ body {
 .barcode-scanner {
     display: flex;
     align-items: center;
-    background-color: #44318D;
+    background-color: #ffffff;
     border-radius: 25px;
     padding: 0 15px;
     height: 40px;
@@ -327,6 +327,9 @@ body {
     width: 100%;
     height: 180px;
     object-fit: cover;
+    padding: 5px;
+    border-radius: 15px;
+
 }
 
 .item-details {
@@ -486,7 +489,7 @@ body {
 
 .checkout-btn {
     width: 100%;
-    background: linear-gradient(0deg, #0a3144 10%, #0d64b6 90%);
+    background: linear-gradient(180deg, #0a3144 10%, #0d64b6 90%);
     color: #FFFFFF;
     border: none;
     border-radius: 25px;
@@ -494,10 +497,25 @@ body {
     font-size: 20px;
     cursor: pointer;
     margin-top: 20px;
+    position: relative;
+    overflow: hidden;   
 }
 
-.checkout-btn:hover {
-    background-color: #2A1B3D;
+.checkout-btn::after {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(120deg, transparent, rgba(255, 255, 255, 0.6), transparent);
+    transition: left 0.3s;
+}
+
+
+.checkout-btn:hover::after {
+    left: 100%;
+    transition: left 0.5s ease-out;
 }
 
 .add-btn {
@@ -514,10 +532,24 @@ body {
     font-size: 18px;
     font-weight: 500;
     transition: background-color 0.2s;
+    position: relative;
+    overflow: hidden;   
 }
 
-.add-btn:hover {
-    background-color: #2A1B3D;
+.add-btn::after {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(120deg, transparent, rgba(255, 255, 255, 0.6), transparent);
+    transition: left 0.3s;
+}
+
+.add-btn:hover::after {
+    left: 100%;
+    transition: left 0.5s ease-out;
 }
 
 .cart-details {

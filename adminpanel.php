@@ -75,12 +75,12 @@ if (!isset($_SESSION['user'])) {
             </div>
             <div class="search-container">
                 <div class="search-bar" id="search-bar">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#999" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#000000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
                     <input type="text" placeholder="Search..." id="search-input" oninput="searchItems()">
                 </div>
                 <div class="barcode-scanner" id="barcode-scanner">
                     <div class="barcode-icon-wrapper" onclick="toggleBarcodeInput()">
-                        <svg id="barcode-icon" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#999" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin: auto;"><path d="M2 2h20v20H2z"/><path d="M7 2v20M17 2v20M12 2v20M2 7h20M2 17h20"/></svg>
+                        <svg id="barcode-icon" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#000000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin: auto;"><path d="M2 2h20v20H2z"/><path d="M7 2v20M17 2v20M12 2v20M2 7h20M2 17h20"/></svg>
                     </div>
                     <input type="text" placeholder="Scan barcode..." id="barcode-input" oninput="scanBarcode()" style="display: none;">
                 </div>
@@ -89,8 +89,8 @@ if (!isset($_SESSION['user'])) {
 
         <div class="categories">
             <?php
-            $categories = ["Keyboards", "Monitors", "Mice", "Laptops", "Smartphones"];
-            $currentCategory = isset($_GET['category']) ? $_GET['category'] : 'Keyboards';
+            $categories = ["All", "Keyboards", "Monitors", "Mice", "Laptops", "Smartphones"];
+            $currentCategory = isset($_GET['category']) ? $_GET['category'] : 'All';
             foreach ($categories as $category) {
                 $activeClass = $category === $currentCategory ? 'active' : '';
                 echo "<div class='category $activeClass' onclick=\"filterItems('$category')\">$category</div>";
