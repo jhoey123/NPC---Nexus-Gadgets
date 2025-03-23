@@ -274,10 +274,6 @@ body {
     scrollbar-width: none;
 }
 
-.categories::-webkit-scrollbar {
-    display: none;
-}
-
 .category {
     background: linear-gradient(190deg, #0a3144 10%, #0d64b6 90%);
     color: #FFFFFF;
@@ -285,7 +281,7 @@ body {
     border-radius: 20px;
     white-space: nowrap;
     cursor: pointer;
-    font-size: 14px;
+    font-size: 20px;
     box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
     transition: background-color 0.3s, color 0.3s;
 }
