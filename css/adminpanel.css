@@ -53,18 +53,42 @@ body {
 }
 
 .sidebar-icon.logo {
+    flex-direction: column; /* Stack items vertically */
     justify-content: center;
+    align-items: center; /* Center horizontally */
+    width: 100%;
+    height: auto; /* Allow height to adjust to content */
+    padding-top: 10px;
+    padding-bottom: 10px;
 }
 
 .sidebar-icon.logo img {
-    width: 30px;
-    height: 30px;
+    width: 50px;
+    height: 50px;
     border-radius: 50%;
+    margin: 0 auto; /* Center the image */
+    display: block; /* Ensure it's a block element */
+}
+
+.sidebar-icon.logo::after {
+    content: "NEXUS";
+    display: block;
+    width: 100%;
+    text-align: center;
+    margin-top: 8px; /* Space between logo and text */
+    font-size: 12px;
+    color: #FFFFFF;
 }
 
 .sidebar:hover .sidebar-icon.logo {
-    justify-content: flex-start;
-    padding-left: 20px;
+    justify-content: center;
+    padding-left: 0;
+    flex-direction: column;
+    background-color: transparent;
+}
+
+.sidebar-icon.logo:hover {
+    background-color: transparent !important; /* Override any hover effects */
 }
 
 .sidebar:hover .sidebar-icon {
