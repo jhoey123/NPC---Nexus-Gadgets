@@ -816,6 +816,10 @@ body {
     transition: left 0.5s ease-out;
 }
 
+/* Upload end */
+
+/* Inventory Start */
+
 .edit-btn {
     display: block;
     width: 100%;
@@ -842,3 +846,5 @@ body {
     padding-top: 25px;
     min-width: 1800px;
 }
+
+/* Inventory End */
