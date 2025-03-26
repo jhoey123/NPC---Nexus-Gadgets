@@ -34,7 +34,7 @@ if ($result->num_rows > 0) {
         </div>";
     }
 } else {
-    echo "<p>No products available.</p>";
+    echo "<p style=color:white;>No products available.</p>";
 }
 
 $stmt->close();
