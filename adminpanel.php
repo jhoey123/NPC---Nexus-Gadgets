@@ -172,10 +172,16 @@ if (!isset($_SESSION['user'])) {
     </div>
 
     </div>
+    </div>  
+    </div>
 
     
     <div class="upload-content" id="upload-content" style="display: none;">
-        <h1>Upload Section</h1>
+        <h1>Product Upload</h1>
+
+        <form action="upload.php" method="post">
+            <input type="text">
+        </form>
     </div>
 
     
