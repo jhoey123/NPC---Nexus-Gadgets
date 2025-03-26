@@ -815,3 +815,30 @@ body {
     left: 100%;
     transition: left 0.5s ease-out;
 }
+
+.edit-btn {
+    display: block;
+    width: 100%;
+    padding: 10px;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 0 0 8px 8px;
+    cursor: pointer;
+    text-align: center;
+    font-size: 14px;
+}
+
+.edit-btn:hover {
+    background-color: #0056b3;
+}
+
+.in-items-grid {
+    display: grid;
+    flex: 1;
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    gap: 15px;
+    padding-left: 90px;
+    padding-top: 25px;
+    min-width: 1800px;
+}

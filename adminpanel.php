@@ -278,7 +278,28 @@ if (!isset($_SESSION['user'])) {
     </div>
 
     <div class="inventory-content" id="inventory-content" style="display: none;">
-        <h1>Inventory Section</h1>
+    <div class="header-titles"> <h1>Inventory Section</h1> </div>
+        <div class="in-items-grid" id="in-items-grid">       
+        <?php
+        include "php/conn_db.php"; // Include database connection
+        
+        $query = "SELECT * FROM products";
+        $result = $conn->query($query);
+        
+        while ($row = $result->fetch_assoc()): ?>
+            <div class="item-card" $data-id="<?php echo $row['Product_id']; ?>">
+                <img src="<?php echo $row['Product_image_path']; ?>" alt="<?php echo $row['Product_name']; ?>" class="item-image">
+                <div class="item-details">
+                    <h3><?php echo $row['Product_name']; ?></h3>
+                    <p><b>Price:</b> ₱<?php echo number_format($row['Product_price'], 2); ?></p>
+                    <p><b>Brand:</b> <?php echo $row['Product_brand']; ?></p>
+                    <p><b>Description:</b> <?php echo $row['Product_desc']; ?></p>
+                    <p><b>Quantity:</b> <span id="quantity-<?php echo $row['Product_id']; ?>"><?php echo $row['Product_quantity']; ?></span></p>
+                </div>
+                <button class="edit-btn" onclick="editProduct(<?php echo $row['Product_id']; ?>)">Edit</button>
+            </div>
+        <?php endwhile; ?>
+        </div>
     </div>
     
     <div class="settings-content" id="settings-content" style="display: none;">
