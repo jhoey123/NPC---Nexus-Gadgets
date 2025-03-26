@@ -3,9 +3,9 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Mar 20, 2025 at 12:47 PM
+-- Generation Time: Mar 26, 2025 at 01:18 PM
 -- Server version: 10.4.32-MariaDB
--- PHP Version: 8.2.12
+-- PHP Version: 8.0.30
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
@@ -88,15 +88,6 @@ CREATE TABLE `products` (
   `Product_image_path` text NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
---
--- Dumping data for table `products`
---
-
-INSERT INTO `products` (`Product_id`, `Product_name`, `Product_brand`, `Product_desc`, `Product_quantity`, `Product_price`, `Category_id`, `Barcode_id`, `Product_image_name`, `Product_image_path`) VALUES
-(4, 'Keyboard Pro max 200', 'ZamnZong', 'its a keyboard', 10, 250.00, 4, '123123123123', '', ''),
-(5, 'Monitor pro max', 'Appol', 'Monmitor', 100, 250.00, 5, '56345234234', '', ''),
-(8, 'Keyboards22', 'Keyboards22', 'Keyboards22', 10, 99.00, 4, '12446345234', '', '');
-
 -- --------------------------------------------------------
 
 --
@@ -137,8 +128,8 @@ CREATE TABLE `users` (
 
 INSERT INTO `users` (`user_id`, `username`, `password`, `email`, `rank_id`) VALUES
 (1, 'admin', '$2y$10$h1xrhJ3w.16omaoPahNMeeyXQe2XhV77Q8OElp0uiBSc.mwohjhKu', 'admin@admin.com', 1),
-(2, 'user', '$2y$10$C71y3VPDyOfI1i0gS4FX2OreBFQsCA1n66sbHF1J/HAXQPG.fTguO', 'user@user.com', 2),
-(5, 'admin2', 'admin2', 'admin2@admin.com', 1);
+(2, 'user1', '$2y$10$2EJKgX5ZDs4Mwt.0o8pQWep2E5J.GbgJvYTCTf6Bs4WxR//ZtBd6i', 'user@user.com', 2),
+(5, 'admin2', '$2y$10$Nznja68vA0W7iO0/KcpfgeLQIDVCsqK3dQcU.Fpeq6jk4uxo1PORO', 'admin2@admin.com', 1);
 
 --
 -- Indexes for dumped tables
@@ -196,7 +187,7 @@ ALTER TABLE `employees`
 -- AUTO_INCREMENT for table `products`
 --
 ALTER TABLE `products`
-  MODIFY `Product_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
+  MODIFY `Product_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=39;
 
 --
 -- AUTO_INCREMENT for table `ranks`
