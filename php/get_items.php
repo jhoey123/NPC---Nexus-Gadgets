@@ -3,7 +3,6 @@ include "conn_db.php";
 
 $category = isset($_GET['category']) ? $_GET['category'] : 'Keyboards';
 
-// If "All" is selected, fetch all products without filtering by category
 if ($category === 'All') {
     $sql = "SELECT c.Category_name, c.Category_desc, p.Product_name, p.Product_brand, p.Product_price, p.Product_image_path, p.Product_quantity 
             FROM categories c 

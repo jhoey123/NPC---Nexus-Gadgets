@@ -2,7 +2,7 @@
 
 session_start();
 if (!isset($_SESSION['user'])) {
-    header("Location: index.php"); // Redirect to login page if not logged in
+    header("Location: index.php");
     exit();
 } else {
     include "php/conn_db.php";
@@ -17,7 +17,7 @@ if (!isset($_SESSION['user'])) {
     if ($user_rank) {
         $rank = $user_rank['rank_name'];
         if ($rank === "staff") {
-            header("Location: defaultpanel.php"); // Redirect to default panel if not owner
+            header("Location: defaultpanel.php");
             exit();
         }
     } else {
@@ -32,6 +32,7 @@ if (!isset($_SESSION['user'])) {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="bootstrap/css/bootstrap.min.css">
     <link rel="stylesheet" href="css/adminpanel.css">
     <title>NexusGadgets POS</title>
 </head>
@@ -110,9 +111,9 @@ if (!isset($_SESSION['user'])) {
                             setTimeout(() => {
                                 const newItems = document.querySelectorAll('.item-card');
                                 newItems.forEach(item => {
-                                    item.classList.remove('hidden'); // Remove hidden class after delay
+                                    item.classList.remove('hidden');
                                 });
-                            }, 100); // Shorter delay to allow transition to complete
+                            }, 100);
                         });
                 });
             </script>
@@ -176,12 +177,60 @@ if (!isset($_SESSION['user'])) {
     </div>
 
     
-    <div class="upload-content" id="upload-content" style="display: none;">
-        <h1>Product Upload</h1>
+    <div class="upload-content" id="upload-content" style="display: none;">    
+        <div class="header">
+            <div class="header-titles">
+                <div class="items-label"><p><b>UPLOAD</b></p></div>
+                <h1>New Product</h1>
+            </div>
+        </div>
+        <div class="upload-container">
+            <form action="php/upload.php" method="POST" enctype="multipart/form-data" class="upload-form">
+                <div class="form-group">
+                    <label for="Product_Name">Product Name:</label>
+                    <input type="text" id="Product_Name" name="Product_Name" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="Product_Brand">Product Brand:</label>
+                    <input type="text" id="Product_Brand" name="Product_Brand" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="Product_Desc">Product Description:</label>
+                    <textarea id="Product_Desc" name="Product_Desc" required></textarea>
+                </div>
+                
+                <div class="form-group">
+                    <label for="Product_Price">Price:</label>
+                    <input type="number" id="Product_Price" name="Product_Price" step="0.01" required>
+                </div>
 
-        <form action="upload.php" method="post">
-            <input type="text">
-        </form>
+                <div class="form-group">
+                    <label for="Product_Quantity">Quantity:</label>
+                    <input type="number" id="Product_Quantity" name="Product_Quantity" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="Category_id">Category:</label>
+                    <select id="Category_id" name="Category_id" required>
+                        <option value="">Select a category</option>
+                        <option value="1">Laptops</option>
+                        <option value="2">Smartphones</option>
+                        <option value="3">Mouse</option>
+                        <option value="4">Keyboards</option>
+                        <option value="5">Monitors</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label for="filetoUpload">Product Image:</label>
+                    <input type="file" id="filetoUpload" name="filetoUpload" accept="image/*" required>
+                </div>
+
+                <button type="submit" name="submit" class="upload-btn">Upload Product</button>
+            </form>
+        </div>
     </div>
 
     
@@ -235,9 +284,18 @@ if (!isset($_SESSION['user'])) {
 
 
     <script>
-        let cart = [];
+        let cart = JSON.parse(localStorage.getItem('cart')) || [];
         const serviceChargePercentage = 0.20;
         const taxRate = 0.05;
+
+        // Initialize cart on page load
+        document.addEventListener('DOMContentLoaded', () => {
+            updateCart();
+        });
+
+        function saveCart() {
+            localStorage.setItem('cart', JSON.stringify(cart));
+        }
 
         function addToCart(name, price, image, maxQuantity) {
             const existingItem = cart.find(item => item.name === name && item.price === price);
@@ -258,6 +316,7 @@ if (!isset($_SESSION['user'])) {
                 });
             }
             
+            saveCart();
             updateCart();
         }
 
@@ -268,17 +327,20 @@ if (!isset($_SESSION['user'])) {
                 cart.splice(index, 1);
             }
             
+            saveCart();
             updateCart();
         }
 
         function removeItemFromCart(index) {
-            cart.splice(index, 1); // Remove the item at the specified index
-            updateCart(); // Update the cart display
+            cart.splice(index, 1);
+            saveCart();
+            updateCart();
         }
 
         function removeAllFromCart() {
-            cart = []; // Clear the cart array
-            updateCart(); // Update the cart display
+            cart = [];
+            saveCart();
+            updateCart();
         }
 
         function updateCart() {
@@ -326,7 +388,7 @@ if (!isset($_SESSION['user'])) {
             document.getElementById('tax').textContent = `₱${tax.toFixed(2)}`;
             document.getElementById('total').textContent = `₱${total.toFixed(2)}`;
             
-            // If the cart is empty, show a message
+            
             if (cart.length === 0) {
                 cartItemsContainer.innerHTML = '<div class="empty-cart">Your cart is empty.</div>';
             }
@@ -335,7 +397,7 @@ if (!isset($_SESSION['user'])) {
         function filterItems(category) {
             const items = document.querySelectorAll('.item-card');
             items.forEach(item => {
-                item.classList.add('hidden'); // Add hidden class for smooth transition
+                item.classList.add('hidden');
             });
 
             // Fetch new items based on the selected category
@@ -346,24 +408,30 @@ if (!isset($_SESSION['user'])) {
                     setTimeout(() => {
                         const newItems = document.querySelectorAll('.item-card');
                         newItems.forEach(item => {
-                            item.classList.remove('hidden'); // Remove hidden class after delay
+                            item.classList.remove('hidden');
                         });
-                    }, 100); // Shorter delay to allow transition to complete
+                    }, 100);
                 });
 
-            // Update the URL to reflect the selected category
+            
             const url = new URL(window.location.href);
             url.searchParams.set('category', category);
             window.history.pushState({}, '', url);
         }
 
         document.addEventListener('DOMContentLoaded', () => {
+            const urlParams = new URLSearchParams(window.location.search);
+            const section = urlParams.get('section');
+            if (section) {
+                switchView(section);
+            }
+
             const items = document.querySelectorAll('.item-card');
             setTimeout(() => {
                 items.forEach(item => {
-                    item.classList.remove('hidden'); // Remove hidden class after delay
+                    item.classList.remove('hidden');
                 });
-            }, 100); // Shorter delay to allow transition to complete
+            }, 100);
         });
 
         function searchItems() {
@@ -381,8 +449,55 @@ if (!isset($_SESSION['user'])) {
         }
 
         function scanBarcode() {
-            const barcode = document.getElementById('barcode-input').value;
-            console.log('Scanned barcode:', barcode);
+            const barcodeInput = document.getElementById('barcode-input');
+            const barcode = barcodeInput.value;
+
+           
+            if (barcode.length === 12) {
+                const formData = new FormData();
+                formData.append('barcode', barcode);
+                formData.append('submit', true);
+
+                fetch('php/barcode_scan.php', {
+                    method: 'POST',
+                    body: formData
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data && data.Product_Name) {
+                        addToCart(
+                            data.Product_Name, 
+                            parseFloat(data.Product_Price),
+                            data.Product_image_path,
+                            parseInt(data.Product_Quantity)
+                        );
+                        
+                        const barcodeScanner = document.getElementById('barcode-scanner');
+                        barcodeScanner.classList.add('success');
+                        setTimeout(() => {
+                            barcodeScanner.classList.remove('success');
+                        }, 1000);
+                    } else {
+                        const barcodeScanner = document.getElementById('barcode-scanner');
+                        barcodeScanner.classList.add('error');
+                        setTimeout(() => {
+                            barcodeScanner.classList.remove('error');
+                        }, 1000);
+                    }
+                    
+                    barcodeInput.value = '';
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    const barcodeScanner = document.getElementById('barcode-scanner');
+                    barcodeScanner.classList.add('error');
+                    setTimeout(() => {
+                        barcodeScanner.classList.remove('error');
+                    }, 1000);
+                    
+                    barcodeInput.value = '';
+                });
+            }
         }
 
         function toggleBarcodeInput() {
@@ -402,7 +517,6 @@ if (!isset($_SESSION['user'])) {
         }
 
         function switchView(view) {
-            // Hide all content sections
             document.getElementById('dashboard-content').style.display = 'none';
             document.getElementById('upload-content').style.display = 'none';
             document.getElementById('products-content').style.display = 'none';
@@ -410,21 +524,35 @@ if (!isset($_SESSION['user'])) {
             document.getElementById('settings-content').style.display = 'none';
             document.getElementById('logout-content').style.display = 'none';
 
-            // Show the selected content section
             document.getElementById(`${view}-content`).style.display = 'block';
 
-            // Remove active class from all sidebar icons
             document.querySelectorAll('.sidebar-icon').forEach(icon => {
                 icon.classList.remove('active');
             });
 
-            // Add active class to the selected sidebar icon
             document.getElementById(`${view}-button`).classList.add('active');
 
-            // Update the URL to remove the category parameter
             const url = new URL(window.location.href);
+            const currentSuccess = url.searchParams.get('success');
             url.searchParams.delete('category');
+            url.searchParams.delete('error');
+            
+            if (view === 'upload') {
+                if (currentSuccess === 'upload_successful') {
+                    url.searchParams.set('success', 'upload_successful');
+                }
+            } else {
+                url.searchParams.delete('success');
+            }
+            
+            if (view !== 'dashboard') {
+                url.searchParams.set('section', view);
+            } else {
+                url.searchParams.delete('section');
+            }
             window.history.pushState({}, '', url);
+
+            window.scrollTo(0, 0);
         }
 
         
@@ -452,16 +580,15 @@ if (!isset($_SESSION['user'])) {
         document.getElementById('payment-modal').style.display = 'flex';
     }
 
-    // Close the payment modal
     function closePaymentModal() {
         document.getElementById('payment-modal').style.display = 'none';
     }
 
-    // Process payment based on the selected method
+
     function processPayment(method) {
         closePaymentModal();
         alert(`You selected to pay with ${method}.`);
-        // Add further logic here to handle payment processing
+        
     }
 	
     </script>

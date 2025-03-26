@@ -1,10 +1,11 @@
 <?php 
 session_start();
+include "barcode_generator.php";
 
 if (isset($_POST['submit'])) {
     if (isset($_FILES['filetoUpload']) && $_FILES['filetoUpload']['error'] == 0) {
 
-        include "db_con.php";
+        include "conn_db.php";
         
         $image_name = $_FILES['filetoUpload']['name'];
         $image_tmp_name = $_FILES['filetoUpload']['tmp_name'];
@@ -19,14 +20,14 @@ if (isset($_POST['submit'])) {
 
         
         if ($image_size > 5 * 1024 * 1024) {
-            header("Location: ../product_upload.php?error=file_too_large");
+            header("Location: ../adminpanel.php?section=upload&error=file_too_large");
             exit();
         }
 
 
         $allowed_types = ['image/jpeg', 'image/png', 'image/gif', 'image/jpg'];
         if (!in_array($image_type, $allowed_types)) {
-            header("Location: ../product_upload.php?error=invalid_file_type");
+            header("Location: ../adminpanel.php?section=upload&error=invalid_file_type");
             exit();
         }
 
@@ -34,6 +35,7 @@ if (isset($_POST['submit'])) {
         $upload_dir = '../uploads/';
         $new_image_name = uniqid() . '-' . basename($image_name);
         $upload_path = $upload_dir . $new_image_name;
+        $db_image_path = 'uploads/' . $new_image_name;
 
 
         if (!is_dir($upload_dir)) {
@@ -49,24 +51,35 @@ if (isset($_POST['submit'])) {
         $stmt->close();
 
         if ($count > 0) {
-            header("Location: ../product_upload.php?error=product_exists");
+            header("Location: ../adminpanel.php?section=upload&error=product_exists");
             exit();
         }
 
         if (move_uploaded_file($image_tmp_name, $upload_path)) {
             $stmt = $conn->prepare("INSERT INTO products (Product_name, Product_brand, Product_desc, Product_quantity, Product_price, Category_id, Product_image_name, Product_image_path) VALUES (?, ?, ?, ?, ?, ?, ?, ?)");
-            $stmt->bind_param("sssidiss", $product_name, $product_brand, $product_desc, $product_quantity, $product_price, $product_category, $new_image_name, $upload_path);
-            $stmt->execute();
-            $stmt->close();
+            $stmt->bind_param("sssidiss", $product_name, $product_brand, $product_desc, $product_quantity, $product_price, $product_category, $new_image_name, $db_image_path);
+            if($stmt->execute()) {
+                $product_id = $conn->insert_id;
+                $stmt->close();
 
-            header("Location: ../product_upload.php?success=upload_successful");
-            exit();
+
+                $barcode = barcodeGenerator($product_id);
+
+
+                $update_stmt = $conn->prepare("UPDATE products SET Barcode_id = ? WHERE Product_id = ?");
+                $update_stmt->bind_param("ii", $barcode, $product_id);
+                $update_stmt->execute();
+                $update_stmt->close();
+
+                header("Location: ../adminpanel.php?section=upload&success=upload_successful");
+                exit();
+            }
         } else {
-            header("Location: ../product_upload.php?error=upload_failed");
+            header("Location: ../adminpanel.php?section=upload&error=upload_failed");
             exit();
         }
     } else {
-        header("Location: ../product_upload.php?error=no_file_uploaded");
+        header("Location: ../adminpanel.php?section=upload&error=no_file_uploaded");
         exit();
     }
 }

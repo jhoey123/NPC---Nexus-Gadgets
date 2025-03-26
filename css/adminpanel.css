@@ -18,6 +18,7 @@ body {
     min-height: 100vh;
 }
 
+/* Sidebar things start */
 .sidebar {
     width: 80px;
     background: linear-gradient(180deg, #4b4b4b 10%, #000000 90%);
@@ -64,8 +65,8 @@ body {
 }
 
 .sidebar-icon.logo img {
-    width: 50px;
-    height: 50px;
+    width: 70px;
+    height: 70px;
     border-radius: 50%;
     margin: 0 auto;
     display: block;
@@ -141,7 +142,9 @@ body {
     display: inline;
     transition: margin-left 0.5s;
 }
+/* sidebar things end */
 
+/* Dashboard start */
 .main-content {
     flex: 1;
     color: #2A1B3D;
@@ -274,7 +277,7 @@ body {
 
 .barcode-scanner.expanded .barcode-icon-wrapper {
     margin-left: 0;
-}
+}   
 
 .filter-btn {
     background-color: #44318D;
@@ -313,7 +316,15 @@ body {
 
 .category.active {
     color: #FFFFFF;
-    transition: background-color 0.3s, color 0.3s;
+    background: linear-gradient(190deg, #0d64b6 10%, #2fe0ff 90%);
+    box-shadow: 0 0 15px rgba(47, 224, 255, 0.3);
+    transform: translateY(-2px);
+    transition: all 0.3s ease;
+}
+
+.category:hover {
+    box-shadow: 0 0 10px rgba(47, 224, 255, 0.2);
+        transform: translateY(-1px);
 }
 
 .items-grid {
@@ -644,20 +655,26 @@ body {
     border-radius: 8px;
     text-align: center;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+    width: 300px;
 }
 
 .payment-btn {
-    margin: 10px;
+    width: 100%;
     padding: 10px 20px;
     background: linear-gradient(0deg, #0a3144 10%, #0d64b6 90%);
     color: white;
     border: none;
     border-radius: 5px;
     cursor: pointer;
-    font-size: 16px;
+    font-size: 14px;
     transition: background-color 0.2s;
     position: relative;
-    overflow: hidden;  
+    overflow: hidden;
+    margin: 5px 0;
 }
 
 .payment-btn::after {
@@ -690,4 +707,111 @@ body {
 .close-btn:hover {
     background-color: #a71d2a;
 }
+/* dashboard end */
 
+
+/* Upload start */
+.upload-content {
+    flex: 1;
+    color: #2A1B3D;
+    padding: 20px;
+    padding-left: 100px;
+    transition: margin-left 0.5s;
+    margin-left: 0;
+}
+
+.sidebar:hover ~ .upload-content {
+    margin-left: 130px;
+}
+
+.upload-container {
+    max-width: 600px;
+    margin: 20px auto;
+    background: linear-gradient(180deg, #525252 10%, #161616 90%);
+    padding: 25px;
+    border-radius: 15px;
+    color: #FFFFFF;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+.upload-content .header-titles .items-label {
+    color: #2fe0ff;
+    text-shadow: #ff0000 4px 3px 2px;
+    font-size: 27px;
+    margin-bottom: 5px;
+    font-weight: 500;
+}
+
+.upload-content .header-titles h1 {
+    font-size: 53px;
+    color: #2fe0ff;
+    text-shadow: #ff0000 4px 3px 2px;
+}
+
+.upload-form {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.form-group label {
+    font-size: 14px;
+    color: #FFFFFF;
+}
+
+.form-group input,
+.form-group textarea,
+.form-group select {
+    padding: 8px;
+    border-radius: 8px;
+    background-color: #00395a;
+    color: #FFFFFF;
+    font-size: 14px;
+}
+
+.form-group textarea {
+    min-height: 80px;
+    resize: vertical;
+}
+
+.form-group input[type="file"] {
+    padding: 4px;
+    background-color: transparent;
+    border: none;
+}
+
+.upload-btn {
+    background: linear-gradient(180deg, #0a3144 10%, #0d64b6 90%);
+    color: #FFFFFF;
+    padding: 10px;
+    border: none;
+    border-radius: 8px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: transform 0.2s;
+    margin-top: 12px;
+    position: relative;
+    overflow: hidden;
+}
+
+.upload-btn::after {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(120deg, transparent, rgba(255, 255, 255, 0.6), transparent);
+    transition: left 0.3s;
+}
+
+.upload-btn:hover::after {
+    left: 100%;
+    transition: left 0.5s ease-out;
+}
