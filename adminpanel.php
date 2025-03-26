@@ -274,7 +274,7 @@ if (!isset($_SESSION['user'])) {
 
     
     <div class="products-content" id="products-content" style="display: none;">
-        <h1>Products Section</h1>
+    <div class="header-titles"> <h1>Products Section</h1></div>
     </div>
 
     <div class="inventory-content" id="inventory-content" style="display: none;">
@@ -303,7 +303,7 @@ if (!isset($_SESSION['user'])) {
     </div>
     
     <div class="settings-content" id="settings-content" style="display: none;">
-        <h1>Settings Section</h1>
+    <div class="header-titles"> <h1>Settings Section</h1> </div>
     </div>
 
 
