@@ -177,7 +177,39 @@ if (!isset($_SESSION['user'])) {
     </div>
 
     
-    <div class="upload-content" id="upload-content" style="display: none;">    
+    <div class="upload-content" id="upload-content" style="display: none;">
+        <?php 
+        $error_message = '';
+        $success_message = '';
+        
+        if (isset($_GET['error'])) {
+            switch ($_GET['error'])  {
+                case 'invalid_file_type':
+                    $error_message = 'Only JPG, PNG, and GIF images are allowed.';
+                    break;
+                case 'upload_failed':
+                    $error_message = 'Error uploading the image.';
+                    break;
+                case 'no_file_uploaded':
+                    $error_message = 'No image selected or there was an error during upload.';
+                    break;
+                case 'product_exists':
+                    $error_message = 'Product already exists.';
+                    break;
+                case 'file_too_large':
+                    $error_message = 'File is too large. Maximum file size is 5MB.';
+                    break;
+            }
+        }
+
+        if (isset($_GET['success'])) {
+            switch ($_GET['success']) {
+                case 'upload_successful':
+                    $success_message = "Product uploaded successfully.";
+                    break;
+                }
+            }
+        ?>
         <div class="header">
             <div class="header-titles">
                 <div class="items-label"><p><b>UPLOAD</b></p></div>
@@ -185,6 +217,13 @@ if (!isset($_SESSION['user'])) {
             </div>
         </div>
         <div class="upload-container">
+        <?php 
+            if ($error_message) {
+                echo '<div class="alert alert-danger" role="alert" style="margin-top: 16px">' . $error_message . '</div>';
+            } else if ($success_message) {
+                echo '<div class="alert alert-success" role="alert" style="margin-top: 16px">' . $success_message . '</div>';
+            }
+        ?>
             <form action="php/upload.php" method="POST" enctype="multipart/form-data" class="upload-form">
                 <div class="form-group">
                     <label for="Product_Name">Product Name:</label>
@@ -193,12 +232,12 @@ if (!isset($_SESSION['user'])) {
                 
                 <div class="form-group">
                     <label for="Product_Brand">Product Brand:</label>
-                    <input type="text" id="Product_Brand" name="Product_Brand" required>
+                    <input type="text" id="Product_Brand" name="Product_Brand">
                 </div>
                 
                 <div class="form-group">
                     <label for="Product_Desc">Product Description:</label>
-                    <textarea id="Product_Desc" name="Product_Desc" required></textarea>
+                    <textarea id="Product_Desc" name="Product_Desc"></textarea>
                 </div>
                 
                 <div class="form-group">
@@ -225,7 +264,7 @@ if (!isset($_SESSION['user'])) {
                 
                 <div class="form-group">
                     <label for="filetoUpload">Product Image:</label>
-                    <input type="file" id="filetoUpload" name="filetoUpload" accept="image/*" required>
+                    <input type="file" id="filetoUpload" name="filetoUpload" accept="image/*">
                 </div>
 
                 <button type="submit" name="submit" class="upload-btn">Upload Product</button>
@@ -534,15 +573,19 @@ if (!isset($_SESSION['user'])) {
 
             const url = new URL(window.location.href);
             const currentSuccess = url.searchParams.get('success');
+            const currentError = url.searchParams.get('error');
             url.searchParams.delete('category');
-            url.searchParams.delete('error');
             
             if (view === 'upload') {
                 if (currentSuccess === 'upload_successful') {
                     url.searchParams.set('success', 'upload_successful');
                 }
+                if (currentError) {
+                    url.searchParams.set('error', currentError);
+                }
             } else {
                 url.searchParams.delete('success');
+                url.searchParams.delete('error');
             }
             
             if (view !== 'dashboard') {
