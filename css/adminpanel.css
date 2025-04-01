@@ -854,7 +854,7 @@ body {
     flex: 1;
     grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
     gap: 15px;
-    padding-left: 90px;
+    padding-left: 15px;
     padding-top: 25px;
     
 }

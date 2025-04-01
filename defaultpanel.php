@@ -27,7 +27,6 @@ if (!isset($_SESSION['user'])) {
     <title>Default Panel</title>
 </head>
 <body>
-<h1>THIS IS STAFF PANEL</h1>
 <div class="sidebar">
         <div class="sidebar-icon logo">
             <img src="images/logo4.webp" alt="Logo" width="24" height="24">
