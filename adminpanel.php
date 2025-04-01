@@ -166,7 +166,10 @@ if (!isset($_SESSION['user'])) {
     <!-- Payment Modal -->
     <div id="payment-modal" class="modal" style="display: none;">
     <div class="modal-content">
-        <h2>Select Payment Method</h2>
+    <h2>Review Your Order</h2>
+        <div id="cart-summary-modal">
+            <!-- Cart summary will be dynamically populated here -->
+        </div>
         <button class="payment-btn" onclick="processPayment('cash')">Pay with Cash</button>
         <button class="payment-btn" onclick="processPayment('card')">Pay with Card</button>
         <button class="close-btn" onclick="closePaymentModal()">Cancel</button>
@@ -641,6 +644,33 @@ if (!isset($_SESSION['user'])) {
         }
 
         function showPaymentModal() {
+            const cartSummaryModal = document.getElementById('cart-summary-modal');
+        cartSummaryModal.innerHTML = ''; // Clear previous content
+
+        if (cart.length === 0) {
+            cartSummaryModal.innerHTML = '<p>Your cart is empty.</p>';
+        } else {
+            let summaryHTML = '<ul>';
+            cart.forEach(item => {
+                summaryHTML += `
+                    <li>
+                        <div><b>${item.name}</b></div>
+                        <div>Price: ₱${item.price.toFixed(2)}</div>
+                        <div>Quantity: ${item.quantity}</div>
+                        <div>Subtotal: ₱${(item.price * item.quantity).toFixed(2)}</div>
+                    </li>
+                    <hr>
+                `;
+            });
+            summaryHTML += `
+                <li>
+                    <div><b>Total:</b> ₱${document.getElementById('total').textContent}</div>
+                </li>
+            `;
+            summaryHTML += '</ul>';
+            cartSummaryModal.innerHTML = summaryHTML;
+        }
+
         document.getElementById('payment-modal').style.display = 'flex';
     }
 

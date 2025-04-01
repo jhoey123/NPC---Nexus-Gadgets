@@ -39,10 +39,6 @@ if (!isset($_SESSION['user'])) {
             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg>
             <span class="sidebar-text">Products</span>
         </div>
-        <div class="sidebar-icon" id="inventory-button" onclick="switchView('inventory')">
-        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3h18v18H3z"/><path d="M3 9h18"/><path d="M9 21V9"/></svg>
-        <span class="sidebar-text">Inventory</span>
-    </div>
         <div style="flex: 1;"></div>
         <div class="sidebar-icon" id="settings-button" onclick="switchView('settings')">
             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
@@ -152,7 +148,10 @@ if (!isset($_SESSION['user'])) {
     <!-- Payment Modal -->
     <div id="payment-modal" class="modal" style="display: none;">
     <div class="modal-content">
-        <h2>Select Payment Method</h2>
+    <h2>Review Your Order</h2>
+        <div id="cart-summary-modal">
+            <!-- Cart summary will be dynamically populated here -->
+        </div>
         <button class="payment-btn" onclick="processPayment('cash')">Pay with Cash</button>
         <button class="payment-btn" onclick="processPayment('card')">Pay with Card</button>
         <button class="close-btn" onclick="closePaymentModal()">Cancel</button>
@@ -161,131 +160,9 @@ if (!isset($_SESSION['user'])) {
     </div>
     </div>  
     </div>
-
-    
-    <div class="upload-content" id="upload-content" style="display: none;">
-        <?php 
-        $error_message = '';
-        $success_message = '';
-        
-        if (isset($_GET['error'])) {
-            switch ($_GET['error'])  {
-                case 'invalid_file_type':
-                    $error_message = 'Only JPG, PNG, and GIF images are allowed.';
-                    break;
-                case 'upload_failed':
-                    $error_message = 'Error uploading the image.';
-                    break;
-                case 'no_file_uploaded':
-                    $error_message = 'No image selected or there was an error during upload.';
-                    break;
-                case 'product_exists':
-                    $error_message = 'Product already exists.';
-                    break;
-                case 'file_too_large':
-                    $error_message = 'File is too large. Maximum file size is 5MB.';
-                    break;
-            }
-        }
-
-        if (isset($_GET['success'])) {
-            switch ($_GET['success']) {
-                case 'upload_successful':
-                    $success_message = "Product uploaded successfully.";
-                    break;
-                }
-            }
-        ?>
-        <div class="header">
-            <div class="header-titles">
-                <div class="items-label"><p><b>UPLOAD</b></p></div>
-                <h1>New Product</h1>
-            </div>
-        </div>
-        <div class="upload-container">
-        <?php 
-            if ($error_message) {
-                echo '<div class="alert alert-danger" role="alert" style="margin-top: 16px">' . $error_message . '</div>';
-            } else if ($success_message) {
-                echo '<div class="alert alert-success" role="alert" style="margin-top: 16px">' . $success_message . '</div>';
-            }
-        ?>
-            <form action="php/upload.php" method="POST" enctype="multipart/form-data" class="upload-form">
-                <div class="form-group">
-                    <label for="Product_Name">Product Name:</label>
-                    <input type="text" id="Product_Name" name="Product_Name" required>
-                </div>
-                
-                <div class="form-group">
-                    <label for="Product_Brand">Product Brand:</label>
-                    <input type="text" id="Product_Brand" name="Product_Brand">
-                </div>
-                
-                <div class="form-group">
-                    <label for="Product_Desc">Product Description:</label>
-                    <textarea id="Product_Desc" name="Product_Desc"></textarea>
-                </div>
-                
-                <div class="form-group">
-                    <label for="Product_Price">Price:</label>
-                    <input type="number" id="Product_Price" name="Product_Price" step="0.01" required>
-                </div>
-
-                <div class="form-group">
-                    <label for="Product_Quantity">Quantity:</label>
-                    <input type="number" id="Product_Quantity" name="Product_Quantity" required>
-                </div>
-                
-                <div class="form-group">
-                    <label for="Category_id">Category:</label>
-                    <select id="Category_id" name="Category_id" required>
-                        <option value="">Select a category</option>
-                        <option value="1">Laptops</option>
-                        <option value="2">Smartphones</option>
-                        <option value="3">Mouse</option>
-                        <option value="4">Keyboards</option>
-                        <option value="5">Monitors</option>
-                    </select>
-                </div>
-                
-                <div class="form-group">
-                    <label for="filetoUpload">Product Image:</label>
-                    <input type="file" id="filetoUpload" name="filetoUpload" accept="image/*">
-                </div>
-
-                <button type="submit" name="submit" class="upload-btn">Upload Product</button>
-            </form>
-        </div>
-    </div>
-
     
     <div class="products-content" id="products-content" style="display: none;">
     <div class="header-titles"> <h1>Products Section</h1></div>
-    </div>
-
-    <div class="inventory-content" id="inventory-content" style="display: none;">
-    <div class="header-titles"> <h1>Inventory Section</h1> </div>
-        <div class="in-items-grid" id="in-items-grid">       
-        <?php
-        include "php/conn_db.php"; // Include database connection
-        
-        $query = "SELECT * FROM products";
-        $result = $conn->query($query);
-        
-        while ($row = $result->fetch_assoc()): ?>
-            <div class="item-card" $data-id="<?php echo $row['Product_id']; ?>">
-                <img src="<?php echo $row['Product_image_path']; ?>" alt="<?php echo $row['Product_name']; ?>" class="item-image">
-                <div class="item-details">
-                    <h3><?php echo $row['Product_name']; ?></h3>
-                    <p><b>Price:</b> ₱<?php echo number_format($row['Product_price'], 2); ?></p>
-                    <p><b>Brand:</b> <?php echo $row['Product_brand']; ?></p>
-                    <p><b>Description:</b> <?php echo $row['Product_desc']; ?></p>
-                    <p><b>Quantity:</b> <span id="quantity-<?php echo $row['Product_id']; ?>"><?php echo $row['Product_quantity']; ?></span></p>
-                </div>
-                <button class="edit-btn" onclick="editProduct(<?php echo $row['Product_id']; ?>)">Edit</button>
-            </div>
-        <?php endwhile; ?>
-        </div>
     </div>
     
     <div class="settings-content" id="settings-content" style="display: none;">
@@ -627,6 +504,33 @@ if (!isset($_SESSION['user'])) {
         }
 
         function showPaymentModal() {
+            const cartSummaryModal = document.getElementById('cart-summary-modal');
+        cartSummaryModal.innerHTML = ''; // Clear previous content
+
+        if (cart.length === 0) {
+            cartSummaryModal.innerHTML = '<p>Your cart is empty.</p>';
+        } else {
+            let summaryHTML = '<ul>';
+            cart.forEach(item => {
+                summaryHTML += `
+                    <li>
+                        <div><b>${item.name}</b></div>
+                        <div>Price: ₱${item.price.toFixed(2)}</div>
+                        <div>Quantity: ${item.quantity}</div>
+                        <div>Subtotal: ₱${(item.price * item.quantity).toFixed(2)}</div>
+                    </li>
+                    <hr>
+                `;
+            });
+            summaryHTML += `
+                <li>
+                    <div><b>Total:</b> ₱${document.getElementById('total').textContent}</div>
+                </li>
+            `;
+            summaryHTML += '</ul>';
+            cartSummaryModal.innerHTML = summaryHTML;
+        }
+
         document.getElementById('payment-modal').style.display = 'flex';
     }
 
