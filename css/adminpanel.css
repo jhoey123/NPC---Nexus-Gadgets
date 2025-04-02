@@ -331,7 +331,7 @@ body {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
     gap: 20px;
-    padding-right: 420px;
+    padding-right: 42px;
 }
 
 .item-card {
@@ -560,12 +560,12 @@ body {
 }
 
 .add-btn {
-    width: 100%;
+    width: 85%;
     height: 45px;
     border-radius: 8px;
     background: linear-gradient(180deg, #0a3144 10%, #0d64b6 90%);
     color: #FFFFFF;
-    border: none;
+    border: 1px linear-gradient(90deg, #3b3b3b 10%, #ffffff 90%);
     cursor: pointer;
     display: flex;
     align-items: center;
@@ -694,25 +694,17 @@ body {
     text-align: center;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
     display: flex;
-    flex-direction: column;
+    flex-wrap: wrap;
     align-items: center;
     gap: 10px;
     width: 400px;
+    justify-content: space-between;
 }
 
 .payment-btn {
-    width: 100%;
-    padding: 10px 20px;
     background: linear-gradient(0deg, #0a3144 10%, #0d64b6 90%);
     color: white;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    font-size: 14px;
     transition: background-color 0.2s;
-    position: relative;
-    overflow: hidden;
-    margin: 5px 0;
 }
 
 .payment-btn::after {
@@ -723,27 +715,37 @@ body {
     width: 100%;
     height: 100%;
     background: linear-gradient(120deg, transparent, rgba(255, 255, 255, 0.6), transparent);
-    transition: left 0.3s;
+    transition: left 0.2s;
 }
 
 .payment-btn:hover::after {
     left: 100%;
-    transition: left 0.5s ease-out;
+    transition: left 0.3s ease-out;
 }
 
 .close-btn {
     margin-top: 20px;
-    padding: 10px 20px;
-    background-color: #dc3545;
+    background: linear-gradient(180deg, #dc3545 10%, #a81827 90%);;
     color: white;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    font-size: 16px;
 }
 
 .close-btn:hover {
     background-color: #a71d2a;
+}
+
+.payment-btn,
+.close-btn {
+    width: calc(33.33% - 10px); /* Make each button take up equal space with a small gap */
+    padding: 10px 20px;
+    border: 1px linear-gradient(90deg, #3b3b3b 10%, #ffffff 90%);
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+    text-align: center;
+    margin: 5px;
+    box-sizing: border-box;
+    position: relative;
+    overflow: hidden;
 }
 /* payment modal end */
 
