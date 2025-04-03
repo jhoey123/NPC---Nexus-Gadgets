@@ -685,7 +685,7 @@ body {
 }
 
 .modal-content {
-    background: linear-gradient(180deg, #0a3144 10%, #0d64b6 90%);
+    background: linear-gradient(180deg, #013b58 10%, #34526e 90%);
     max-height: 90vh; /* Limit the modal height to 80% of the viewport */
     overflow-y: auto;
     padding: 20px;
