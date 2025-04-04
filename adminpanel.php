@@ -53,6 +53,14 @@ if (!isset($_SESSION['user'])) {
         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3h18v18H3z"/><path d="M3 9h18"/><path d="M9 21V9"/></svg>
         <span class="sidebar-text">Inventory</span>
     </div>
+        <div class="sidebar-icon" id="employee-button" onclick="switchView('employee')">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+            <span class="sidebar-text">Employee</span>
+        </div>
+        <div class="sidebar-icon" id="sales-button" onclick="switchView('sales')">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3h18v18H3z"/><path d="M3 9h18"/><path d="M9 21V9"/></svg>
+            <span class="sidebar-text">Sales</span>
+        </div>
         <div style="flex: 1;"></div>
         <div class="sidebar-icon" id="cart-button" onclick="switchView('cart')">
             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg>
@@ -309,6 +317,12 @@ if (!isset($_SESSION['user'])) {
     <div class="header-titles"> <h1>Settings Section</h1> </div>
     </div>
 
+    <div class="employee-content" id="employee-content" style="display: none;">
+        <div class="header-titles"> <h1>Employee Section</h1> </div>
+    </div>
+    <div class="sales-content" id="sales-content" style="display: none;">
+        <div class="header-titles"> <h1>Sales Section</h1> </div>
+    </div>
 
     <div class="logout-content" id="logout-content" style="display: none;">
         <h1>Logout Section</h1>
@@ -586,6 +600,8 @@ if (!isset($_SESSION['user'])) {
             document.getElementById('cart-content').style.display = 'none';
             document.getElementById('settings-content').style.display = 'none';
             document.getElementById('logout-content').style.display = 'none';
+            document.getElementById('employee-content').style.display = 'none';
+            document.getElementById('sales-content').style.display = 'none';
 
             document.getElementById(`${view}-content`).style.display = 'block';
 
