@@ -49,15 +49,15 @@ if (!isset($_SESSION['user'])) {
             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
             <span class="sidebar-text">Upload</span>
         </div>
-        <div class="sidebar-icon" id="products-button" onclick="switchView('products')">
-            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg>
-            <span class="sidebar-text">Products</span>
-        </div>
         <div class="sidebar-icon" id="inventory-button" onclick="switchView('inventory')">
         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3h18v18H3z"/><path d="M3 9h18"/><path d="M9 21V9"/></svg>
         <span class="sidebar-text">Inventory</span>
     </div>
         <div style="flex: 1;"></div>
+        <div class="sidebar-icon" id="cart-button" onclick="switchView('cart')">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg>
+            <span class="sidebar-text">Cart</span>
+        </div>
         <div class="sidebar-icon" id="settings-button" onclick="switchView('settings')">
             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
             <span class="sidebar-text">Settings</span>
@@ -276,8 +276,8 @@ if (!isset($_SESSION['user'])) {
     </div>
 
     
-    <div class="products-content" id="products-content" style="display: none;">
-    <div class="header-titles"> <h1>Products Section</h1></div>
+    <div class="cart-content" id="cart-content" style="display: none;">
+    <div class="header-titles"> <h1>Cart</h1></div>
     </div>
 
     <div class="inventory-content" id="inventory-content" style="display: none;">
@@ -582,8 +582,8 @@ if (!isset($_SESSION['user'])) {
         function switchView(view) {
             document.getElementById('dashboard-content').style.display = 'none';
             document.getElementById('upload-content').style.display = 'none';
-            document.getElementById('products-content').style.display = 'none';
             document.getElementById('inventory-content').style.display = 'none';
+            document.getElementById('cart-content').style.display = 'none';
             document.getElementById('settings-content').style.display = 'none';
             document.getElementById('logout-content').style.display = 'none';
 
