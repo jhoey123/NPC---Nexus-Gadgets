@@ -168,7 +168,7 @@ if (!isset($_SESSION['user'])) {
             <div>Total</div>
             <div id="total">₱0.00</div>
         </div>
-        <button class="checkout-btn"onclick="showPaymentModal()">Continue</button>
+        <button class="checkout-btn"onclick="switchview('cart')>Continue</button>
         
     </div>
     <!-- Payment Modal -->

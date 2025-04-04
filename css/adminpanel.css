@@ -905,3 +905,22 @@ body {
 }
 
 /* Inventory End */
+
+/* Cart start */
+
+.cart-content {
+    flex: 1;
+    padding: 20px;
+    padding-left: 100px;
+    transition: margin-left 0.5s;
+    margin-left: 0;
+}
+
+
+.sidebar:hover ~ .cart-content {
+    margin-left: 130px;
+}
+
+
+
+/* Cart end */
