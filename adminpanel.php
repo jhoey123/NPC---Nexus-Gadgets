@@ -154,9 +154,6 @@ if (!isset($_SESSION['user'])) {
     <div id="payment-modal" class="modal" style="display: none;">
     <div class="modal-content">
     <h2>Review Your Order</h2>
-        <div id="cart-summary-modal">
-            <!-- Cart summary will be dynamically populated here -->
-        </div>
         <div class="out-btn">
             <button class="payment-btn" onclick="processPayment('cash')">Pay with Cash</button>
         <button class="payment-btn" onclick="processPayment('card')">Pay with Card</button>
@@ -267,27 +264,32 @@ if (!isset($_SESSION['user'])) {
     
     <div class="cart-content" id="cart-content" style="display: none;">
     <div class="header-titles"> <h1>Cart</h1></div>
-        <div class="cart-summary">
-                <div class="cart-row">
-                    <div>Subtotal</div>
-                    <div id="subtotal">₱0.00</div>
-                </div>
-                <div class="cart-row">
-                    <div>Discount</div>
-                    <div id="discount">₱0.00</div>
-                </div>
-                <div class="cart-row">
-                    <div>Service Charge</div>
-                    <div id="service-charge">20%</div>
-                </div>
-                <div class="cart-row">
-                    <div>Tax</div>
-                    <div id="tax">₱0.00</div>
-                </div>
+    <div class="cart-containe">
+            <div class="cart-items-container" id="cart-items-container">
+                <!-- Individual cart items will be dynamically added here -->
             </div>
-            <div class="confirmation-container">
-            <button class="checko-btn" onclick="showPaymentModal()">Checkout</button>
-            <button class="checko-btn" onclick="switchView('dashboard')">Go back</button>
+            <div class="cart-summary">
+                    <div class="cart-row">
+                        <div>Subtotal</div>
+                        <div id="subtotal">₱0.00</div>
+                    </div>
+                    <div class="cart-row">
+                        <div>Discount</div>
+                        <div id="discount">₱0.00</div>
+                    </div>
+                    <div class="cart-row">
+                        <div>Service Charge</div>
+                        <div id="service-charge">20%</div>
+                    </div>
+                    <div class="cart-row">
+                        <div>Tax</div>
+                        <div id="tax">₱0.00</div>
+                    </div>
+                </div>
+                <div class="confirmation-container">
+                <button class="checko-btn" onclick="showPaymentModal()">Checkout</button>
+                <button class="checko-btn" onclick="switchView('dashboard')">Go back</button>
+            </div>
         </div>
     </div>
 
@@ -900,6 +902,55 @@ if (!isset($_SESSION['user'])) {
         document.querySelectorAll('.inventory-category-btn').forEach(btn => {
             btn.classList.toggle('active', btn.textContent.trim() === category);
         });
+    }
+        function updateCart() {
+        const cartItemsContainer = document.getElementById('cart-items-container');
+        cartItemsContainer.innerHTML = ''; // Clear previous items
+    
+        let subtotal = 0;
+    
+        cart.forEach((item, index) => {
+            const itemSubtotal = item.price * item.quantity;
+            subtotal += itemSubtotal;
+    
+            const cartItemElement = document.createElement('div');
+            cartItemElement.className = 'cart-item-card';
+            cartItemElement.innerHTML = `
+                <div class="cart-item-details">
+                    <h3 class="cart-item-name">${item.name}</h3>
+                    <p class="cart-item-price">Price: ₱${item.price.toFixed(2)}</p>
+                    <p class="cart-item-quantity">Amount: ${item.quantity}</p>
+                    <p class="cart-item-subtotal">Subtotal: ₱${itemSubtotal.toFixed(2)}</p>
+                </div>
+                <div class="cart-item-actions">
+                    <button class="qty-btn" onclick="removeFromCart(${index})">-</button>
+                    <button class="qty-btn" onclick="addToCart('${item.name}', ${item.price}, '${item.image}', ${item.maxQuantity})">+</button>
+                    <button class="remove-btn" onclick="removeItemFromCart(${index})">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-x-circle" viewBox="0 0 16 16">
+                            <path d="M8 15A7 7 0 1 0 8 1a7 7 0 0 0 0 14zm0 1A8 8 0 1 1 8 0a8 8 0 0 1 0 16z"/>
+                            <path d="M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708z"/>
+                        </svg>
+                    </button>
+                </div>
+            `;
+    
+            cartItemsContainer.appendChild(cartItemElement);
+        });
+    
+        const discount = 0;
+        const serviceCharge = subtotal * 0.2; // Example: 20% service charge
+        const tax = subtotal * 0.1; // Example: 10% tax
+        const total = subtotal + serviceCharge + tax - discount;
+    
+        document.getElementById('subtotal').textContent = `₱${subtotal.toFixed(2)}`;
+        document.getElementById('discount').textContent = `₱${discount.toFixed(2)}`;
+        document.getElementById('service-charge').textContent = `₱${serviceCharge.toFixed(2)}`;
+        document.getElementById('tax').textContent = `₱${tax.toFixed(2)}`;
+        document.getElementById('total').textContent = `₱${total.toFixed(2)}`;
+    
+        if (cart.length === 0) {
+            cartItemsContainer.innerHTML = '<div class="empty-cart">Your cart is empty.</div>';
+        }
     }
 	
     </script>
