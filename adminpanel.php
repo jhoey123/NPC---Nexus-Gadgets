@@ -867,10 +867,11 @@ if (!isset($_SESSION['user'])) {
 
     function filterInventoryItems(category) {
         const itemsGrid = document.getElementById('in-items-grid');
+        itemsGrid.innerHTML = ''; // Clear the grid content
         itemsGrid.classList.add('hidden'); // Add hidden class for transition effect
 
         setTimeout(() => {
-            fetch(`php/get_inventory_items.php?inventory_category=${category}`)
+            fetch(`php/get_inventory_items.php?inventory_category=${encodeURIComponent(category)}`)
                 .then(response => response.text())
                 .then(data => {
                     itemsGrid.innerHTML = data; // Update the grid content
