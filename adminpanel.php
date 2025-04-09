@@ -57,10 +57,6 @@ if (!isset($_SESSION['user'])) {
             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
             <span class="sidebar-text">Employee</span>
         </div>
-        <div class="sidebar-icon" id="sales-button" onclick="switchView('sales')">
-            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3h18v18H3z"/><path d="M3 9h18"/><path d="M9 21V9"/></svg>
-            <span class="sidebar-text">Sales</span>
-        </div>
         <div style="flex: 1;"></div>
         <div class="sidebar-icon" id="cart-button" onclick="switchView('cart')">
             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg>
@@ -298,31 +294,97 @@ if (!isset($_SESSION['user'])) {
         $result = $conn->query($query);
         
         while ($row = $result->fetch_assoc()): ?>
-            <div class="item-card" $data-id="<?php echo $row['Product_id']; ?>">
+            <div class="item-card" onclick="showInventoryModal(<?php echo htmlspecialchars(json_encode($row)); ?>)">
                 <img src="<?php echo $row['Product_image_path']; ?>" alt="<?php echo $row['Product_name']; ?>" class="item-image">
                 <div class="item-details">
                     <h3><?php echo $row['Product_name']; ?></h3>
                     <p><b>Price:</b> ₱<?php echo number_format($row['Product_price'], 2); ?></p>
-                    <p><b>Brand:</b> <?php echo $row['Product_brand']; ?></p>
-                    <p><b>Description:</b> <?php echo $row['Product_desc']; ?></p>
                     <p><b>Quantity:</b> <span id="quantity-<?php echo $row['Product_id']; ?>"><?php echo $row['Product_quantity']; ?></span></p>
                 </div>
-                <button class="edit-btn" onclick="editProduct(<?php echo $row['Product_id']; ?>)">Edit</button>
             </div>
         <?php endwhile; ?>
         </div>
     </div>
+
+    <div class="inventory-modal" id="inventory-modal">
+        <div class="inventory-modal-content">
+            <h2 id="modal-product-name"></h2>
+            <img id="modal-product-image" src="" alt="Product Image">
+            <p><b>Brand:</b> <span id="modal-product-brand"></span></p>
+            <p><b>Description:</b> <span id="modal-product-desc"></span></p>
+            <p><b>Price:</b> ₱<span id="modal-product-price"></span></p>
+            <p><b>Quantity:</b> <span id="modal-product-quantity"></span></p>
+            <input type="hidden" id="modal-product-id">
+            <div>
+                <button class="edit-modal-btn">Edit</button>
+                <button class="close-modal-btn" onclick="closeInventoryModal()">Close</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function showInventoryModal(product) {
+            document.getElementById('modal-product-name').textContent = product.Product_name;
+            document.getElementById('modal-product-image').src = product.Product_image_path;
+            document.getElementById('modal-product-brand').textContent = product.Product_brand || 'N/A';
+            document.getElementById('modal-product-desc').textContent = product.Product_desc || 'No description available.';
+            document.getElementById('modal-product-price').textContent = parseFloat(product.Product_price).toFixed(2);
+            document.getElementById('modal-product-quantity').textContent = product.Product_quantity;
+
+            document.getElementById('inventory-modal').style.display = 'flex';
+        }
+
+        function closeInventoryModal() {
+            document.getElementById('inventory-modal').style.display = 'none';
+        }
+    </script>
     
     <div class="settings-content" id="settings-content" style="display: none;">
     <div class="header-titles"> <h1>Settings Section</h1> </div>
     </div>
 
     <div class="employee-content" id="employee-content" style="display: none;">
-        <div class="header-titles"> <h1>Employee Section</h1> </div>
+    <div class="header-titles"> <h1>Employee Section</h1> </div>
+    <div class="employee-list">
+        <?php
+        include "php/conn_db.php"; // Include database connection
+
+        $query = "SELECT employee_id, employee_fname, employee_lname, employee_address, employee_dob, role FROM employees";
+        $result = $conn->query($query);
+
+        if ($result->num_rows > 0): ?>
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>First Name</th>
+                        <th>Last Name</th>
+                        <th>Address</th>
+                        <th>Date of Birth</th>
+                        <th>Role</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <?php while ($row = $result->fetch_assoc()): ?>
+                        <tr>
+                            <td><?php echo htmlspecialchars($row['employee_id']); ?></td>
+                            <td><?php echo htmlspecialchars($row['employee_fname']); ?></td>
+                            <td><?php echo htmlspecialchars($row['employee_lname']); ?></td>
+                            <td><?php echo htmlspecialchars($row['employee_address']); ?></td>
+                            <td><?php echo htmlspecialchars($row['employee_dob']); ?></td>
+                            <td><?php echo htmlspecialchars($row['role']); ?></td>
+                        </tr>
+                    <?php endwhile; ?>
+                </tbody>
+            </table>
+        <?php else: ?>
+            <p>No employees found.</p>
+        <?php endif;
+
+        $conn->close();
+        ?>
     </div>
-    <div class="sales-content" id="sales-content" style="display: none;">
-        <div class="header-titles"> <h1>Sales Section</h1> </div>
-    </div>
+</div>
 
     <div class="logout-content" id="logout-content" style="display: none;">
         <h1>Logout Section</h1>
@@ -358,7 +420,6 @@ if (!isset($_SESSION['user'])) {
     });
     </script>
 	
-
 
     <script>
         let cart = JSON.parse(localStorage.getItem('cart')) || [];
@@ -446,7 +507,7 @@ if (!isset($_SESSION['user'])) {
                         <button class="remove-btn" onclick="removeItemFromCart(${index})">
                             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-x-circle" viewBox="0 0 16 16">
                                 <path d="M8 15A7 7 0 1 0 8 1a7 7 0 0 0 0 14zm0 1A8 8 0 1 1 8 0a8 8 0 0 1 0 16z"/>
-                                <path d="M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708z"/>
+                                <path d="M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708z"/>
                             </svg>
                         </button>
                     </div>
@@ -601,7 +662,6 @@ if (!isset($_SESSION['user'])) {
             document.getElementById('settings-content').style.display = 'none';
             document.getElementById('logout-content').style.display = 'none';
             document.getElementById('employee-content').style.display = 'none';
-            document.getElementById('sales-content').style.display = 'none';
 
             document.getElementById(`${view}-content`).style.display = 'block';
 
@@ -699,6 +759,21 @@ if (!isset($_SESSION['user'])) {
         closePaymentModal();
         alert(`You selected to pay with ${method}.`);
         
+    }
+
+    function showInventoryModal(product) {
+        document.getElementById('modal-product-name').textContent = product.Product_name;
+        document.getElementById('modal-product-image').src = product.Product_image_path;
+        document.getElementById('modal-product-brand').textContent = product.Product_brand || 'N/A';
+        document.getElementById('modal-product-desc').textContent = product.Product_desc || 'No description available.';
+        document.getElementById('modal-product-price').textContent = parseFloat(product.Product_price).toFixed(2);
+        document.getElementById('modal-product-quantity').textContent = product.Product_quantity;
+
+        document.getElementById('inventory-modal').style.display = 'flex';
+    }
+
+    function closeInventoryModal() {
+        document.getElementById('inventory-modal').style.display = 'none';
     }
 	
     </script>

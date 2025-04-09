@@ -16,6 +16,7 @@ body {
     background-attachment: fixed;
     display: flex;
     min-height: 100vh;
+    cursor: default;
 }
 
 /* Sidebar things start */
@@ -162,6 +163,7 @@ body {
     justify-content: space-between;
     align-items: center;
     margin-bottom: 20px;
+    cursor: default;
 }
 
 .header-titles {
@@ -347,6 +349,7 @@ body {
     width: 220px;
     margin: 10px;
     opacity: 1;
+    cursor: pointer;
 }
 
 .item-card.hidden {
@@ -460,6 +463,7 @@ body {
     display: flex;
     align-items: center;
     width: 75%;
+    cursor: default;
 }
 
 .cart-item-details {
@@ -515,6 +519,7 @@ body {
     border-top: 1px solid #44318D;
     padding-top: 20px;
     font-size: 18px;   
+    cursor: default;
 }
 
 .cart-row {
@@ -699,12 +704,14 @@ body {
     gap: 10px;
     width: 400px;
     justify-content: space-between;
+    cursor: default;
 }
 
 .payment-btn {
     background: linear-gradient(0deg, #0a3144 10%, #0d64b6 90%);
     color: white;
     transition: background-color 0.2s;
+    cursor: pointer;
 }
 
 .payment-btn::after {
@@ -727,6 +734,7 @@ body {
     margin-top: 20px;
     background: linear-gradient(180deg, #dc3545 10%, #a81827 90%);;
     color: white;
+    cursor: pointer;
 }
 
 .close-btn:hover {
@@ -750,6 +758,7 @@ body {
 /* payment modal end */
 
 /* DASHBOARD end */
+
 
 
 
@@ -863,6 +872,7 @@ body {
 
 
 
+
 /* Inventory Start */
 
 .inventory-content {
@@ -904,4 +914,128 @@ body {
     
 }
 
+/* Inventory Modal Start */
+.inventory-modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.8); /* Darker overlay for better focus */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+    display: none;
+}
+
+.inventory-modal-content {
+    background: linear-gradient(180deg, #0a3144 10%, #161616 90%);
+    color: #FFFFFF;
+    border-radius: 15px;
+    padding: 25px;
+    width: 450px;
+    max-height: 85vh;
+    overflow-y: auto;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.inventory-modal-content h2 {
+    font-size: 24px;
+    font-weight: bold;
+    color: #2fe0ff;
+    text-shadow: #ff0000 2px 2px 2px;
+    margin-bottom: 20px;
+}
+
+.inventory-modal-content img {
+    width: 80%;
+    height: auto;
+    border-radius: 10px;
+    margin-bottom: 20px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+}
+
+.inventory-modal-content p {
+    font-size: 16px;
+    margin: 10px 0;
+    color: #d1d1d1;
+    cursor: default;
+}
+
+.close-modal-btn {
+    background: linear-gradient(180deg, #44318D 10%, #2A1B3D 90%);
+    color: white;
+    border: none;
+    border-radius: 8px;
+    padding: 12px 25px;
+    cursor: pointer;
+    font-size: 16px;
+    margin-top: 20px;
+    transition: background-color 0.3s, transform 0.2s;
+}
+
+.close-modal-btn:hover {
+    background-color: #2A1B3D;
+    transform: scale(1.05);
+}
+
+.inventory-modal-content .edit-modal-btn {
+    background: linear-gradient(180deg, #0d64b6 10%, #2fe0ff 90%);
+    color: white;
+    border: none;
+    border-radius: 8px;
+    padding: 12px 25px;
+    cursor: pointer;
+    font-size: 16px;
+    margin-top: 20px;
+    margin-right: 10px;
+    transition: background-color 0.3s, transform 0.2s;
+}
+
+.inventory-modal-content .edit-modal-btn:hover {
+    background-color: #0a3144;
+    transform: scale(1.05);
+}
+
+#edit-modal {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.8);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
+
+#edit-modal .inventory-modal-content {
+    background: linear-gradient(180deg, #0a3144 10%, #161616 90%);
+    color: #FFFFFF;
+    border-radius: 15px;
+    padding: 25px;
+    width: 450px;
+    max-height: 85vh;
+    overflow-y: auto;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+/* Inventory Modal End */
+
 /* Inventory End */
+
+/* Employee Section Start */
+
+
+
+/* Employee Section End */
