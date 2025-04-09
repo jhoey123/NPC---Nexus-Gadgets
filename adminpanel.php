@@ -866,9 +866,31 @@ if (!isset($_SESSION['user'])) {
     });
 
     function filterInventoryItems(category) {
+        const itemsGrid = document.getElementById('in-items-grid');
+        itemsGrid.classList.add('hidden'); // Add hidden class for transition effect
+
+        setTimeout(() => {
+            fetch(`php/get_inventory_items.php?inventory_category=${category}`)
+                .then(response => response.text())
+                .then(data => {
+                    itemsGrid.innerHTML = data; // Update the grid content
+                    itemsGrid.classList.remove('hidden'); // Remove hidden class after update
+                })
+                .catch(error => console.error('Error fetching inventory items:', error));
+        }, 300); // Wait for the transition to complete
+
+        // Highlight the selected category
+        document.querySelectorAll('.inventory-category-btn').forEach(btn => {
+            if (btn.textContent.trim() === category) {
+                btn.classList.add('active');
+            } else {
+                btn.classList.remove('active');
+            }
+        });
+
         const url = new URL(window.location.href);
         url.searchParams.set('inventory_category', category);
-        window.location.href = url.toString();
+        window.history.pushState({}, '', url); // Update the URL without reloading
     }
 	
     </script>
