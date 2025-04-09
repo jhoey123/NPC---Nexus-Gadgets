@@ -1175,8 +1175,114 @@ body {
 
 /* Employee Section Start */
 
+.employee-content {
+    flex: 1;
+    padding: 20px;
+    padding-left: 100px;
+    transition: margin-left 0.5s;
+    margin-left: 0;
+}
 
+.sidebar:hover ~ .employee-content {
+    margin-left: 130px;
+}
 
+.employee-list {
+    margin-top: 20px;
+    background: linear-gradient(180deg, #525252 10%, #161616 90%);
+    padding: 25px;
+    border-radius: 15px;
+    color: #FFFFFF;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+.employee-list table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+}
+
+.employee-list th, .employee-list td {
+    padding: 10px;
+    text-align: left;
+    border-bottom: 1px solid #444;
+    color: #000000; /* Updated text color */
+}
+
+.employee-list th {
+    background: #0a3144;
+    color: #FFFFFF;
+}
+
+.employee-list tr:hover {
+    background: #2A1B3D;
+}
+
+/* Create Account Modal Start */
+.create-account-modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.8);
+    display: none;
+    justify-content: center;
+    align-items: center;
+    z-index: 1001;
+}
+
+.create-account-modal .modal-content {
+    background: linear-gradient(180deg, #0a3144 10%, #161616 90%);
+    color: #FFFFFF;
+    border-radius: 15px;
+    padding: 25px;
+    width: 500px;
+    max-height: 85vh;
+    overflow-y: auto;
+}
+
+.create-account-modal .form-group {
+    margin-bottom: 15px;
+}
+
+.create-account-modal input,
+.create-account-modal select {
+    width: 100%;
+    padding: 8px;
+    border-radius: 5px;
+    border: 1px solid #444;
+    background-color: #00395a;
+    color: #FFFFFF;
+}
+
+.create-account-modal .modal-buttons {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 20px;
+    gap: 20px; /* Add gap between buttons */
+}
+
+.create-account-modal .save-btn,
+.create-account-modal .cancel-btn {
+    padding: 10px 20px;
+    border-radius: 5px;
+    border: none;
+    cursor: pointer;
+    font-size: 16px;
+}
+
+.create-account-modal .save-btn {
+    background: linear-gradient(180deg, #0d64b6 10%, #2fe0ff 90%);
+    color: white;
+}
+
+.create-account-modal .cancel-btn {
+    background: linear-gradient(180deg, #44318D 10%, #2A1B3D 90%);
+    color: white;
+}
+
+/* Create Account Modal End */
 
 /* Employee Section End */
 
@@ -1237,3 +1343,5 @@ transition: left 0.3s;
 left: 100%;
 transition: left 0.5s ease-out;
 }
+
+

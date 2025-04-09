@@ -380,47 +380,95 @@ if (!isset($_SESSION['user'])) {
     </div>
 
     <div class="employee-content" id="employee-content" style="display: none;">
-    <div class="header-titles"> <h1>Employee Section</h1> </div>
-    <div class="employee-list">
-        <?php
-        include "php/conn_db.php"; // Include database connection
+        <div class="header-titles">
+            <h1>Employee Section</h1>
+        </div>
+        <div class="employee-list">
+            <div style="display: flex; justify-content: flex-end; margin-bottom: 10px;">
+                <button class="btn btn-primary" onclick="showCreateAccountModal()">Create Account</button>
+            </div>
+            <?php
+            include "php/conn_db.php"; // Include database connection
 
-        $query = "SELECT employee_id, employee_fname, employee_lname, employee_address, employee_dob, role FROM employees";
-        $result = $conn->query($query);
+            $query = "SELECT u.user_id, u.username, e.employee_lname, r.rank_name
+                      FROM users u 
+                      JOIN employees e ON u.user_id = e.employee_id 
+                      JOIN ranks r ON u.rank_id = r.rank_id";
+            $result = $conn->query($query);
 
-        if ($result->num_rows > 0): ?>
-            <table class="table table-striped">
-                <thead>
-                    <tr>
-                        <th>ID</th>
-                        <th>First Name</th>
-                        <th>Last Name</th>
-                        <th>Address</th>
-                        <th>Date of Birth</th>
-                        <th>Role</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <?php while ($row = $result->fetch_assoc()): ?>
+            if ($result->num_rows > 0): ?>
+                <table class="table table-striped">
+                    <thead>
                         <tr>
-                            <td><?php echo htmlspecialchars($row['employee_id']); ?></td>
-                            <td><?php echo htmlspecialchars($row['employee_fname']); ?></td>
-                            <td><?php echo htmlspecialchars($row['employee_lname']); ?></td>
-                            <td><?php echo htmlspecialchars($row['employee_address']); ?></td>
-                            <td><?php echo htmlspecialchars($row['employee_dob']); ?></td>
-                            <td><?php echo htmlspecialchars($row['role']); ?></td>
+                            <th>ID</th>
+                            <th>Username</th>
+                            <th>Last Name</th>
+                            <th>Role</th>
                         </tr>
-                    <?php endwhile; ?>
-                </tbody>
-            </table>
-        <?php else: ?>
-            <p>No employees found.</p>
-        <?php endif;
+                    </thead>
+                    <tbody>
+                        <?php while ($row = $result->fetch_assoc()): ?>
+                            <tr>
+                                <td><?php echo htmlspecialchars($row['user_id']); ?></td>
+                                <td><?php echo htmlspecialchars($row['username']); ?></td>
+                                <td><?php echo htmlspecialchars($row['employee_lname']); ?></td>
+                                <td><?php echo htmlspecialchars($row['rank_name']); ?></td>
+                            </tr>
+                        <?php endwhile; ?>
+                    </tbody>
+                </table>
+            <?php else: ?>
+                <p>No employees found.</p>
+            <?php endif;
 
-        $conn->close();
-        ?>
+            $conn->close();
+            ?>
+        </div>
     </div>
-</div>
+
+    <!-- Add Create Account Modal -->
+    <div class="create-account-modal" id="create-account-modal" style="display: none;">
+        <div class="modal-content">
+            <h2>Create New Account</h2>
+            <form id="create-account-form">
+                <div class="form-group">
+                    <label for="new-username">Username:</label>
+                    <input type="text" id="new-username" name="username" required>
+                </div>
+                <div class="form-group">
+                    <label for="new-password">Password:</label>
+                    <input type="password" id="new-password" name="password" required>
+                </div>
+                <div class="form-group">
+                    <label for="employee-select">Select Employee:</label>
+                    <select id="employee-select" name="employee_id" required>
+                        <?php
+                        include "php/conn_db.php";
+                        $query = "SELECT employee_id, CONCAT(employee_fname, ' ', employee_lname) as full_name 
+                                 FROM employees 
+                                 WHERE employee_id NOT IN (SELECT user_id FROM users)";
+                        $result = $conn->query($query);
+                        while ($row = $result->fetch_assoc()) {
+                            echo "<option value='" . $row['employee_id'] . "'>" . $row['full_name'] . "</option>";
+                        }
+                        $conn->close();
+                        ?>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="rank-select">Select Rank:</label>
+                    <select id="rank-select" name="rank_id" required>
+                        <option value="2">Staff</option>
+                        <option value="1">Admin</option>
+                    </select>
+                </div>
+                <div class="modal-buttons">
+                    <button type="submit" class="btn btn-primary">Create Account</button>
+                    <button type="button" class="btn btn-secondary" onclick="closeCreateAccountModal()">Cancel</button>
+                </div>
+            </form>
+        </div>
+    </div>
 
     <div class="logout-content" id="logout-content" style="display: none;">
         <h1>Logout Section</h1>
@@ -453,6 +501,39 @@ if (!isset($_SESSION['user'])) {
 
         cartHeader.addEventListener('click', toggleCart);
         dropdownBtn.addEventListener('click', toggleCart);
+    });
+
+    function showCreateAccountModal() {
+        document.getElementById('create-account-modal').style.display = 'flex';
+    }
+
+    function closeCreateAccountModal() {
+        document.getElementById('create-account-modal').style.display = 'none';
+    }
+
+    document.getElementById('create-account-form').addEventListener('submit', function(e) {
+        e.preventDefault();
+        
+        const formData = new FormData(this);
+        
+        fetch('php/create_account.php', {
+            method: 'POST',
+            body: formData
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                alert('Account created successfully');
+                closeCreateAccountModal();
+                location.reload();
+            } else {
+                alert('Error creating account: ' + data.message);
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            alert('Error creating account');
+        });
     });
     </script>
 	
