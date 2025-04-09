@@ -8,7 +8,7 @@
 
       
       if (empty($username) || empty($password)) {
-         header("Location: ../index.php?error=Invalid_credentials");
+         header("Location: ../logintab.php?error=Invalid_credentials");
          exit;
       }
 
@@ -46,24 +46,24 @@
                   header("Location: ../defaultpanel.php");
                   exit;
                } else {
-                  header("Location: ../index.php?error=Invalid_credentials1");
+                  header("Location: ../logintab.php?error=Invalid_credentials");
                   exit;
                }
             } else {
-               header("Location: ../index.php?error=Invalid_credentials2");
+               header("Location: ../logintab.php?error=Invalid_credentials");
                exit;
             }
          } else {
-            header("Location: ../index.php?error=Invalid_credentials3");
+            header("Location: ../logintab.php?error=Invalid_credentials");
             exit;
          }
       } else {
          $conn->close();
-         header("Location: ../index.php?error=Invalid_credentials4");
+         header("Location: ../logintab.php?error=Invalid_credentials");
          exit;
       }
    } else {
-      header("Location: ../index.php?error=login_error");
+      header("Location: ../logintab.php?error=login_error");
       exit;
    }
 ?>

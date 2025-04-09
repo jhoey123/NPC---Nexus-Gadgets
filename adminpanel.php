@@ -827,6 +827,18 @@ fetch('php/history.php', {
     .then(response => response.json())
     .then(data => {
         if (data.success) {
+            // Reduce inventory quantities
+            cart.forEach(item => {
+                const updateFormData = new FormData();
+                updateFormData.append('product_name', item.name);
+                updateFormData.append('quantity_sold', item.quantity);
+
+                fetch('php/update_inventory.php', {
+                    method: 'POST',
+                    body: updateFormData
+                }).catch(error => console.error('Error updating inventory:', error));
+            });
+
             alert(`Transaction successful! Transaction ID: ${transactionId}`);
             removeAllFromCart(); // Clear the cart after successful payment
             closePaymentModal();
@@ -838,7 +850,6 @@ fetch('php/history.php', {
         console.error('Error:', error);
         alert('An error occurred while processing the transaction.');
     });
-
     }
 
     function showInventoryModal(product) {

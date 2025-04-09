@@ -25,6 +25,14 @@ if (isset($_GET['error'])) {
    </head>
    <body>
       <div class="center">
+         <h1 class="text-center mb-4" style="background-color: #007bff; color: white; padding: 30px; border-radius: 5px; font-size: 2.5rem;">
+            NEXUS GADGETS
+         </h1>
+         <?php if (isset($error)): ?>
+            <div class="alert alert-danger text-center w-25 mx-auto">
+               <?php echo $error; ?>
+            </div>
+         <?php endif; ?>
          <div class="container w-25">
             <div class="text">
                Login
@@ -42,7 +50,6 @@ if (isset($_GET['error'])) {
                   <div class="inner"></div>
                   <button type="submit" name="submit">login</button>
                </div>
-               
             </form>
          </div>
       </div>
