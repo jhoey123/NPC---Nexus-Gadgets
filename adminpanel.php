@@ -147,7 +147,7 @@ if (!isset($_SESSION['user'])) {
             <div>Total</div>
             <div id="total">₱0.00</div>
         </div>
-        <button class="checkout-btn" onclick="showPaymentModal()">Continue</button>
+        <button class="checkout-btn" onclick="switchView('cart')">Continue</button>
         
     </div>
     <!-- Payment Modal -->
@@ -157,9 +157,11 @@ if (!isset($_SESSION['user'])) {
         <div id="cart-summary-modal">
             <!-- Cart summary will be dynamically populated here -->
         </div>
-        <button class="payment-btn" onclick="processPayment('cash')">Pay with Cash</button>
+        <div class="out-btn">
+            <button class="payment-btn" onclick="processPayment('cash')">Pay with Cash</button>
         <button class="payment-btn" onclick="processPayment('card')">Pay with Card</button>
         <button class="close-btn" onclick="closePaymentModal()">Cancel</button>
+        </div>
     </div>
 
     </div>
