@@ -1032,6 +1032,69 @@ body {
 }
 /* Inventory Modal End */
 
+/* Edit Modal Styles */
+.edit-inventory-modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.8);
+    display: none;
+    justify-content: center;
+    align-items: center;
+    z-index: 1001;
+}
+
+.edit-modal-content {
+    background: linear-gradient(180deg, #0a3144 10%, #161616 90%);
+    color: #FFFFFF;
+    border-radius: 15px;
+    padding: 25px;
+    width: 500px;
+    max-height: 85vh;
+    overflow-y: auto;
+}
+
+.edit-modal-content .form-group {
+    margin-bottom: 15px;
+}
+
+.edit-modal-content input[type="text"],
+.edit-modal-content input[type="number"],
+.edit-modal-content textarea {
+    width: 100%;
+    padding: 8px;
+    border-radius: 5px;
+    border: 1px solid #444;
+    background-color: #00395a;
+    color: #FFFFFF;
+}
+
+.edit-modal-buttons {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 20px;
+}
+
+.save-btn, .cancel-btn {
+    padding: 10px 20px;
+    border-radius: 5px;
+    border: none;
+    cursor: pointer;
+    font-size: 16px;
+}
+
+.save-btn {
+    background: linear-gradient(180deg, #0d64b6 10%, #2fe0ff 90%);
+    color: white;
+}
+
+.cancel-btn {
+    background: linear-gradient(180deg, #44318D 10%, #2A1B3D 90%);
+    color: white;
+}
+
 /* Inventory End */
 
 

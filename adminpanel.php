@@ -316,29 +316,46 @@ if (!isset($_SESSION['user'])) {
             <p><b>Quantity:</b> <span id="modal-product-quantity"></span></p>
             <input type="hidden" id="modal-product-id">
             <div>
-                <button class="edit-modal-btn">Edit</button>
+                <button class="edit-modal-btn" onclick="showEditModal()">Edit</button>
                 <button class="close-modal-btn" onclick="closeInventoryModal()">Close</button>
             </div>
         </div>
     </div>
 
-    <script>
-        function showInventoryModal(product) {
-            document.getElementById('modal-product-name').textContent = product.Product_name;
-            document.getElementById('modal-product-image').src = product.Product_image_path;
-            document.getElementById('modal-product-brand').textContent = product.Product_brand || 'N/A';
-            document.getElementById('modal-product-desc').textContent = product.Product_desc || 'No description available.';
-            document.getElementById('modal-product-price').textContent = parseFloat(product.Product_price).toFixed(2);
-            document.getElementById('modal-product-quantity').textContent = product.Product_quantity;
+    <!-- Add Edit Modal -->
+    <div class="edit-inventory-modal" id="edit-inventory-modal">
+        <div class="edit-modal-content">
+            <h2>Edit Product</h2>
+            <form id="edit-product-form" enctype="multipart/form-data">
+                <input type="hidden" id="edit-product-id" name="product_id">
+                <div class="form-group">
+                    <label for="edit-product-name">Product Name:</label>
+                    <input type="text" id="edit-product-name" name="product_name" required>
+                </div>
+                <div class="form-group">
+                    <label for="edit-product-desc">Description:</label>
+                    <textarea id="edit-product-desc" name="product_desc"></textarea>
+                </div>
+                <div class="form-group">
+                    <label for="edit-product-price">Price:</label>
+                    <input type="number" id="edit-product-price" name="product_price" step="0.01" required>
+                </div>
+                <div class="form-group">
+                    <label for="edit-product-quantity">Quantity:</label>
+                    <input type="number" id="edit-product-quantity" name="product_quantity" required>
+                </div>
+                <div class="form-group">
+                    <label for="edit-product-image">New Image (optional):</label>
+                    <input type="file" id="edit-product-image" name="product_image" accept="image/*">
+                </div>
+                <div class="edit-modal-buttons">
+                    <button type="submit" class="save-btn">Save Changes</button>
+                    <button type="button" class="cancel-btn" onclick="closeEditModal()">Cancel</button>
+                </div>
+            </form>
+        </div>
+    </div>
 
-            document.getElementById('inventory-modal').style.display = 'flex';
-        }
-
-        function closeInventoryModal() {
-            document.getElementById('inventory-modal').style.display = 'none';
-        }
-    </script>
-    
     <div class="settings-content" id="settings-content" style="display: none;">
     <div class="header-titles"> <h1>Settings Section</h1> </div>
     </div>
@@ -768,6 +785,7 @@ if (!isset($_SESSION['user'])) {
         document.getElementById('modal-product-desc').textContent = product.Product_desc || 'No description available.';
         document.getElementById('modal-product-price').textContent = parseFloat(product.Product_price).toFixed(2);
         document.getElementById('modal-product-quantity').textContent = product.Product_quantity;
+        document.getElementById('modal-product-id').value = product.Product_id;
 
         document.getElementById('inventory-modal').style.display = 'flex';
     }
@@ -775,6 +793,52 @@ if (!isset($_SESSION['user'])) {
     function closeInventoryModal() {
         document.getElementById('inventory-modal').style.display = 'none';
     }
+
+    function showEditModal() {
+        const productId = document.getElementById('modal-product-id').value;
+        const productName = document.getElementById('modal-product-name').textContent;
+        const productDesc = document.getElementById('modal-product-desc').textContent;
+        const productPrice = document.getElementById('modal-product-price').textContent;
+        const productQuantity = document.getElementById('modal-product-quantity').textContent;
+
+        document.getElementById('edit-product-id').value = productId;
+        document.getElementById('edit-product-name').value = productName;
+        document.getElementById('edit-product-desc').value = productDesc;
+        document.getElementById('edit-product-price').value = productPrice;
+        document.getElementById('edit-product-quantity').value = productQuantity;
+
+        document.getElementById('edit-inventory-modal').style.display = 'flex';
+        closeInventoryModal();
+    }
+
+    function closeEditModal() {
+        document.getElementById('edit-inventory-modal').style.display = 'none';
+    }
+
+    document.getElementById('edit-product-form').addEventListener('submit', function(e) {
+        e.preventDefault();
+        
+        const formData = new FormData(this);
+        
+        fetch('php/update_product.php', {
+            method: 'POST',
+            body: formData
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                alert('Product updated successfully');
+                closeEditModal();
+                location.reload(); // Refresh the page to show updated data
+            } else {
+                alert('Error updating product: ' + data.message);
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            alert('Error updating product');
+        });
+    });
 	
     </script>
 </body>
