@@ -174,12 +174,9 @@ if (!isset($_SESSION['user'])) {
         <div id="cart-summary-modal">
             <!-- Cart summary will be dynamically populated here -->
         </div>
-        <div class="out-btn">
-            <button class="payment-btn" onclick="processPayment('cash')">Pay with Cash</button>
-            <button class="payment-btn" onclick="processPayment('card')">Pay with Card</button>
-            <button class="close-btn" onclick="closePaymentModal()">Cancel</button>
-        </div>
-        
+        <button class="payment-btn" onclick="processPayment('cash')">Pay with Cash</button>
+        <button class="payment-btn" onclick="processPayment('card')">Pay with Card</button>
+        <button class="close-btn" onclick="closePaymentModal()">Cancel</button>
     </div>
 
     </div>
@@ -301,29 +298,22 @@ if (!isset($_SESSION['user'])) {
     </div>
         <div class="in-items-grid" id="in-items-grid">       
         <?php
-        include "php/conn_db.php";
+        include "php/conn_db.php"; // Include database connection
         
-        $query = "SELECT p.*, c.Category_name 
-                  FROM products p 
-                  LEFT JOIN categories c ON p.Category_id = c.Category_id";
+        $inventoryCategoryFilter = $currentInventoryCategory !== 'All' ? "WHERE Category_id = (SELECT Category_id FROM categories WHERE Category_name = '$currentInventoryCategory')" : '';
+        $query = "SELECT * FROM products $inventoryCategoryFilter";
         $result = $conn->query($query);
         
-        if ($result->num_rows > 0):
-            while ($row = $result->fetch_assoc()): ?>
-                <div class="item-card" onclick="showInventoryModal(<?php echo htmlspecialchars(json_encode($row)); ?>)">
-                    <img src="<?php echo $row['Product_image_path']; ?>" alt="<?php echo $row['Product_name']; ?>" class="item-image">
-                    <div class="item-details">
-                        <h3><?php echo $row['Product_name']; ?></h3>
-                        <p><b>Price:</b> ₱<?php echo number_format($row['Product_price'], 2); ?></p>
-                        <p><b>Quantity:</b> <span id="quantity-<?php echo $row['Product_id']; ?>"><?php echo $row['Product_quantity']; ?></span></p>
-                    </div>
+        while ($row = $result->fetch_assoc()): ?>
+            <div class="item-card" onclick="showInventoryModal(<?php echo htmlspecialchars(json_encode($row)); ?>)">
+                <img src="<?php echo $row['Product_image_path']; ?>" alt="<?php echo $row['Product_name']; ?>" class="item-image">
+                <div class="item-details">
+                    <h3><?php echo $row['Product_name']; ?></h3>
+                    <p><b>Price:</b> ₱<?php echo number_format($row['Product_price'], 2); ?></p>
+                    <p><b>Quantity:</b> <span id="quantity-<?php echo $row['Product_id']; ?>"><?php echo $row['Product_quantity']; ?></span></p>
                 </div>
-            <?php endwhile; 
-        else: ?>
-            <p class="no-products-message">No products available.</p>
-        <?php endif;
-        $conn->close(); 
-        ?>
+            </div>
+        <?php endwhile; ?>
         </div>
     </div>
 
@@ -379,108 +369,54 @@ if (!isset($_SESSION['user'])) {
     </div>
 
     <div class="settings-content" id="settings-content" style="display: none;">
-        <div class="header-titles">
-            <h1>Settings Section</h1>
-        </div>
+    <div class="header-titles"> <h1>Settings Section</h1> </div>
     </div>
 
     <div class="employee-content" id="employee-content" style="display: none;">
-        <div class="header-titles">
-            <h1>Employee Section</h1>
-        </div>
-        <div class="employee-list">
-            <?php
-            include "php/conn_db.php"; // Include database connection
+    <div class="header-titles"> <h1>Employee Section</h1> </div>
+    <div class="employee-list">
+        <?php
+        include "php/conn_db.php"; // Include database connection
 
-            $query = "SELECT employee_id, employee_fname, employee_lname, employee_address, employee_dob, role FROM employees";
-            $result = $conn->query($query);
+        $query = "SELECT employee_id, employee_fname, employee_lname, employee_address, employee_dob, role FROM employees";
+        $result = $conn->query($query);
 
-            $owners = [];
-            $staff = [];
+        if ($result->num_rows > 0): ?>
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>First Name</th>
+                        <th>Last Name</th>
+                        <th>Address</th>
+                        <th>Date of Birth</th>
+                        <th>Role</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <?php while ($row = $result->fetch_assoc()): ?>
+                        <tr>
+                            <td><?php echo htmlspecialchars($row['employee_id']); ?></td>
+                            <td><?php echo htmlspecialchars($row['employee_fname']); ?></td>
+                            <td><?php echo htmlspecialchars($row['employee_lname']); ?></td>
+                            <td><?php echo htmlspecialchars($row['employee_address']); ?></td>
+                            <td><?php echo htmlspecialchars($row['employee_dob']); ?></td>
+                            <td><?php echo htmlspecialchars($row['role']); ?></td>
+                        </tr>
+                    <?php endwhile; ?>
+                </tbody>
+            </table>
+        <?php else: ?>
+            <p>No employees found.</p>
+        <?php endif;
 
-            if ($result->num_rows > 0) {
-                while ($row = $result->fetch_assoc()) {
-                    if (strtolower($row['role']) === 'owner') {
-                        $owners[] = $row;
-                    } else {
-                        $staff[] = $row;
-                    }
-                }
-            }
-            ?>
-
-            <div class="employee-section">
-                <h2>Owners</h2>
-                <?php if (!empty($owners)): ?>
-                    <table class="table table-striped">
-                        <thead>
-                            <tr>
-                                <th>ID</th>
-                                <th>First Name</th>
-                                <th>Last Name</th>
-                                <th>Address</th>
-                                <th>Date of Birth</th>
-                                <th>Role</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <?php foreach ($owners as $owner): ?>
-                                <tr>
-                                    <td><?php echo htmlspecialchars($owner['employee_id']); ?></td>
-                                    <td><?php echo htmlspecialchars($owner['employee_fname']); ?></td>
-                                    <td><?php echo htmlspecialchars($owner['employee_lname']); ?></td>
-                                    <td><?php echo htmlspecialchars($owner['employee_address']); ?></td>
-                                    <td><?php echo htmlspecialchars($owner['employee_dob']); ?></td>
-                                    <td><?php echo htmlspecialchars($owner['role']); ?></td>
-                                </tr>
-                            <?php endforeach; ?>
-                        </tbody>
-                    </table>
-                <?php else: ?>
-                    <p>No owners found.</p>
-                <?php endif; ?>
-            </div>
-
-            <div class="employee-section">
-                <h2>Staff</h2>
-                <?php if (!empty($staff)): ?>
-                    <table class="table table-striped">
-                        <thead>
-                            <tr>
-                                <th>ID</th>
-                                <th>First Name</th>
-                                <th>Last Name</th>
-                                <th>Address</th>
-                                <th>Date of Birth</th>
-                                <th>Role</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <?php foreach ($staff as $staffMember): ?>
-                                <tr>
-                                    <td><?php echo htmlspecialchars($staffMember['employee_id']); ?></td>
-                                    <td><?php echo htmlspecialchars($staffMember['employee_fname']); ?></td>
-                                    <td><?php echo htmlspecialchars($staffMember['employee_lname']); ?></td>
-                                    <td><?php echo htmlspecialchars($staffMember['employee_address']); ?></td>
-                                    <td><?php echo htmlspecialchars($staffMember['employee_dob']); ?></td>
-                                    <td><?php echo htmlspecialchars($staffMember['role']); ?></td>
-                                </tr>
-                            <?php endforeach; ?>
-                        </tbody>
-                    </table>
-                <?php else: ?>
-                    <p>No staff found.</p>
-                <?php endif; ?>
-            </div>
-
-            <?php $conn->close(); ?>
-        </div>
+        $conn->close();
+        ?>
     </div>
+</div>
 
     <div class="logout-content" id="logout-content" style="display: none;">
-        <div class="header-titles">
-            <h1>Logout Section</h1>
-        </div>
+        <h1>Logout Section</h1>
     </div>
 
     <script>
@@ -925,32 +861,10 @@ if (!isset($_SESSION['user'])) {
     });
 
     function filterInventoryItems(category) {
-        const itemsGrid = document.getElementById('in-items-grid');
-        const categoryButtons = document.querySelectorAll('.inventory-category-btn');
-
-        // Highlight the selected category button
-        categoryButtons.forEach(button => button.classList.remove('active'));
-        document.querySelector(`.inventory-category-btn[onclick="filterInventoryItems('${category}')"]`).classList.add('active');
-
-        // Add transition effect
-        itemsGrid.classList.add('fade-out');
-
-        fetch(`php/get_inventory_items.php?category=${category}`)
-            .then(response => response.text())
-            .then(data => {
-                setTimeout(() => {
-                    itemsGrid.innerHTML = data;
-                    itemsGrid.classList.remove('fade-out');
-                    itemsGrid.classList.add('fade-in');
-                }, 300); // Match the CSS transition duration
-            })
-            .catch(error => console.error('Error fetching inventory items:', error));
+        const url = new URL(window.location.href);
+        url.searchParams.set('inventory_category', category);
+        window.location.href = url.toString();
     }
-
-    document.addEventListener('DOMContentLoaded', () => {
-        const itemsGrid = document.getElementById('in-items-grid');
-        itemsGrid.classList.add('fade-in'); // Add fade-in class on page load
-    });
 	
     </script>
 </body>
