@@ -867,31 +867,37 @@ if (!isset($_SESSION['user'])) {
 
     function filterInventoryItems(category) {
         const itemsGrid = document.getElementById('in-items-grid');
-        itemsGrid.innerHTML = ''; // Clear the grid content
-        itemsGrid.classList.add('hidden'); // Add hidden class for transition effect
-
+        
+        // Start fade out
+        itemsGrid.style.opacity = '0';
+        
+        // Wait for fade out to complete before fetching new items
         setTimeout(() => {
             fetch(`php/get_inventory_items.php?inventory_category=${encodeURIComponent(category)}`)
-                .then(response => response.text())
-                .then(data => {
-                    itemsGrid.innerHTML = data; // Update the grid content
-                    itemsGrid.classList.remove('hidden'); // Remove hidden class after update
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Network response was not ok');
+                    }
+                    return response.text();
                 })
-                .catch(error => console.error('Error fetching inventory items:', error));
-        }, 300); // Wait for the transition to complete
+                .then(data => {
+                    itemsGrid.innerHTML = data;
+                    // Trigger reflow before starting fade in
+                    void itemsGrid.offsetWidth;
+                    // Start fade in
+                    itemsGrid.style.opacity = '1';
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    itemsGrid.innerHTML = '<p class="error-message">Error loading items.</p>';
+                    itemsGrid.style.opacity = '1';
+                });
+        }, 300);
 
-        // Highlight the selected category
+        // Update active category button
         document.querySelectorAll('.inventory-category-btn').forEach(btn => {
-            if (btn.textContent.trim() === category) {
-                btn.classList.add('active');
-            } else {
-                btn.classList.remove('active');
-            }
+            btn.classList.toggle('active', btn.textContent.trim() === category);
         });
-
-        const url = new URL(window.location.href);
-        url.searchParams.set('inventory_category', category);
-        window.history.pushState({}, '', url); // Update the URL without reloading
     }
 	
     </script>
