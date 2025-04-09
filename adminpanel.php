@@ -140,24 +140,7 @@ if (!isset($_SESSION['user'])) {
     </div>
     <div class="cart-details" id="cart-details">
         <div class="cart-items" id="cart-items"></div>
-        <div class="cart-summary">
-            <div class="cart-row">
-                <div>Subtotal</div>
-                <div id="subtotal">₱0.00</div>
-            </div>
-            <div class="cart-row">
-                <div>Discount</div>
-                <div id="discount">₱0.00</div>
-            </div>
-            <div class="cart-row">
-                <div>Service Charge</div>
-                <div id="service-charge">20%</div>
-            </div>
-            <div class="cart-row">
-                <div>Tax</div>
-                <div id="tax">₱0.00</div>
-            </div>
-        </div>
+        
     </div>
     <div class="cart-summary">
         <div class="cart-row cart-total">
@@ -285,6 +268,28 @@ if (!isset($_SESSION['user'])) {
     
     <div class="cart-content" id="cart-content" style="display: none;">
     <div class="header-titles"> <h1>Cart</h1></div>
+        <div class="cart-summary">
+                <div class="cart-row">
+                    <div>Subtotal</div>
+                    <div id="subtotal">₱0.00</div>
+                </div>
+                <div class="cart-row">
+                    <div>Discount</div>
+                    <div id="discount">₱0.00</div>
+                </div>
+                <div class="cart-row">
+                    <div>Service Charge</div>
+                    <div id="service-charge">20%</div>
+                </div>
+                <div class="cart-row">
+                    <div>Tax</div>
+                    <div id="tax">₱0.00</div>
+                </div>
+            </div>
+            <div class="confirmation-container">
+            <button class="checko-btn" onclick="showPaymentModal()">Checkout</button>
+            <button class="checko-btn" onclick="switchView('dashboard')">Go back</button>
+        </div>
     </div>
 
     <div class="inventory-content" id="inventory-content" style="display: none;">
@@ -516,8 +521,8 @@ if (!isset($_SESSION['user'])) {
 
     <script>
         let cart = JSON.parse(localStorage.getItem('cart')) || [];
-        const serviceChargePercentage = 0.20;
-        const taxRate = 0.05;
+        const serviceChargePercentage = 0.05;
+        const taxRate = 0.01;
 
         // Initialize cart on page load
         document.addEventListener('DOMContentLoaded', () => {
