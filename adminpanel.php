@@ -128,11 +128,7 @@ if (!isset($_SESSION['user'])) {
     <div class="cart-user">
         <div class="cart-user-avatar"><?php echo strtoupper(substr($_SESSION['user'], 0, 1)); ?></div>
         <div class="cart-user-name"><?php echo $_SESSION['user']; ?></div>
-        <button class="dropdown-btn" id="dropdown-btn">
-            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-caret-down-fill" viewBox="0 0 16 16">
-                <path d="M3.204 5h9.592L8 10.481 3.204 5z"/>
-            </svg>
-        </button>
+    
     </div>
     <div class="cart-details" id="cart-details">
         <div class="cart-items" id="cart-items"></div>
@@ -146,17 +142,7 @@ if (!isset($_SESSION['user'])) {
         <button class="checkout-btn" onclick="switchView('cart')">Continue</button>
         
     </div>
-    <!-- Payment Modal -->
-    <div id="payment-modal" class="modal" style="display: none;">
-    <div class="modal-content">
-    <h2>Review Your Order</h2>
-        <div class="out-btn">
-            <button class="payment-btn" onclick="processPayment('cash')">Pay with Cash</button>
-        <button class="payment-btn" onclick="processPayment('card')">Pay with Card</button>
-        <button class="close-btn" onclick="closePaymentModal()">Cancel</button>
-        </div>
-    </div>
-
+    
     </div>
     </div>  
     </div>
@@ -259,7 +245,7 @@ if (!isset($_SESSION['user'])) {
 
     
     <div class="cart-content" id="cart-content" style="display: none;">
-    <div class="header-titles"> <h1>Cart</h1></div>
+    <div class="header-titles"> <h1>Your Cart</h1></div>
     <div class="cart-containe">
             <div class="cart-items-container" id="cart-items-container">
                 <!-- Individual cart items will be dynamically added here -->
@@ -275,7 +261,7 @@ if (!isset($_SESSION['user'])) {
                     </div>
                     <div class="cart-row">
                         <div>Service Charge</div>
-                        <div id="service-charge">20%</div>
+                        <div id="service-charge">5%</div>
                     </div>
                     <div class="cart-row">
                         <div>Tax</div>
@@ -287,6 +273,17 @@ if (!isset($_SESSION['user'])) {
                 <button class="checko-btn" onclick="switchView('dashboard')">Go back</button>
             </div>
         </div>
+        <!-- Payment Modal -->
+<div id="payment-modal" class="modal" style="display: none;">
+<div class="modal-content">
+        <h2>Payment Options</h2>
+        <div class="out-btn">
+            <button class="payment-btn" onclick="processPayment('cash')">Cash</button>
+            <button class="payment-btn" onclick="processPayment('card')">Card</button>
+            <button class="close-btn" onclick="closePaymentModal()">Cancel</button>
+        </div>
+    </div>
+</div>
     </div>
 
     <div class="inventory-content" id="inventory-content" style="display: none;">
@@ -469,35 +466,7 @@ if (!isset($_SESSION['user'])) {
     </div>
 
     <script>
-    function toggleCart() {
-        const cartDetails = document.getElementById('cart-details');
-        const dropdownBtn = document.getElementById('dropdown-btn');
-
-        if (cartDetails.classList.contains('expanded')) {
-            cartDetails.classList.remove('expanded');
-            dropdownBtn.innerHTML = `
-                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-caret-down-fill" viewBox="0 0 16 16">
-                    <path d="M3.204 5h9.592L8 10.481 3.204 5z"/>
-                </svg>
-            `;
-        } else {
-            cartDetails.classList.add('expanded');
-            dropdownBtn.innerHTML = `
-                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-caret-up-fill" viewBox="0 0 16 16">
-                    <path d="M3.204 11h9.592L8 5.519 3.204 11z"/>
-                </svg>
-            `;
-        }
-    }
-    document.addEventListener('DOMContentLoaded', () => {
-        const cartHeader = document.querySelector('.cart-header');
-        const dropdownBtn = document.getElementById('dropdown-btn');
-
-        cartHeader.addEventListener('click', toggleCart);
-        dropdownBtn.addEventListener('click', toggleCart);
-    });
-
-    function showCreateAccountModal() {
+        function showCreateAccountModal() {
         document.getElementById('create-account-modal').style.display = 'flex';
     }
 
@@ -599,7 +568,8 @@ if (!isset($_SESSION['user'])) {
             let subtotal = 0;
             
             cart.forEach((item, index) => {
-                subtotal += item.price * item.quantity;
+                const itemSubtotal = item.price * item.quantity;
+                subtotal += itemSubtotal;
                 
                 const cartItemElement = document.createElement('div');
                 cartItemElement.className = 'cart-item';
@@ -615,12 +585,6 @@ if (!isset($_SESSION['user'])) {
                         <button class="qty-btn" onclick="removeFromCart(${index})">-</button>
                         <div class="cart-item-qty">${item.quantity}</div>
                         <button class="qty-btn" onclick="addToCart('${item.name}', ${item.price}, '${item.image}', ${item.maxQuantity})">+</button>
-                        <button class="remove-btn" onclick="removeItemFromCart(${index})">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-x-circle" viewBox="0 0 16 16">
-                                <path d="M8 15A7 7 0 1 0 8 1a7 7 0 0 0 0 14zm0 1A8 8 0 1 1 8 0a8 8 0 0 1 0 16z"/>
-                                <path d="M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708z"/>
-                            </svg>
-                        </button>
                     </div>
                 `;
                 
@@ -628,8 +592,8 @@ if (!isset($_SESSION['user'])) {
             });
             
             const discount = 0;
-            const serviceCharge = subtotal * serviceChargePercentage;
-            const tax = subtotal * taxRate;
+            const serviceCharge = subtotal * 0.2; // Example: 20% service charge
+            const tax = subtotal * 0.1; // Example: 10% tax
             const total = subtotal + serviceCharge + tax - discount;
             
             document.getElementById('subtotal').textContent = `₱${subtotal.toFixed(2)}`;
@@ -830,33 +794,6 @@ if (!isset($_SESSION['user'])) {
         }
 
         function showPaymentModal() {
-            const cartSummaryModal = document.getElementById('cart-summary-modal');
-        cartSummaryModal.innerHTML = ''; // Clear previous content
-
-        if (cart.length === 0) {
-            cartSummaryModal.innerHTML = '<p>Your cart is empty.</p>';
-        } else {
-            let summaryHTML = '<ul>';
-            cart.forEach(item => {
-                summaryHTML += `
-                    <li>
-                        <div><b>${item.name}</b></div>
-                        <div>Price: ₱${item.price.toFixed(2)}</div>
-                        <div>Quantity: ${item.quantity}</div>
-                        <div>Subtotal: ₱${(item.price * item.quantity).toFixed(2)}</div>
-                    </li>
-                    <hr>
-                `;
-            });
-            summaryHTML += `
-                <li>
-                    <div><b>Total:</b> ₱${document.getElementById('total').textContent}</div>
-                </li>
-            `;
-            summaryHTML += '</ul>';
-            cartSummaryModal.innerHTML = summaryHTML;
-        }
-
         document.getElementById('payment-modal').style.display = 'flex';
     }
 
@@ -868,7 +805,40 @@ if (!isset($_SESSION['user'])) {
     function processPayment(method) {
         closePaymentModal();
         alert(`You selected to pay with ${method}.`);
-        
+         // Generate a 7-digit transaction ID
+    const transactionId = Math.random().toString().slice(2, 9);
+
+// Collect purchase list and total amount
+const purchaseList = cart.map(item => `${item.name} (x${item.quantity})`).join(', ');
+const totalAmount = parseFloat(document.getElementById('total').textContent.replace('₱', ''));
+
+// Prepare data to send to the server
+const formData = new FormData();
+formData.append('transaction_id', transactionId);
+formData.append('purchase_list', purchaseList);
+formData.append('total_amount', totalAmount);
+formData.append('payment_method', method);
+
+// Send data to the server
+fetch('php/history.php', {
+    method: 'POST',
+    body: formData
+})
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            alert(`Transaction successful! Transaction ID: ${transactionId}`);
+            removeAllFromCart(); // Clear the cart after successful payment
+            closePaymentModal();
+        } else {
+            alert('Error saving transaction: ' + data.message);
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        alert('An error occurred while processing the transaction.');
+    });
+
     }
 
     function showInventoryModal(product) {
@@ -988,6 +958,7 @@ if (!isset($_SESSION['user'])) {
             const cartItemElement = document.createElement('div');
             cartItemElement.className = 'cart-item-card';
             cartItemElement.innerHTML = `
+                <img src="${item.image}" alt="${item.name}" class="cart-item-image"> <!-- Include item image -->
                 <div class="cart-item-details">
                     <h3 class="cart-item-name">${item.name}</h3>
                     <p class="cart-item-price">Price: ₱${item.price.toFixed(2)}</p>
