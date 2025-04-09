@@ -174,9 +174,12 @@ if (!isset($_SESSION['user'])) {
         <div id="cart-summary-modal">
             <!-- Cart summary will be dynamically populated here -->
         </div>
-        <button class="payment-btn" onclick="processPayment('cash')">Pay with Cash</button>
-        <button class="payment-btn" onclick="processPayment('card')">Pay with Card</button>
-        <button class="close-btn" onclick="closePaymentModal()">Cancel</button>
+        <div class="out-btn">
+            <button class="payment-btn" onclick="processPayment('cash')">Pay with Cash</button>
+            <button class="payment-btn" onclick="processPayment('card')">Pay with Card</button>
+            <button class="close-btn" onclick="closePaymentModal()">Cancel</button>
+        </div>
+        
     </div>
 
     </div>
