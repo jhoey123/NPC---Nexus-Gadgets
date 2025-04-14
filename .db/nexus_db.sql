@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Mar 26, 2025 at 01:18 PM
+-- Generation Time: Apr 10, 2025 at 04:26 AM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.0.30
 
@@ -64,10 +64,10 @@ CREATE TABLE `employees` (
 --
 
 INSERT INTO `employees` (`employee_id`, `employee_fname`, `employee_lname`, `employee_address`, `employee_dob`, `role`) VALUES
-(1, 'Henry', 'Majestic', 'America', 'January 1, 1990', 'Owner'),
-(2, 'Jackson', 'Amongus', 'Canada', 'Febuary 1, 1989', 'Staff'),
+(1, 'Henry', 'Hagrid', 'America', 'January 1, 1990', 'Owner'),
+(2, 'Jackson', 'David', 'Canada', 'Febuary 1, 1989', 'Staff'),
 (5, 'Micheal', 'Angelo', 'Los Angeles', 'March 1, 1988', 'Owner'),
-(6, 'maria', 'dumbell', 'London', 'April 1, 1987', 'Staff');
+(6, 'Maria', 'Lambo', 'London', 'April 1, 1987', 'Staff');
 
 -- --------------------------------------------------------
 
@@ -87,6 +87,27 @@ CREATE TABLE `products` (
   `Product_image_name` text NOT NULL,
   `Product_image_path` text NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `products`
+--
+
+INSERT INTO `products` (`Product_id`, `Product_name`, `Product_brand`, `Product_desc`, `Product_quantity`, `Product_price`, `Category_id`, `Barcode_id`, `Product_image_name`, `Product_image_path`) VALUES
+(51, 'iPhone 16 Pro Max', 'Apple', 'Apples new release', 10, 70000.00, 2, '480005100051', '67f7205d0a5e9-Apple iPhone 16 Pro Max.jpg', 'uploads/67f7205d0a5e9-Apple iPhone 16 Pro Max.jpg'),
+(52, 'Galaxy S25+', 'Samsung', 'A samsung phone', 10, 50000.00, 2, '480005200052', '67f7209874f10-Galaxy S25+.jpg', 'uploads/67f7209874f10-Galaxy S25+.jpg'),
+(53, 'Infinix ZERO 40 5G', 'Infinix', 'A Infinix phone', 10, 15000.00, 2, '480005300053', '67f720e3ed082-Infinix ZERO 40 5G.jpg', 'uploads/67f720e3ed082-Infinix ZERO 40 5G.jpg'),
+(54, 'Macbook Air M1', 'Apple', 'A apple laptop', 9, 400000.00, 1, '480005400054', '67f721e09b39a-Macbook Air M1.jpg', 'uploads/67f721e09b39a-Macbook Air M1.jpg'),
+(55, 'Toshiba Dynabook', 'Toshiba', 'A toshiba laptop', 10, 11000.00, 1, '480005500055', '67f72216adc02-Toshiba Dynabook Satellite.jpg', 'uploads/67f72216adc02-Toshiba Dynabook Satellite.jpg'),
+(56, 'Razerblade 15', 'Razer', 'a razer laptop', 10, 100000.00, 1, '480005600056', '67f7224f147e7-Razer Blade 15.jpg', 'uploads/67f7224f147e7-Razer Blade 15.jpg'),
+(57, 'Logitech G Pro', 'Logitech', 'a logitech mouse', 10, 5000.00, 3, '480005700057', '67f722c94c9da-Logitech G Pro.png', 'uploads/67f722c94c9da-Logitech G Pro.png'),
+(58, 'Razer Death', 'Razer', 'a razer mouse', 10, 3000.00, 3, '480005800058', '67f7230578e77-Razer DeathAdder.png', 'uploads/67f7230578e77-Razer DeathAdder.png'),
+(59, 'Magic Mouse', 'Apple', 'a apple mouse', 10, 3500.00, 3, '480005900059', '67f7232d781e0-Magic Mouse.png', 'uploads/67f7232d781e0-Magic Mouse.png'),
+(60, 'Ajazz AK820', 'Ajazz', 'a ajazz keyboard', 10, 2000.00, 4, '480006000060', '67f72384e79c1-Epomaker Ajazz AK820.png', 'uploads/67f72384e79c1-Epomaker Ajazz AK820.png'),
+(61, 'Logitech KB', 'Logitech', 'a logitech keyboard', 10, 5000.00, 4, '480006100061', '67f723b2021c7-Logitech G pro Keyboard.png', 'uploads/67f723b2021c7-Logitech G pro Keyboard.png'),
+(62, 'Razer Huntsman', 'Razer', 'a razer keyboard', 10, 5000.00, 4, '480006200062', '67f723e934746-Razer Huntsman V3.png', 'uploads/67f723e934746-Razer Huntsman V3.png'),
+(63, 'AOC 27B376H', 'AOC', 'a aoc monitor', 10, 11000.00, 5, '480006300063', '67f724391189d-AOC 27B376H.png', 'uploads/67f724391189d-AOC 27B376H.png'),
+(64, 'Samsung 32 Class', 'Samsung', 'a samsung monitor', 10, 25000.00, 5, '480006400064', '67f724636145a-Samsung 32 Class Curved.png', 'uploads/67f724636145a-Samsung 32 Class Curved.png'),
+(65, 'LG UltraGear', 'LG', 'a LG monitor', 10, 20000.00, 5, '480006500065', '67f7248957fcc-UltraGear LG.png', 'uploads/67f7248957fcc-UltraGear LG.png');
 
 -- --------------------------------------------------------
 
@@ -111,6 +132,28 @@ INSERT INTO `ranks` (`rank_id`, `rank_name`, `rank_desc`) VALUES
 -- --------------------------------------------------------
 
 --
+-- Table structure for table `transactions`
+--
+
+CREATE TABLE `transactions` (
+  `transaction_id` varchar(7) NOT NULL,
+  `purchase_list` text NOT NULL,
+  `total_amount` decimal(10,2) NOT NULL,
+  `payment_method` varchar(10) NOT NULL,
+  `transaction_date` timestamp NOT NULL DEFAULT current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `transactions`
+--
+
+INSERT INTO `transactions` (`transaction_id`, `purchase_list`, `total_amount`, `payment_method`, `transaction_date`) VALUES
+('8954169', 'Laptop 1 (x2), laptop 2 (x1)', 34970.00, 'cash', '2025-04-10 01:15:10'),
+('2174613', 'Macbook Air M1 (x1)', 520000.00, 'cash', '2025-04-10 01:53:40');
+
+-- --------------------------------------------------------
+
+--
 -- Table structure for table `users`
 --
 
@@ -128,8 +171,7 @@ CREATE TABLE `users` (
 
 INSERT INTO `users` (`user_id`, `username`, `password`, `email`, `rank_id`) VALUES
 (1, 'admin', '$2y$10$h1xrhJ3w.16omaoPahNMeeyXQe2XhV77Q8OElp0uiBSc.mwohjhKu', 'admin@admin.com', 1),
-(2, 'user1', '$2y$10$2EJKgX5ZDs4Mwt.0o8pQWep2E5J.GbgJvYTCTf6Bs4WxR//ZtBd6i', 'user@user.com', 2),
-(5, 'admin2', '$2y$10$Nznja68vA0W7iO0/KcpfgeLQIDVCsqK3dQcU.Fpeq6jk4uxo1PORO', 'admin2@admin.com', 1);
+(2, 'staff', '$2y$10$iLs.zoP6i8HbfrewNJRjV.NKzbIOhL1AClcpdbtu6PgbAASzzd6Se', '', 2);
 
 --
 -- Indexes for dumped tables
@@ -187,7 +229,7 @@ ALTER TABLE `employees`
 -- AUTO_INCREMENT for table `products`
 --
 ALTER TABLE `products`
-  MODIFY `Product_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=39;
+  MODIFY `Product_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=66;
 
 --
 -- AUTO_INCREMENT for table `ranks`
@@ -199,7 +241,7 @@ ALTER TABLE `ranks`
 -- AUTO_INCREMENT for table `users`
 --
 ALTER TABLE `users`
-  MODIFY `user_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
+  MODIFY `user_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
 
 --
 -- Constraints for dumped tables

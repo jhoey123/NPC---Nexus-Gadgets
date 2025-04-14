@@ -6,10 +6,10 @@ if (isset($_POST['logout'])) {
     session_destroy();
     session_start(); 
     session_regenerate_id(true);
-    header("Location: ../index.php");
+    header("Location: ../logintab.php");
     exit();
 } else {
-    header("Location: ../index.php?error=Invalid_request");
+    header("Location: ../logintab.php?error=Invalid_request");
     exit();
 }
 ?>
