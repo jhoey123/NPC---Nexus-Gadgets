@@ -2,13 +2,22 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport"="width=device-width, initial-scale=1.0">
     <title>NEXUS Gadget - Premium Computer Parts & Electronics</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
         
+        @font-face {
+            font-family: 'SuperDario';
+            src: url('uploads/Valorax-lg25V.otf') format('truetype'); /* Update the path to your font file */
+        }
+
+        .superdario-font {
+            font-family: 'SuperDario', sans-serif;
+        }
+
         body {
             font-family: 'Poppins', sans-serif;
             scroll-behavior: smooth;
@@ -224,11 +233,10 @@
                 <!-- Logo -->
                 <div class="flex items-center">
                     <a href="#" class="flex items-center">
-                        <div class="w-10 h-10 bg-indigo-600 rounded-full flex items-center justify-center text-white font-bold text-xl mr-2">N</div>
-                        <span class="text-xl font-bold text-white">NEXUS <span class="text-indigo-400">Gadget</span></span>
+                        <img src="images/NEXUS GADGETS.png" alt="NEXUS GADGETS Logo" class="w-24 h-24 mr-6"> <!-- Updated logo -->
+                        <span class="text-2xl font-bold text-white superdario-font">NEXUS <span class="text-indigo-400">Gadget</span></span>
                     </a>
                 </div>
-                
                 
                 <!-- Navigation Icons -->
                 <div class="flex items-center space-x-4">
@@ -243,29 +251,6 @@
                     </button>
                 </div>
             </div>
-            
-            <!-- Mobile Search -->
-            <div class="lg:hidden mt-3">
-                <div class="relative">
-                    <input type="text" placeholder="Search for products..." class="w-full px-4 py-2 border border-gray-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 text-white">
-                    <button class="absolute right-2 top-2 text-gray-500">
-                        <i class="fas fa-search"></i>
-                    </button>
-                </div>
-            </div>
-            
-            <!-- Navigation -->
-            <nav class="hidden lg:flex justify-center mt-4">
-                <ul class="flex space-x-8">
-                    <li><a href="#" class="text-white font-medium hover:text-indigo-400 transition duration-300">Home</a></li>
-                    <li><a href="#" class="text-white font-medium hover:text-indigo-400 transition duration-300">Laptops</a></li>
-                    <li><a href="#" class="text-white font-medium hover:text-indigo-400 transition duration-300">Smartphones</a></li>
-                    <li><a href="#" class="text-white font-medium hover:text-indigo-400 transition duration-300">Monitors</a></li>
-                    <li><a href="#" class="text-white font-medium hover:text-indigo-400 transition duration-300">Keyboards</a></li>
-                    <li><a href="#" class="text-white font-medium hover:text-indigo-400 transition duration-300">Mouse</a></li>
-                    <li><a href="#" class="text-white font-medium hover:text-indigo-400 transition duration-300">About</a></li>
-                </ul>
-            </nav>
         </div>
     </header>
 

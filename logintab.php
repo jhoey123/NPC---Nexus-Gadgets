@@ -96,6 +96,14 @@ if (isset($_GET['error'])) {
             transform: translateY(-2px);
             box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
         }
+        @font-face {
+            font-family: 'SuperDario';
+            src: url('uploads/Valorax-lg25V.otf') format('truetype'); /* Update the path to your font file */
+        }
+
+        .superdario-font {
+            font-family: 'SuperDario', sans-serif;
+        }
     </style>
 </head>
 <body class="gradient-bg min-h-screen flex items-center justify-center p-4">
@@ -110,8 +118,8 @@ if (isset($_GET['error'])) {
             <div class="w-full md:w-1/3 bg-black p-8 flex flex-col items-center justify-center">
                 <div class="text-center">
                     <div class="flex items-center justify-center mb-6">
-                        <i class="fas fa-microchip text-4xl text-blue-600 mr-3"></i>
-                        <h1 class="text-3xl font-bold text-white">NEXUS<br>Gadgets</br></h1>
+                        <img src="images/NEXUS GADGETS.png" alt="NEXUS GADGETS Logo" class="w-24 h-24 mb-4"> <!-- Updated logo -->
+                        <h1 class="text-3xl font-bold text-white superdario-font">NEXUS<br><span class="text-indigo-400">Gadget</span></br></h1>
                     </div>
                     <p class="text-gray-300 mb-6">The future of technology at your fingertips</p>
                     <div class="flex justify-center space-x-4">
