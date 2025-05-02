@@ -568,10 +568,12 @@
         <div class="container mx-auto px-4">
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 mb-8">
                 <div>
-                    <div class="flex items-center mb-4">
-                        <div class="w-10 h-10 bg-indigo-600 rounded-full flex items-center justify-center text-white font-bold text-xl mr-2">N</div>
-                        <span class="text-xl font-bold text-white">NEXUS <span class="text-indigo-400">Gadget</span></span>
-                    </div>
+                   <div class="flex items-center">
+                    <a href="#" class="flex items-center">
+                        <img src="images/NEXUS GADGETS.png" alt="NEXUS GADGETS Logo" class="w-20 h-20 mr-6"> <!-- Updated logo -->
+                        <span class="text-2xl font-bold text-white superdario-font">NEXUS <span class="text-indigo-400">Gadget</span></span>
+                    </a>
+                </div>
                     <p class="text-gray-400 mb-4">Your one-stop shop for premium computer parts, laptops, and smartphones.</p>
                     <div class="flex space-x-4">
                         <a href="#" class="text-gray-400 hover:text-white transition duration-300">
@@ -613,7 +615,7 @@
                     <ul class="space-y-2">
                         <li class="flex items-center">
                             <i class="fas fa-map-marker-alt mr-2 text-gray-400"></i>
-                            <span class="text-gray-400">123 Tech Street, Silicon Valley, CA</span>
+                            <span class="text-gray-400">CTU DANAO Campus, Sabang Danao Cebu</span>
                         </li>
                         <li class="flex items-center">
                             <i class="fas fa-phone-alt mr-2 text-gray-400"></i>
