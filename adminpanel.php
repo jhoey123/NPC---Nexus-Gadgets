@@ -1,6 +1,9 @@
 <?php
 
+
 session_start();
+$_SESSION['user'] = "admin"; // For testing purposes, set a session variable to simulate a logged-in user
+
 if (!isset($_SESSION['user'])) {
     header("Location: index.php");
     exit();
