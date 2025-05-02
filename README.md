@@ -3,7 +3,7 @@ Members:
 1. Yocut, Lyniel Jhoey 
 2. Dumabok, Gian
 3. Ramos, Kian Jed
-4. Ebale, Khent Vincent5
+4. Ebale, Khent Vincent
 5. Flores, Vhon Arwil
 6. Moradas, Kevin Jake
 
