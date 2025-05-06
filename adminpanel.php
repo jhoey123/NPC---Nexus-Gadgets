@@ -2037,6 +2037,19 @@ if (!isset($_SESSION['user'])) {
             document.getElementById('edit-employee-modal').style.display = 'none';
         }
 
+        // Logout function
+        function logout() {
+            const form = document.createElement('form');
+            form.method = 'POST';
+            form.action = 'php/logout.php';
+            const input = document.createElement('input');
+            input.type = 'hidden';
+            input.name = 'logout';
+            form.appendChild(input);
+            document.body.appendChild(form);
+            form.submit();
+        }
+
         // Update employee
         function updateEmployee() {
             const id = parseInt(document.getElementById('edit-employee-id').value);
