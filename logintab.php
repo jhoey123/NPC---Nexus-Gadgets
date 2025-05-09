@@ -1,20 +1,3 @@
-<?php 
-
-if (isset($_GET['error'])) {
-	switch ($_GET['error']) {
-   		case 'Invalid_credentials':
-	  		$error = "Invalid username or password";
-	  		break;
-   		case 'login_error':
-	  		$error = "Login error";
-	  		break;
-   		default:
-	  		$error = "Login error";
-		  	break;
-	}
-}
-?>
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -151,6 +134,7 @@ if (isset($_GET['error'])) {
                 </div>
                 
                 <!-- Login Form -->
+                <div id="error-message" class="text-red-500 text-sm mb-4 hidden"></div>
                 <form id="login-form" class="space-y-6">
                     <div>
                         <label for="login-email" class="block text-sm font-medium text-gray-300 mb-1">Email</label>
@@ -158,7 +142,7 @@ if (isset($_GET['error'])) {
                             <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                                 <i class="fas fa-envelope text-gray-400"></i>
                             </div>
-                            <input type="email" id="login-email" class="w-full pl-10 pr-3 py-2 rounded-lg text-white input-field focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="your@email.com" required>
+                            <input type="email" id="login-email" name="email" class="w-full pl-10 pr-3 py-2 rounded-lg text-white input-field focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="your@email.com" required>
                         </div>
                     </div>
                     <div>
@@ -167,7 +151,7 @@ if (isset($_GET['error'])) {
                             <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                                 <i class="fas fa-lock text-gray-400"></i>
                             </div>
-                            <input type="password" id="login-password" class="w-full pl-10 pr-3 py-2 rounded-lg text-white input-field focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="••••••••" required>
+                            <input type="password" id="login-password" name="password" class="w-full pl-10 pr-3 py-2 rounded-lg text-white input-field focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="••••••••" required>
                             <div class="absolute inset-y-0 right-0 pr-3 flex items-center cursor-pointer">
                                 <i class="fas fa-eye-slash text-gray-400 hover:text-gray-300" id="toggle-login-password"></i>
                             </div>
@@ -206,7 +190,7 @@ if (isset($_GET['error'])) {
                                 <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                                     <i class="fas fa-user text-gray-400"></i>
                                 </div>
-                                <input type="text" id="signup-firstname" class="w-full pl-10 pr-3 py-2 rounded-lg text-white input-field focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="John" required>
+                                <input type="text" id="signup-firstname" name="firstname" class="w-full pl-10 pr-3 py-2 rounded-lg text-white input-field focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="John" required>
                             </div>
                         </div>
                         <div>
@@ -215,8 +199,17 @@ if (isset($_GET['error'])) {
                                 <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                                     <i class="fas fa-user text-gray-400"></i>
                                 </div>
-                                <input type="text" id="signup-lastname" class="w-full pl-10 pr-3 py-2 rounded-lg text-white input-field focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="Doe" required>
+                                <input type="text" id="signup-lastname" name="lastname" class="w-full pl-10 pr-3 py-2 rounded-lg text-white input-field focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="Doe" required>
                             </div>
+                        </div>
+                    </div>
+                    <div>
+                        <label for="signup-username" class="block text-sm font-medium text-gray-300 mb-1">Username</label>
+                        <div class="relative">
+                            <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                <i class="fas fa-envelope text-gray-400"></i>
+                            </div>
+                            <input type="username" id="signup-username" name="username" class="w-full pl-10 pr-3 py-2 rounded-lg text-white input-field focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="Username" required>
                         </div>
                     </div>
                     <div>
@@ -225,7 +218,7 @@ if (isset($_GET['error'])) {
                             <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                                 <i class="fas fa-envelope text-gray-400"></i>
                             </div>
-                            <input type="email" id="signup-email" class="w-full pl-10 pr-3 py-2 rounded-lg text-white input-field focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="your@email.com" required>
+                            <input type="email" id="signup-email" name="email" class="w-full pl-10 pr-3 py-2 rounded-lg text-white input-field focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="your@email.com" required>
                         </div>
                     </div>
                     <div>
@@ -234,7 +227,7 @@ if (isset($_GET['error'])) {
                             <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                                 <i class="fas fa-lock text-gray-400"></i>
                             </div>
-                            <input type="password" id="signup-password" class="w-full pl-10 pr-3 py-2 rounded-lg text-white input-field focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="••••••••" required>
+                            <input type="password" id="signup-password" name="password" class="w-full pl-10 pr-3 py-2 rounded-lg text-white input-field focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="••••••••" required>
                             <div class="absolute inset-y-0 right-0 pr-3 flex items-center cursor-pointer">
                                 <i class="fas fa-eye-slash text-gray-400 hover:text-gray-300" id="toggle-signup-password"></i>
                             </div>
@@ -299,10 +292,31 @@ if (isset($_GET['error'])) {
         setupPasswordToggle('signup-password', 'toggle-signup-password');
 
         // Form submission
-        loginForm.addEventListener('submit', function(e) {
+        loginForm.addEventListener('submit', async function(e) {
             e.preventDefault();
-            alert('Login functionality would be implemented here');
-            // You would typically send a request to your backend here
+            
+            const formData = new FormData(loginForm);
+            const errorMessage = document.getElementById('error-message');
+            errorMessage.classList.add('hidden'); // Hide error message initially
+
+            try {
+                const response = await fetch('php/login.php', {
+                    method: 'POST',
+                    body: formData
+                });
+
+                const result = await response.json();
+                if (result.success) {
+                    window.location.href = 'adminpanel.php';
+                } else {
+                    errorMessage.textContent = result.message || 'Login failed. Please try again.';
+                    errorMessage.classList.remove('hidden'); // Show error message
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                errorMessage.textContent = 'An error occurred. Please try again later.';
+                errorMessage.classList.remove('hidden'); // Show error message
+            }
         });
 
         signupForm.addEventListener('submit', function(e) {

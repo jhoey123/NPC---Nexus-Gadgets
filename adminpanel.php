@@ -2,23 +2,24 @@
 
 
 session_start();
-$_SESSION['user'] = "admin"; // For testing purposes, set a session variable to simulate a logged-in user
+//$_SESSION['user'] = "admin"; // For testing purposes, set a session variable to simulate a logged-in user
 
-if (!isset($_SESSION['user'])) {
+if (!isset($_SESSION['email'])) {
     header("Location: index.php");
     exit();
 } else {
     include "php/conn_db.php";
-    $username = $_SESSION['user'];
-    $stmt = $conn->prepare("SELECT u.username, r.rank_name FROM users u JOIN ranks r ON u.rank_id = r.rank_id WHERE u.username = ?");
-    $stmt->bind_param("s", $username);
+    $email = $_SESSION['email'];
+    $stmt = $conn->prepare("SELECT u.email, r.rank_name FROM users u JOIN ranks r ON u.rank_id = r.rank_id WHERE u.email = ?");
+    $stmt->bind_param("s", $email);
     $stmt->execute();
     $result = $stmt->get_result();
-    $user_rank = $result->fetch_assoc();
+    $email_rank = $result->fetch_assoc();
+    $stmt->close();
     $conn->close();
 
-    if ($user_rank) {
-        $rank = $user_rank['rank_name'];
+    if ($email_rank) {
+        $rank = $email_rank['rank_name'];
         if ($rank === "staff") {
             header("Location: defaultpanel.php");
             exit();
