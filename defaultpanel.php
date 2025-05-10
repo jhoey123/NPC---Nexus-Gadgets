@@ -7,7 +7,7 @@ if (!isset($_SESSION['email'])) {
 } else {
     include "php/conn_db.php";
     $username = $_SESSION['email'];
-    $stmt = $conn->prepare("SELECT u.username, r.rank_name FROM users u JOIN ranks r ON u.rank_id = r.rank_id WHERE u.username = ?");
+    $stmt = $conn->prepare("SELECT u.email, r.rank_name FROM users u JOIN ranks r ON u.rank_id = r.rank_id WHERE u.username = ?");
     $stmt->bind_param("s", $username);
     $stmt->execute();
     $result = $stmt->get_result();
@@ -107,8 +107,8 @@ if (!isset($_SESSION['email'])) {
             
             </div>
     <div class="cart-user">
-        <div class="cart-user-avatar"><?php echo strtoupper(substr($_SESSION['user'], 0, 1)); ?></div>
-        <div class="cart-user-name"><?php echo $_SESSION['user']; ?></div>
+        <div class="cart-user-avatar"><?php echo strtoupper(substr($_SESSION['email'], 0, 1)); ?></div>
+        <div class="cart-user-name"><?php echo $_SESSION['email']; ?></div>
     
     </div>
     <div class="cart-details" id="cart-details">
