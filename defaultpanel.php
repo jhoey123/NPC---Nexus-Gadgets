@@ -215,7 +215,6 @@ if (!isset($_SESSION['email'])) {
             <p><b>Category:</b> <span id="modal-product-category"></span></p>
             <input type="hidden" id="modal-product-id">
             <div>
-                <button class="edit-modal-btn" onclick="showEditModal()">Edit</button>
                 <button class="close-modal-btn" onclick="closeInventoryModal()">Close</button>
             </div>
         </div>
