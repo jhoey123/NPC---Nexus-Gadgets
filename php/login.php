@@ -35,11 +35,11 @@
             if ($user_rank) {
                session_regenerate_id(true);
                $rank = $user_rank['rank_name'];
-               if ($rank === "Owner") {
-                  echo json_encode(['success' => true]);
+               if ($rank === "Owner" || $rank === "admin") {
+                  echo json_encode(['success' => true, 'redirect' => 'adminpanel.php']);
                   exit;
                } else if ($rank === "staff") {
-                  echo json_encode(['success' => false, 'message' => 'Access restricted to staff.']);
+                  echo json_encode(['success' => true, 'redirect' => 'defaultpanel.php']);
                   exit;
                } else {
                   echo json_encode(['success' => false, 'message' => 'Invalid credentials. Please check your email and password.']);

@@ -306,8 +306,8 @@
                 });
 
                 const result = await response.json();
-                if (result.success) {
-                    window.location.href = 'adminpanel.php';
+                if (result.success && result.redirect) {
+                    window.location.href = result.redirect; // Redirect to the specified page
                 } else {
                     errorMessage.textContent = result.message || 'Login failed. Please try again.';
                     errorMessage.classList.remove('hidden'); // Show error message
