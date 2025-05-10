@@ -6,7 +6,7 @@ if (!isset($_SESSION['email'])) {
     exit();
 } else {
     include "php/conn_db.php";
-    $username = $_SESSION['user'];
+    $username = $_SESSION['email'];
     $stmt = $conn->prepare("SELECT u.username, r.rank_name FROM users u JOIN ranks r ON u.rank_id = r.rank_id WHERE u.username = ?");
     $stmt->bind_param("s", $username);
     $stmt->execute();
