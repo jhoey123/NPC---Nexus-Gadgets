@@ -3,9 +3,9 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Apr 10, 2025 at 04:26 AM
+-- Generation Time: May 13, 2025 at 12:19 PM
 -- Server version: 10.4.32-MariaDB
--- PHP Version: 8.0.30
+-- PHP Version: 8.2.12
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
@@ -64,9 +64,9 @@ CREATE TABLE `employees` (
 --
 
 INSERT INTO `employees` (`employee_id`, `employee_fname`, `employee_lname`, `employee_address`, `employee_dob`, `role`) VALUES
-(1, 'Henry', 'Hagrid', 'America', 'January 1, 1990', 'Owner'),
+(1, 'Henry', 'Hagrid', 'America', 'January 1, 1990', 'Manager'),
 (2, 'Jackson', 'David', 'Canada', 'Febuary 1, 1989', 'Staff'),
-(5, 'Micheal', 'Angelo', 'Los Angeles', 'March 1, 1988', 'Owner'),
+(5, 'Micheal', 'Angelo', 'Los Angeles', 'March 1, 1988', 'Manager'),
 (6, 'Maria', 'Lambo', 'London', 'April 1, 1987', 'Staff');
 
 -- --------------------------------------------------------
@@ -126,8 +126,9 @@ CREATE TABLE `ranks` (
 --
 
 INSERT INTO `ranks` (`rank_id`, `rank_name`, `rank_desc`) VALUES
-(1, 'Owner', 'the one who owns'),
-(2, 'staff', 'the hired ones');
+(1, 'Admin', 'the one who owns'),
+(2, 'staff', 'the hired ones'),
+(3, 'Customer', 'The costumer');
 
 -- --------------------------------------------------------
 
@@ -159,6 +160,8 @@ INSERT INTO `transactions` (`transaction_id`, `purchase_list`, `total_amount`, `
 
 CREATE TABLE `users` (
   `user_id` int(11) NOT NULL,
+  `firstname` varchar(255) NOT NULL,
+  `lastname` varchar(255) NOT NULL,
   `username` varchar(255) NOT NULL,
   `password` varchar(255) NOT NULL,
   `email` varchar(255) NOT NULL,
@@ -169,9 +172,9 @@ CREATE TABLE `users` (
 -- Dumping data for table `users`
 --
 
-INSERT INTO `users` (`user_id`, `username`, `password`, `email`, `rank_id`) VALUES
-(1, 'admin', '$2y$10$h1xrhJ3w.16omaoPahNMeeyXQe2XhV77Q8OElp0uiBSc.mwohjhKu', 'admin@admin.com', 1),
-(2, 'staff', '$2y$10$iLs.zoP6i8HbfrewNJRjV.NKzbIOhL1AClcpdbtu6PgbAASzzd6Se', '', 2);
+INSERT INTO `users` (`user_id`, `firstname`, `lastname`, `username`, `password`, `email`, `rank_id`) VALUES
+(1, '', '', 'admin', '$2y$10$eOr2HwlSx33M5RZMd255QeBDq4yzmsl0KP8gzdpXukbPjrdx9fVFS', 'admin@admin.com', 1),
+(5, '', '', 'staff2', '$2y$10$SaWJMu/ZYT30D8HLzUDwdOgvTp23QarK/E4GYwuK/a9ZSgQAr..oK', 'staff2@staff.com', 2);
 
 --
 -- Indexes for dumped tables
@@ -235,13 +238,13 @@ ALTER TABLE `products`
 -- AUTO_INCREMENT for table `ranks`
 --
 ALTER TABLE `ranks`
-  MODIFY `rank_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `rank_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
 -- AUTO_INCREMENT for table `users`
 --
 ALTER TABLE `users`
-  MODIFY `user_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
+  MODIFY `user_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=27;
 
 --
 -- Constraints for dumped tables
@@ -257,7 +260,6 @@ ALTER TABLE `products`
 -- Constraints for table `users`
 --
 ALTER TABLE `users`
-  ADD CONSTRAINT `users_to_employees_fk` FOREIGN KEY (`user_id`) REFERENCES `employees` (`employee_id`),
   ADD CONSTRAINT `users_to_rank_fk` FOREIGN KEY (`rank_id`) REFERENCES `ranks` (`rank_id`);
 COMMIT;
 
