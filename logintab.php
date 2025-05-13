@@ -163,22 +163,6 @@
                     <button type="submit" class="w-full py-2 px-4 rounded-lg text-white font-semibold btn-primary focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
                         Login
                     </button>
-                    <div class="flex items-center justify-center space-x-4">
-                        <div class="w-full h-px bg-gray-600"></div>
-                        <span class="text-gray-400 text-sm">OR</span>
-                        <div class="w-full h-px bg-gray-600"></div>
-                    </div>
-                    <div class="flex justify-center space-x-4">
-                        <button type="button" class="w-10 h-10 rounded-full bg-white flex items-center justify-center social-btn">
-                            <i class="fab fa-google text-red-500"></i>
-                        </button>
-                        <button type="button" class="w-10 h-10 rounded-full bg-white flex items-center justify-center social-btn">
-                            <i class="fab fa-facebook-f text-blue-600"></i>
-                        </button>
-                        <button type="button" class="w-10 h-10 rounded-full bg-white flex items-center justify-center social-btn">
-                            <i class="fab fa-apple text-gray-800"></i>
-                        </button>
-                    </div>
                 </form>
                 
                 <!-- Signup Form -->
@@ -319,10 +303,44 @@
             }
         });
 
-        signupForm.addEventListener('submit', function(e) {
+        signupForm.addEventListener('submit', async function(e) {
             e.preventDefault();
-            alert('Signup functionality would be implemented here');
-            // You would typically send a request to your backend here
+
+            const formData = new FormData(signupForm);
+            const errorMessage = document.getElementById('error-message');
+                const password = document.getElementById('signup-password').value;
+            const confirmPassword = document.getElementById('signup-confirm-password').value;
+
+            errorMessage.classList.add('hidden'); // Hide error message initially
+
+            // Check if passwords match
+            if (password !== confirmPassword) {
+                errorMessage.textContent = 'Passwords do not match.';
+                errorMessage.classList.remove('hidden'); // Show error message
+                return;
+            }
+
+            try {
+                const response = await fetch('php/signup.php', {
+                    method: 'POST',
+                    body: formData
+                });
+
+                const result = await response.json();
+                if (result.success) {
+                    alert('Signup successful! You can now log in.');
+                    signupForm.reset(); // Clear the input fields
+                    formToggle.checked = false; // Switch back to login form
+                    formToggle.dispatchEvent(new Event('change'));
+                } else {
+                    errorMessage.textContent = result.message || 'Signup failed. Please try again.';
+                    errorMessage.classList.remove('hidden'); // Show error message
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                errorMessage.textContent = 'An error occurred. Please try again later.';
+                errorMessage.classList.remove('hidden'); // Show error message
+            }
         });
     </script>
 </body>

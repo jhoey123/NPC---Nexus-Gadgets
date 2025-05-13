@@ -7,7 +7,7 @@
       $password = trim($_POST['password']);
 
       if (empty($email) || empty($password)) {
-         echo json_encode(['success' => false, 'message' => 'Invalid credentials. Please check your email and password.']);
+         echo json_encode(['success' => false, 'message' => 'Invalid credentials. Please check your email and password1.']);
          exit;
       }
 
@@ -35,31 +35,31 @@
             if ($user_rank) {
                session_regenerate_id(true);
                $rank = $user_rank['rank_name'];
-               if ($rank === "Owner" || $rank === "admin") {
+               if ($rank === "Admin") {
                   echo json_encode(['success' => true, 'redirect' => 'adminpanel.php']);
                   exit;
                } else if ($rank === "staff") {
                   echo json_encode(['success' => true, 'redirect' => 'defaultpanel.php']);
                   exit;
                } else {
-                  echo json_encode(['success' => false, 'message' => 'Invalid credentials. Please check your email and password.']);
+                  echo json_encode(['success' => false, 'message' => 'Invalid credentials. Please check your email and password2.']);
                   exit;
                }
             } else {
-               echo json_encode(['success' => false, 'message' => 'Invalid credentials. Please check your email and password.']);
+               echo json_encode(['success' => false, 'message' => 'Invalid credentials. Please check your email and password3.']);
                exit;
             }
          } else {
-            echo json_encode(['success' => false, 'message' => 'Invalid credentials. Please check your email and password.']);
+            echo json_encode(['success' => false, 'message' => 'Invalid credentials. Please check your email and password4.']);
             exit;
          }
       } else {
          $conn->close();
-         echo json_encode(['success' => false, 'message' => 'Invalid credentials. Please check your email and password.']);
+         echo json_encode(['success' => false, 'message' => 'Invalid credentials. Please check your email and password5.']);
          exit;
       }
    } else {
-      echo json_encode(['success' => false, 'message' => 'An unexpected error occurred. Please try again.']);
+      echo json_encode(['success' => false, 'message' => 'An unexpected error occurred. Please try again6.']);
       exit;
    }
 ?>
