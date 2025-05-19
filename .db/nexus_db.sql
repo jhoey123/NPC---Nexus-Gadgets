@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: May 13, 2025 at 12:19 PM
+-- Generation Time: May 19, 2025 at 04:09 PM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -85,29 +85,53 @@ CREATE TABLE `products` (
   `Category_id` int(11) NOT NULL,
   `Barcode_id` varchar(12) NOT NULL,
   `Product_image_name` text NOT NULL,
-  `Product_image_path` text NOT NULL
+  `Product_image_path` text NOT NULL,
+  `Sales` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `products`
 --
 
-INSERT INTO `products` (`Product_id`, `Product_name`, `Product_brand`, `Product_desc`, `Product_quantity`, `Product_price`, `Category_id`, `Barcode_id`, `Product_image_name`, `Product_image_path`) VALUES
-(51, 'iPhone 16 Pro Max', 'Apple', 'Apples new release', 10, 70000.00, 2, '480005100051', '67f7205d0a5e9-Apple iPhone 16 Pro Max.jpg', 'uploads/67f7205d0a5e9-Apple iPhone 16 Pro Max.jpg'),
-(52, 'Galaxy S25+', 'Samsung', 'A samsung phone', 10, 50000.00, 2, '480005200052', '67f7209874f10-Galaxy S25+.jpg', 'uploads/67f7209874f10-Galaxy S25+.jpg'),
-(53, 'Infinix ZERO 40 5G', 'Infinix', 'A Infinix phone', 10, 15000.00, 2, '480005300053', '67f720e3ed082-Infinix ZERO 40 5G.jpg', 'uploads/67f720e3ed082-Infinix ZERO 40 5G.jpg'),
-(54, 'Macbook Air M1', 'Apple', 'A apple laptop', 9, 400000.00, 1, '480005400054', '67f721e09b39a-Macbook Air M1.jpg', 'uploads/67f721e09b39a-Macbook Air M1.jpg'),
-(55, 'Toshiba Dynabook', 'Toshiba', 'A toshiba laptop', 10, 11000.00, 1, '480005500055', '67f72216adc02-Toshiba Dynabook Satellite.jpg', 'uploads/67f72216adc02-Toshiba Dynabook Satellite.jpg'),
-(56, 'Razerblade 15', 'Razer', 'a razer laptop', 10, 100000.00, 1, '480005600056', '67f7224f147e7-Razer Blade 15.jpg', 'uploads/67f7224f147e7-Razer Blade 15.jpg'),
-(57, 'Logitech G Pro', 'Logitech', 'a logitech mouse', 10, 5000.00, 3, '480005700057', '67f722c94c9da-Logitech G Pro.png', 'uploads/67f722c94c9da-Logitech G Pro.png'),
-(58, 'Razer Death', 'Razer', 'a razer mouse', 10, 3000.00, 3, '480005800058', '67f7230578e77-Razer DeathAdder.png', 'uploads/67f7230578e77-Razer DeathAdder.png'),
-(59, 'Magic Mouse', 'Apple', 'a apple mouse', 10, 3500.00, 3, '480005900059', '67f7232d781e0-Magic Mouse.png', 'uploads/67f7232d781e0-Magic Mouse.png'),
-(60, 'Ajazz AK820', 'Ajazz', 'a ajazz keyboard', 10, 2000.00, 4, '480006000060', '67f72384e79c1-Epomaker Ajazz AK820.png', 'uploads/67f72384e79c1-Epomaker Ajazz AK820.png'),
-(61, 'Logitech KB', 'Logitech', 'a logitech keyboard', 10, 5000.00, 4, '480006100061', '67f723b2021c7-Logitech G pro Keyboard.png', 'uploads/67f723b2021c7-Logitech G pro Keyboard.png'),
-(62, 'Razer Huntsman', 'Razer', 'a razer keyboard', 10, 5000.00, 4, '480006200062', '67f723e934746-Razer Huntsman V3.png', 'uploads/67f723e934746-Razer Huntsman V3.png'),
-(63, 'AOC 27B376H', 'AOC', 'a aoc monitor', 10, 11000.00, 5, '480006300063', '67f724391189d-AOC 27B376H.png', 'uploads/67f724391189d-AOC 27B376H.png'),
-(64, 'Samsung 32 Class', 'Samsung', 'a samsung monitor', 10, 25000.00, 5, '480006400064', '67f724636145a-Samsung 32 Class Curved.png', 'uploads/67f724636145a-Samsung 32 Class Curved.png'),
-(65, 'LG UltraGear', 'LG', 'a LG monitor', 10, 20000.00, 5, '480006500065', '67f7248957fcc-UltraGear LG.png', 'uploads/67f7248957fcc-UltraGear LG.png');
+INSERT INTO `products` (`Product_id`, `Product_name`, `Product_brand`, `Product_desc`, `Product_quantity`, `Product_price`, `Category_id`, `Barcode_id`, `Product_image_name`, `Product_image_path`, `Sales`) VALUES
+(52, 'Galaxy S25+', 'Samsung', 'A samsung phone', 10, 50000.00, 2, '480005200052', '67f7209874f10-Galaxy S25+.jpg', 'uploads/67f7209874f10-Galaxy S25+.jpg', 2),
+(53, 'Infinix ZERO 40 5G', 'Infinix', 'A Infinix phone', 10, 15000.00, 2, '480005300053', '67f720e3ed082-Infinix ZERO 40 5G.jpg', 'uploads/67f720e3ed082-Infinix ZERO 40 5G.jpg', 10),
+(54, 'Macbook Air M1', 'Apple', 'A apple laptop', 9, 400000.00, 1, '480005400054', '67f721e09b39a-Macbook Air M1.jpg', 'uploads/67f721e09b39a-Macbook Air M1.jpg', 100),
+(55, 'Toshiba Dynabook', 'Toshiba', 'A toshiba laptop', 10, 11000.00, 1, '480005500055', '67f72216adc02-Toshiba Dynabook Satellite.jpg', 'uploads/67f72216adc02-Toshiba Dynabook Satellite.jpg', 0),
+(56, 'Razerblade 15', 'Razer', 'a razer laptop', 10, 100000.00, 1, '480005600056', '67f7224f147e7-Razer Blade 15.jpg', 'uploads/67f7224f147e7-Razer Blade 15.jpg', 0),
+(57, 'Logitech G Pro', 'Logitech', 'a logitech mouse', 10, 5000.00, 3, '480005700057', '67f722c94c9da-Logitech G Pro.png', 'uploads/67f722c94c9da-Logitech G Pro.png', 0),
+(58, 'Razer Death', 'Razer', 'a razer mouse', 10, 3000.00, 3, '480005800058', '67f7230578e77-Razer DeathAdder.png', 'uploads/67f7230578e77-Razer DeathAdder.png', 0),
+(59, 'Magic Mouse', 'Apple', 'a apple mouse', 10, 3500.00, 3, '480005900059', '67f7232d781e0-Magic Mouse.png', 'uploads/67f7232d781e0-Magic Mouse.png', 0),
+(60, 'Ajazz AK820', 'Ajazz', 'a ajazz keyboard', 10, 2000.00, 4, '480006000060', '67f72384e79c1-Epomaker Ajazz AK820.png', 'uploads/67f72384e79c1-Epomaker Ajazz AK820.png', 0),
+(61, 'Logitech KB', 'Logitech', 'a logitech keyboard', 10, 5000.00, 4, '480006100061', '67f723b2021c7-Logitech G pro Keyboard.png', 'uploads/67f723b2021c7-Logitech G pro Keyboard.png', 100),
+(62, 'Razer Huntsman', 'Razer', 'a razer keyboard', 10, 5000.00, 4, '480006200062', '67f723e934746-Razer Huntsman V3.png', 'uploads/67f723e934746-Razer Huntsman V3.png', 0),
+(63, 'AOC 27B376H', 'AOC', 'a aoc monitor', 10, 11000.00, 5, '480006300063', '67f724391189d-AOC 27B376H.png', 'uploads/67f724391189d-AOC 27B376H.png', 0),
+(64, 'Samsung 32 Class', 'Samsung', 'a samsung monitor', 10, 25000.00, 5, '480006400064', '67f724636145a-Samsung 32 Class Curved.png', 'uploads/67f724636145a-Samsung 32 Class Curved.png', 0),
+(65, 'LG UltraGear', 'LG', 'a LG monitor', 10, 20000.00, 5, '480006500065', '67f7248957fcc-UltraGear LG.png', 'uploads/67f7248957fcc-UltraGear LG.png', 0);
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `profits`
+--
+
+CREATE TABLE `profits` (
+  `Day` varchar(255) NOT NULL,
+  `Profits` decimal(10,0) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `profits`
+--
+
+INSERT INTO `profits` (`Day`, `Profits`) VALUES
+('Monday', 0),
+('Tuesday', 0),
+('Wednesday', 0),
+('Thurdsay', 0),
+('Friday', 0),
+('Saturday', 0),
+('Sunday', 0);
 
 -- --------------------------------------------------------
 
@@ -174,7 +198,9 @@ CREATE TABLE `users` (
 
 INSERT INTO `users` (`user_id`, `firstname`, `lastname`, `username`, `password`, `email`, `rank_id`) VALUES
 (1, '', '', 'admin', '$2y$10$eOr2HwlSx33M5RZMd255QeBDq4yzmsl0KP8gzdpXukbPjrdx9fVFS', 'admin@admin.com', 1),
-(5, '', '', 'staff2', '$2y$10$SaWJMu/ZYT30D8HLzUDwdOgvTp23QarK/E4GYwuK/a9ZSgQAr..oK', 'staff2@staff.com', 2);
+(5, '', '', 'staff2', '$2y$10$SaWJMu/ZYT30D8HLzUDwdOgvTp23QarK/E4GYwuK/a9ZSgQAr..oK', 'staff2@staff.com', 2),
+(27, 'Hello', 'Hello', '123123', '$2y$10$DuElZQlmrqqtdqK8thGDweh1LTnBS/Co/Lija6J6dWApDj3YjS2nu', '123123123@123123.com', 3),
+(28, 'hello', 'hello', 'niggaman123', '$2y$10$p3fPtHlKMCaie85k63qr6.hIBDndUOgCpbpaEaCH3.VAaLRFUp7T.', 'retard@retard.com', 3);
 
 --
 -- Indexes for dumped tables
@@ -232,7 +258,7 @@ ALTER TABLE `employees`
 -- AUTO_INCREMENT for table `products`
 --
 ALTER TABLE `products`
-  MODIFY `Product_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=66;
+  MODIFY `Product_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=71;
 
 --
 -- AUTO_INCREMENT for table `ranks`
@@ -244,7 +270,7 @@ ALTER TABLE `ranks`
 -- AUTO_INCREMENT for table `users`
 --
 ALTER TABLE `users`
-  MODIFY `user_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=27;
+  MODIFY `user_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=29;
 
 --
 -- Constraints for dumped tables
