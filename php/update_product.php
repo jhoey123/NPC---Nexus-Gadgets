@@ -5,7 +5,7 @@ $response = ['success' => false, 'message' => ''];
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $product_id = $_POST['product_id'];
     $product_name = $_POST['product_name'];
-    $product_desc = $_POST['product_desc'];
+    $product_desc = isset($_POST['product_desc']) ? $_POST['product_desc'] : ''; // Default to an empty string if not provided
     $product_price = $_POST['product_price'];
     $product_quantity = $_POST['product_quantity'];
 
@@ -17,7 +17,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         // Update basic product information
         $stmt = $conn->prepare("UPDATE products SET 
             Product_name = ?, 
-            Product_desc = ?, 
+            Product_desc     = ?, 
             Product_price = ?, 
             Product_quantity = ? 
             WHERE Product_id = ?");
@@ -70,5 +70,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 }
 
 $conn->close();
-echo json_encode($response);
-?>
+
+// Redirect back to adminpanel.php
+header("Location: ../adminpanel.php");
+exit();

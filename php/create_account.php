@@ -32,7 +32,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $conn->rollback();
         echo json_encode(['success' => false, 'message' => $e->getMessage()]);
     }
-
+    $stmt->close();
     $conn->close();
 }
 ?>

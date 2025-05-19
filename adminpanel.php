@@ -2,13 +2,13 @@
 
 
 session_start();
-//$_SESSION['user'] = "admin"; // For testing purposes, set a session variable to simulate a logged-in user
 
 if (!isset($_SESSION['email'])) {
     header("Location: index.php");
     exit();
 } else {
     include "php/conn_db.php";
+    include "php/functions.php";
     $email = $_SESSION['email'];
     $stmt = $conn->prepare("SELECT u.email, r.rank_name FROM users u JOIN ranks r ON u.rank_id = r.rank_id WHERE u.email = ?");
     $stmt->bind_param("s", $email);
@@ -29,6 +29,10 @@ if (!isset($_SESSION['email'])) {
         exit();
     }
 }
+
+$totalSales = getSales();
+$todaysOrders = getTodaysOrders();
+$weeklyProfits = getWeeklyProfits();
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -37,944 +41,9 @@ if (!isset($_SESSION['email'])) {
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="css/adminpanel.css">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-        }
-
-        body {
-            width: 100%;
-            height: 100vh;
-            background: linear-gradient(135deg, #0a192f 0%, #172a45 100%);
-            display: flex;
-            min-height: 100vh;
-            cursor: default;
-            color: #e6f1ff;
-        }
-
-        /* Sidebar styles */
-        .sidebar {
-            width: 80px;
-            background: linear-gradient(180deg, #0a192f 10%, #020c1b 90%);
-            color: #e6f1ff;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            padding: 20px 0;
-            transition: width 0.5s;
-            position: fixed;
-            height: 100%;
-            top: 0;
-            left: 0;
-            z-index: 1000;
-            border-right: 1px solid #1e2d3d;
-        }
-
-        .sidebar:hover {
-            width: 200px;
-        }
-
-        .sidebar-icon {
-            width: 36px;
-            height: 36px;
-            border-radius: 10px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin-bottom: 15px;
-            cursor: pointer;
-            color: #6366f1;
-            transition: all 0.3s;
-        }
-
-        .sidebar-icon.logo {
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            width: 100%;
-            height: auto;
-            padding-top: 10px;
-            padding-bottom: 10px;
-        }
-
-        .sidebar-icon.logo img {
-            width: 70px;
-            height: 70px;
-            border-radius: 50%;
-            margin: 0 auto;
-            display: block;
-        }
-
-        .sidebar-icon.logo::after {
-            content: "NEXUS";
-            display: block;
-            width: 100%;
-            text-align: center;
-            margin-top: 8px;
-            font-size: 12px;
-            color: #6366f1;
-        }
-
-        .sidebar:hover .sidebar-icon.logo {
-            justify-content: center;
-            padding-left: 0;
-            flex-direction: column;
-            background-color: transparent;
-        }
-
-        .sidebar-icon.logo:hover {
-            background-color: transparent !important;
-        }
-
-        .sidebar:hover .sidebar-icon {
-            width: 100%;
-            justify-content: flex-start;
-            padding-left: 37px;
-            margin-bottom: 15px;
-            transition: width 0.5s;
-            opacity: 1;
-            gap: 10px;
-        }
-
-        .sidebar-icon.active {
-            background-color: #1e2d3d;
-            color: #6366f1;
-        }
-
-        .sidebar-icon.active .sidebar-text {
-            color: #6366f1;
-        }
-
-        .sidebar-icon:active,
-        .sidebar-icon.active:active {
-            background-color: #0a192f;
-            color: #6366f1;
-        }
-
-        .sidebar-icon:hover:not(.active) {
-            background-color: #1e2d3d;
-            color: #6366f1;
-        }
-
-        .sidebar-icon:active {
-            background-color: #0a192f;
-        }
-
-        .sidebar-text {
-            display: none;
-            font-size: 14px;
-            color: #ccd6f6;
-            transition: all 0.5s;
-        }
-
-        .sidebar:hover .sidebar-text {
-            display: inline;
-            transition: margin-left 0.5s;
-        }
-
-        /* Dashboard styles */
-        .main-content {
-            flex: 1;
-            padding: 25px;
-            padding-left: 100px;
-            transition: margin-left 0.5s;
-        }   
-
-        .sidebar:hover ~ .main-content {
-            margin-left: 130px; 
-        }
-
-        .dashboard-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 30px;
-        }
-
-        .dashboard-title {
-            font-size: 28px;
-            font-weight: 700;
-            color: #6366f1;
-        }
-
-        .date-display {
-            font-size: 16px;
-            color: #8892b0;
-        }
-
-        .stats-container {
-            display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            gap: 20px;
-            margin-bottom: 30px;
-        }
-
-        .stat-card {
-            background: #112240;
-            border-radius: 12px;
-            padding: 20px;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-            transition: transform 0.3s, box-shadow 0.3s;
-            border: 1px solid #1e2d3d;
-        }
-
-        .stat-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 10px 15px rgba(0, 0, 0, 0.2);
-        }
-
-        .stat-title {
-            font-size: 14px;
-            color: #8892b0;
-            margin-bottom: 8px;
-        }
-
-        .stat-value {
-            font-size: 24px;
-            font-weight: 700;
-            color: #e6f1ff;
-        }
-
-        .stat-change {
-            display: flex;
-            align-items: center;
-            font-size: 12px;
-            margin-top: 8px;
-        }
-
-        .stat-change.up {
-            color: #6366f1;
-        }
-
-        .stat-change.down {
-            color: #ff5555;
-        }
-
-        .chart-container {
-            display: grid;
-            grid-template-columns: 2fr 1fr;
-            gap: 20px;
-            margin-bottom: 30px;
-        }
-
-        .chart-card {
-            background: #112240;
-            border-radius: 12px;
-            padding: 20px;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-            border: 1px solid #1e2d3d;
-        }
-
-        .chart-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 20px;
-        }
-
-        .chart-title {
-            font-size: 18px;
-            font-weight: 600;
-            color: #6366f1;
-        }
-
-        .chart-period {
-            font-size: 14px;
-            color: #8892b0;
-        }
-
-        .chart-placeholder {
-            height: 300px;
-            background-color: #0a192f;
-            border-radius: 8px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: #8892b0;
-            border: 1px dashed #1e2d3d;
-        }
-
-        .products-container {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 20px;
-        }
-
-        .product-list {
-            background: #112240;
-            border-radius: 12px;
-            padding: 20px;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-            border: 1px solid #1e2d3d;
-        }
-
-        .product-list-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 20px;
-        }
-
-        .product-list-title {
-            font-size: 18px;
-            font-weight: 600;
-            color: #6366f1;
-        }
-
-        .product-item {
-            display: flex;
-            align-items: center;
-            padding: 12px 0;
-            border-bottom: 1px solid #1e2d3d;
-        }
-
-        .product-item:last-child {
-            border-bottom: none;
-        }
-
-        .product-rank {
-            font-weight: 700;
-            color: #6366f1;
-            margin-right: 15px;
-            width: 20px;
-            text-align: center;
-        }
-
-        .product-info {
-            flex: 1;
-        }
-
-        .product-name {
-            font-size: 14px;
-            font-weight: 500;
-            color: #e6f1ff;
-        }
-
-        .product-sales {
-            font-size: 12px;
-            color: #8892b0;
-        }
-
-        .product-sales-value {
-            font-weight: 600;
-            color: #6366f1;
-        }
-
-        /* Upload section styles */
-        .upload-content {
-            flex: 1;
-            padding: 25px;
-            padding-left: 100px;
-            transition: margin-left 0.5s;
-            display: none;
-        }
-
-        .sidebar:hover ~ .upload-content {
-            margin-left: 130px;
-        }
-
-        .upload-container {
-            max-width: 800px;
-            margin: 0 auto;
-            background: #112240;
-            border-radius: 12px;
-            padding: 30px;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-            border: 1px solid #1e2d3d;
-        }
-
-        .upload-header {
-            margin-bottom: 30px;
-        }
-
-        .upload-title {
-            font-size: 24px;
-            font-weight: 700;
-            color: #6366f1;
-            margin-bottom: 10px;
-        }
-
-        .upload-subtitle {
-            font-size: 16px;
-            color: #8892b0;
-        }
-
-        .upload-form {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 20px;
-        }
-
-        .form-group {
-            margin-bottom: 20px;
-        }
-
-        .form-group label {
-            display: block;
-            font-size: 14px;
-            font-weight: 500;
-            color: #e6f1ff;
-            margin-bottom: 8px;
-        }
-
-        .form-group input,
-        .form-group textarea,
-        .form-group select {
-            width: 100%;
-            padding: 12px;
-            background-color: #0a192f;
-            border: 1px solid #1e2d3d;
-            border-radius: 8px;
-            font-size: 14px;
-            transition: border-color 0.3s;
-            color: #e6f1ff;
-        }
-
-        .form-group input:focus,
-        .form-group textarea:focus,
-        .form-group select:focus {
-            outline: none;
-            border-color: #64ffda;
-        }
-
-        .form-group.full-width {
-            grid-column: span 2;
-        }
-
-        .file-upload {
-            position: relative;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            padding: 40px;
-            border: 2px dashed #1e2d3d;
-            border-radius: 8px;
-            cursor: pointer;
-            transition: border-color 0.3s, background-color 0.3s;
-            background-color: #0a192f;
-        }
-
-        .file-upload:hover {
-            border-color: #6366f1;
-            background-color: #112240;
-        }
-
-        .file-upload-icon {
-            font-size: 24px;
-            color: #6366f1;
-            margin-bottom: 10px;
-        }
-
-        .file-upload-text {
-            font-size: 14px;
-            color: #8892b0;
-            text-align: center;
-        }
-
-        .file-upload-text span {
-            color: #6366f1;
-            font-weight: 500;
-        }
-
-        .file-upload input {
-            position: absolute;
-            width: 100%;
-            height: 100%;
-            opacity: 0;
-            cursor: pointer;
-        }
-
-        .upload-btn {
-            grid-column: span 2;
-            background-color: #6366f1;
-            color: #0a192f;
-            border: none;
-            border-radius: 8px;
-            padding: 14px;
-            font-size: 16px;
-            font-weight: 500;
-            cursor: pointer;
-            transition: background-color 0.3s;
-        }
-
-        .upload-btn:hover {
-            background-color: #525ddc;
-        }
-
-        /* Inventory section styles */
-        .inventory-content {
-            flex: 1;
-            padding: 25px;
-            padding-left: 100px;
-            transition: margin-left 0.5s;
-            display: none;
-        }
-
-        .sidebar:hover ~ .inventory-content {
-            margin-left: 130px;
-        }
-
-        .inventory-header {
-            margin-bottom: 30px;
-        }
-
-        .inventory-title {
-            font-size: 24px;
-            font-weight: 700;
-            color: #6366f1;
-            margin-bottom: 10px;
-        }
-
-        .inventory-subtitle {
-            font-size: 16px;
-            color: #8892b0;
-        }
-
-        .inventory-actions {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 20px;
-        }
-
-        .inventory-search {
-            position: relative;
-            width: 300px;
-        }
-
-        .inventory-search input {
-            width: 100%;
-            padding: 10px 15px 10px 40px;
-            background-color: #0a192f;
-            border: 1px solid #1e2d3d;
-            border-radius: 8px;
-            font-size: 14px;
-            color: #e6f1ff;
-        }
-
-        .inventory-search i {
-            position: absolute;
-            left: 15px;
-            top: 50%;
-            transform: translateY(-50%);
-            color: #8892b0;
-        }
-
-        <button class="add-product-btn" onclick="showAddProductModal()">
-    <i class="fas fa-plus" style="margin-right: 8px;"></i> Add Product
-</button>
-
-        .inventory-table {
-            width: 100%;
-            background: #112240;
-            border-radius: 12px;
-            overflow: hidden;
-            transition: background-color 0.3s;
-        }
-
-        .add-product-btn:hover {
-            background-color: #525ddc;
-        }
-
-        .inventory-table {
-            width: 100%;
-            background: #112240;
-            border-radius: 12px;
-            overflow: hidden;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-            border: 1px solid #1e2d3d;
-        }
-
-        .inventory-table table {
-            width: 100%;
-            border-collapse: collapse;
-        }
-
-        .inventory-table th {
-            background-color: #0a192f;
-            padding: 12px 15px;
-            text-align: left;
-            font-size: 14px;
-            font-weight: 600;
-            color: #6366f1;
-            border-bottom: 1px solid #1e2d3d;
-        }
-
-        .inventory-table td {
-            padding: 12px 15px;
-            font-size: 14px;
-            color: #e6f1ff;
-            border-bottom: 1px solid #1e2d3d;
-        }
-
-        .inventory-table tr:last-child td {
-            border-bottom: none;
-        }
-
-        .inventory-table tr:hover {
-            background-color: #0a192f;
-        }
-
-        .product-image {
-            width: 50px;
-            height: 50px;
-            border-radius: 6px;
-            object-fit: cover;
-        }
-
-        .status-badge {
-            display: inline-block;
-            padding: 4px 8px;
-            border-radius: 12px;
-            font-size: 12px;
-            font-weight: 500;
-        }
-
-        .status-in-stock {
-            background-color: rgba(100, 255, 218, 0.1);
-            color: #64ffda;
-        }
-
-        .status-low-stock {
-            background-color: rgba(255, 213, 0, 0.1);
-            color: #ffd500;
-        }
-
-        .status-out-of-stock {
-            background-color: rgba(255, 85, 85, 0.1);
-            color: #ff5555;
-        }
-
-        .action-btn {
-            background: none;
-            border: none;
-            cursor: pointer;
-            font-size: 16px;
-            margin-right: 10px;
-            color: #8892b0;
-            transition: color 0.3s;
-        }
-
-        .edit-btn {
-            color: #64ffda;
-        }
-
-        .edit-btn:hover {
-            color: #52d9c4;
-        }
-
-        .delete-btn {
-            color: #ff5555;
-        }
-
-        .delete-btn:hover {
-            color: #ff3333;
-        }
-
-        /* Employee section styles */
-        .employee-content {
-            flex: 1;
-            padding: 25px;
-            padding-left: 100px;
-            transition: margin-left 0.5s;
-            display: none;
-        }
-
-        .sidebar:hover ~ .employee-content {
-            margin-left: 130px;
-        }
-
-        .employee-header {
-            margin-bottom: 30px;
-        }
-
-        .employee-title {
-            font-size: 24px;
-            font-weight: 700;
-            color: #6366f1; /* Updated color */
-            margin-bottom: 10px;
-        }
-
-        .employee-subtitle {
-            font-size: 16px;
-            color: #6366f1; /* Updated color */
-        }
-
-        .employee-actions {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 20px;
-        }
-
-        .employee-search {
-            position: relative;
-            width: 300px;
-        }
-
-        .employee-search input {
-            width: 100%;
-            padding: 10px 15px 10px 40px;
-            background-color: #0a192f;
-            border: 1px solid #1e2d3d;
-            border-radius: 8px;
-            font-size: 14px;
-            color: #6366f1; /* Updated color */
-        }
-
-        .employee-search i {
-            position: absolute;
-            left: 15px;
-            top: 50%;
-            transform: translateY(-50%);
-            color: #8892b0;
-        }
-
-        .add-employee-btn {
-            background-color: #6366f1;
-            color: #0a192f;
-            border: none;
-            border-radius: 8px;
-            padding: 10px 20px;
-            font-size: 14px;
-            font-weight: 500;
-            cursor: pointer;
-            transition: background-color 0.3s;
-        }
-
-        .add-employee-btn:hover {
-            background-color: #525ddc;
-        }
-
-        .employee-table {
-            width: 100%;
-            background: #112240;
-            border-radius: 12px;
-            overflow: hidden;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-            border: 1px solid #1e2d3d;
-        }
-
-        .employee-table table {
-            width: 100%;
-            border-collapse: collapse;
-        }
-
-        .employee-table th {
-            background-color: #0a192f;
-            padding: 12px 15px;
-            text-align: left;
-            font-size: 14px;
-            font-weight: 600;
-            color: #6366f1; /* Updated color */
-            border-bottom: 1px solid #1e2d3d;
-        }
-
-        .employee-table td {
-            padding: 12px 15px;
-            font-size: 14px;
-            color: #6366f1; /* Updated color */
-            border-bottom: 1px solid #1e2d3d;
-        }
-
-        .employee-table tr:last-child td {
-            border-bottom: none;
-        }
-
-        .employee-table tr:hover {
-            background-color: #0a192f;
-        }
-
-        .employee-avatar {
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            object-fit: cover;
-        }
-
-        .role-badge {
-            display: inline-block;
-            padding: 4px 8px;
-            border-radius: 12px;
-            font-size: 12px;
-            font-weight: 500;
-        }
-
-        .role-admin {
-            background-color: rgba(100, 255, 218, 0.1);
-            color: #6366f1;
-        }
-
-        .role-manager {
-            background-color: rgba(0, 191, 255, 0.1);
-            color: #00bfff;
-        }
-
-        .role-staff {
-            background-color: rgba(138, 43, 226, 0.1);
-            color: #8a2be2;
-        }
-
-        /* Modal styles */
-        .modal {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-color: rgba(0, 0, 0, 0.7);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            z-index: 1000;
-            display: none;
-        }
-
-        .modal-content {
-            background: #112240;
-            border-radius: 12px;
-            width: 500px;
-            max-width: 90%;
-            /* Remove max-height and overflow to prevent scrolling */
-            height: auto;
-            overflow: visible;
-            border: 1px solid #1e2d3d;
-        }
-
-        .modal-header {
-            padding: 20px;
-            border-bottom: 1px solid #1e2d3d;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .modal-title {
-            font-size: 20px;
-            font-weight: 600;
-            color: #64ffda;
-        }
-
-        .modal-close {
-            background: none;
-            border: none;
-            font-size: 24px;
-            cursor: pointer;
-            color: #8892b0;
-            transition: color 0.3s;
-        }
-
-        .modal-close:hover {
-            color: #ff5555;
-        }
-
-        .modal-body {
-            padding: 20px;
-        }
-
-        .modal-footer {
-            padding: 20px;
-            border-top: 1px solid #1e2d3d;
-            display: flex;
-            justify-content: flex-end;
-            gap: 10px;
-        }
-
-        .modal-btn {
-            padding: 10px 20px;
-            border-radius: 8px;
-            font-size: 14px;
-            font-weight: 500;
-            cursor: pointer;
-            transition: all 0.3s;
-        }
-
-        .modal-btn-primary {
-            background-color: #6366f1;
-            color: #0a192f;
-            border: none;
-        }
-
-        .modal-btn-primary:hover {
-            background-color: #525ddc;
-        }
-
-        .modal-btn-secondary {
-            background-color: transparent;
-            color: #e6f1ff;
-            border: 1px solid #1e2d3d;
-        }
-
-        .modal-btn-secondary:hover {
-            background-color: #0a192f;
-        }
-
-        /* Toast notification */
-        .toast {
-            position: fixed;
-            bottom: 20px;
-            right: 20px;
-            background-color: #112240;
-            color: #e6f1ff;
-            padding: 15px 25px;
-            border-radius: 8px;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
-            border-left: 4px solid #6366f1;
-            display: flex;
-            align-items: center;
-            z-index: 1001;
-            transform: translateY(100px);
-            opacity: 0;
-            transition: all 0.3s ease;
-        }
-
-        .toast.show {
-            transform: translateY(0);
-            opacity: 1;
-        }
-
-        .toast i {
-            margin-right: 10px;
-            color: #6366f1;
-        }
-
-        /* Responsive adjustments */
-        @media (max-width: 1200px) {
-            .stats-container {
-                grid-template-columns: repeat(2, 1fr);
-            }
-            
-            .chart-container {
-                grid-template-columns: 1fr;
-            }
-            
-            .products-container {
-                grid-template-columns: 1fr;
-            }
-        }
-
-        @media (max-width: 768px) {
-            .stats-container {
-                grid-template-columns: 1fr;
-            }
-            
-            .upload-form {
-                grid-template-columns: 1fr;
-            }
-            
-            .form-group.full-width {
-                grid-column: span 1;
-            }
-            
-            .upload-btn {
-                grid-column: span 1;
-            }
-        }
     </style>
     <title>NexusGadgets Admin POS</title>
 </head>
@@ -1007,7 +76,7 @@ if (!isset($_SESSION['email'])) {
     </div>
 
     <!-- Dashboard Content -->
-    <div class="main-content" id="dashboard-content">
+    <div class="main-content" id="dashboard-content" style="display:none;">
         <div class="dashboard-header">
             <div>
                 <h1 class="dashboard-title">Admin POS Dashboard</h1>
@@ -1018,14 +87,18 @@ if (!isset($_SESSION['email'])) {
         <div class="stats-container">
             <div class="stat-card">
                 <div class="stat-title">Total Sales</div>
-                <div class="stat-value" id="total-sales">₱12,345</div>
+                <div class="stat-value" id="total-sales">
+                    $<?php echo number_format($totalSales, 2); ?>
+                </div>
                 <div class="stat-change up">
                     <i class="fas fa-arrow-up"></i> <span id="sales-change">12%</span> from yesterday
                 </div>
             </div>
             <div class="stat-card">
                 <div class="stat-title">Today's Orders</div>
-                <div class="stat-value" id="today-orders">42</div>
+                <div class="stat-value" id="today-orders">
+                    <?php echo $todaysOrders; ?>
+                </div>
                 <div class="stat-change up">
                     <i class="fas fa-arrow-up"></i> <span id="orders-change">8%</span> from yesterday
                 </div>
@@ -1093,49 +166,49 @@ if (!isset($_SESSION['email'])) {
     </div>
 
     <!-- Upload Content -->
-    <div class="upload-content" id="upload-content">
+    <div class="upload-content" id="upload-content" style="display:none;">
         <div class="upload-container">
             <div class="upload-header">
                 <h2 class="upload-title">Add New Product</h2>
                 <p class="upload-subtitle">Fill in the details below to add a new product to inventory</p>
             </div>
             
-            <form class="upload-form" id="product-form" onsubmit="addProduct(event)">
+            <form class="upload-form" id="product-form" action="php/upload.php" method="POST" enctype="multipart/form-data">
                 <div class="form-group">
                     <label for="product-name">Product Name</label>
-                    <input type="text" id="product-name" placeholder="Enter product name" required>
+                    <input type="text" id="product-name" name="product_name" placeholder="Enter product name" required>
                 </div>
                 
                 <div class="form-group">
                     <label for="product-brand">Brand</label>
-                    <input type="text" id="product-brand" placeholder="Enter brand name" required>
+                    <input type="text" id="product-brand" name="product_brand" placeholder="Enter brand name" required>
                 </div>
                 
                 <div class="form-group">
                     <label for="product-price">Price</label>
-                    <input type="number" id="product-price" placeholder="Enter price" min="0" step="0.01" required>
+                    <input type="number" id="product-price" name="product_price" placeholder="Enter price" min="0" step="0.01" required>
                 </div>
                 
                 <div class="form-group">
                     <label for="product-quantity">Quantity</label>
-                    <input type="number" id="product-quantity" placeholder="Enter quantity" min="0" required>
+                    <input type="number" id="product-quantity" name="product_quantity" placeholder="Enter quantity" min="0" required>
                 </div>
                 
                 <div class="form-group">
                     <label for="product-category">Category</label>
-                    <select id="product-category" required>
+                    <select id="product-category" name="product_category" required>
                         <option value="">Select category</option>
-                        <option value="laptops">Laptops</option>
-                        <option value="smartphones">Smartphones</option>
-                        <option value="keyboards">Keyboards</option>
-                        <option value="mice">Mouse</option>
-                        <option value="monitors">Monitors</option>
+                        <option value="1">Laptops</option>
+                        <option value="2">Smartphones</option>
+                        <option value="3">Mouse</option>
+                        <option value="4">Keyboards</option>
+                        <option value="5">Monitors</option>
                     </select>
                 </div>
                 
                 <div class="form-group full-width">
                     <label for="product-description">Description</label>
-                    <textarea id="product-description" rows="3" placeholder="Enter product description"></textarea>
+                    <textarea id="product-description" name="product_description" rows="3" placeholder="Enter product description"></textarea>
                 </div>
                 
                 <div class="form-group full-width">
@@ -1146,13 +219,7 @@ if (!isset($_SESSION['email'])) {
                             Drag & drop your image here or <span>browse</span><br>
                             Supports: JPG, PNG (Max 5MB)
                         </div>
-                        <input type="file" id="product-image" accept="image/*" onchange="handleFileSelect(event)">
-                    </div>
-                    <div id="file-preview" style="display: none; margin-top: 10px;">
-                        <img id="preview-image" src="#" alt="Preview" style="max-width: 100px; max-height: 100px; border-radius: 4px;">
-                        <button type="button" onclick="removeImage()" class="ml-2 text-red-500 hover:text-red-700">
-                            <i class="fas fa-times"></i>
-                        </button>
+                        <input type="file" id="product-image" name="product_image" accept="image/*" required>
                     </div>
                 </div>
                 
@@ -1164,7 +231,7 @@ if (!isset($_SESSION['email'])) {
     </div>
 
     <!-- Inventory Content -->
-    <div class="inventory-content" id="inventory-content">
+    <div class="inventory-content" id="inventory-content" style="display:none;">
         <div class="inventory-header">
             <h2 class="inventory-title">Inventory Management</h2>
             <p class="inventory-subtitle">View and manage your product inventory</p>
@@ -1197,8 +264,69 @@ if (!isset($_SESSION['email'])) {
         </div>
     </div>
 
+        <!-- Edit Product Modal -->
+    <div class="modal" id="edit-product-modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <div class="modal-title">Edit Product</div>
+                <button class="modal-close" onclick="closeEditProductModal()">&times;</button>
+            </div>
+            <div class="modal-body">
+                <form id="edit-product-form" action="php/update_product.php" method="POST">
+                    <input type="hidden" id="edit-product-id" name="product_id">
+                    <div class="form-group">
+                        <label for="edit-product-name">Product Name</label>
+                        <input type="text" id="edit-product-name" name="product_name" placeholder="Enter product name" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="edit-product-category">Category</label>
+                        <select id="edit-product-category" name="product_category" required>
+                            <option value="">Select category</option>
+                            <option value="laptops">Laptops</option>
+                            <option value="smartphones">Smartphones</option>
+                            <option value="keyboards">Keyboards</option>
+                            <option value="mice">Mouse</option> 
+                            <option value="monitors">Monitors</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="edit-product-price">Price</label>
+                        <input type="number" id="edit-product-price" name="product_price" placeholder="Enter price" min="0" step="0.01" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="edit-product-quantity">Quantity</label>
+                        <input type="number" id="edit-product-quantity" name="product_quantity" placeholder="Enter quantity" min="0" required>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button class="modal-btn modal-btn-secondary" onclick="closeEditProductModal()">Cancel</button>
+                <button class="modal-btn modal-btn-primary" onclick="document.getElementById('edit-product-form').submit()">Update Product</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Delete Product Modal -->
+    <div class="modal" id="delete-product-modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <div class="modal-title">Delete Product</div>
+                <button class="modal-close" onclick="closeDeleteProductModal()">&times;</button>
+            </div>
+            <div class="modal-body">
+                <p>Are you sure you want to delete this product?</p>
+                <p class="mt-2 text-sm text-8892b0">This action cannot be undone.</p>
+            </div>
+            <div class="modal-footer">
+                <button class="modal-btn modal-btn-secondary" onclick="closeDeleteProductModal()">Cancel</button>
+                <button class="modal-btn modal-btn-primary" onclick="deleteProduct()">Delete</button>
+            </div>
+        </div>
+    </div>
+
+
     <!-- Employee Content -->
-    <div class="employee-content" id="employee-content">
+    <div class="employee-content" id="employee-content" style="display:none;">
         <div class="employee-header">
             <h2 class="employee-title">Employee Management</h2>
             <p class="employee-subtitle">View and manage your staff members</p>
@@ -1233,48 +361,7 @@ if (!isset($_SESSION['email'])) {
         </div>
     </div>
 
- 
-    <!-- Edit Product Modal -->
-    <div class="modal" id="edit-product-modal">
-        <div class="modal-content">
-            <div class="modal-header">
-                <div class="modal-title">Edit Product</div>
-                <button class="modal-close" onclick="closeEditProductModal()">&times;</button>
-            </div>
-            <div class="modal-body">
-                <form id="edit-product-form">
-                    <input type="hidden" id="edit-product-id">
-                    <div class="form-group">
-                        <label for="edit-product-name">Product Name</label>
-                        <input type="text" id="edit-product-name" placeholder="Enter product name" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="edit-product-category">Category</label>
-                        <select id="edit-product-category" required>
-                            <option value="">Select category</option>
-                            <option value="laptops">Laptops</option>
-                            <option value="smartphones">Smartphones</option>
-                            <option value="keyboards">Keyboards</option>
-                            <option value="mice">Mouse</option> 
-                            <option value="monitors">Monitors</option>
-                        </select>
-                    </div>
-                    <div class="form-group">
-                        <label for="edit-product-price">Price</label>
-                        <input type="number" id="edit-product-price" placeholder="Enter price" min="0" step="0.01" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="edit-product-quantity">Quantity</label>
-                        <input type="number" id="edit-product-quantity" placeholder="Enter quantity" min="0" required>
-                    </div>
-                </form>
-            </div>
-            <div class="modal-footer">
-                <button class="modal-btn modal-btn-secondary" onclick="closeEditProductModal()">Cancel</button>
-                <button class="modal-btn modal-btn-primary" onclick="updateProduct()">Update Product</button>
-            </div>
-        </div>
-    </div>
+
 
     <!-- Add Employee Modal -->
     <div class="modal" id="add-employee-modal">
@@ -1401,6 +488,12 @@ if (!isset($_SESSION['email'])) {
         let currentEditId = null;
         let currentEditType = null;
         let selectedFile = null;
+        let currentDeleteProductId = null;
+
+        // Inject PHP weekly profits into JS
+        const weeklyProfits = <?php echo json_encode($weeklyProfits); ?>;
+        // Generate labels for the last 7 days (Mon-Sun)
+        const weeklyLabels = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
 
         // Initialize the application
         document.addEventListener('DOMContentLoaded', () => {
@@ -1416,8 +509,9 @@ if (!isset($_SESSION['email'])) {
             // Initialize charts
             initCharts();
             
-            // Set default view
-            switchView('dashboard');
+            // Set default view or restore last view
+            const savedView = localStorage.getItem('adminpanel_active_view') || 'dashboard';
+            switchView(savedView);
             
             // Set up drag and drop for file upload
             setupDragAndDrop();
@@ -1476,10 +570,10 @@ if (!isset($_SESSION['email'])) {
             const salesChart = new Chart(salesCtx, {
                 type: 'line',
                 data: {
-                    labels: salesData.map(item => item.date.toLocaleDateString('en-US', { weekday: 'short' })),
+                    labels: weeklyLabels,
                     datasets: [{
                         label: 'Sales',
-                        data: salesData.map(item => item.sales),
+                        data: weeklyProfits,
                         backgroundColor: 'rgba(85, 96, 255, 0.2)',
                         borderColor: '#6366f1',
                         borderWidth: 2,
@@ -1563,20 +657,19 @@ if (!isset($_SESSION['email'])) {
             });
 
             document.getElementById(`${view}-button`).classList.add('active');
+
+            // Save current view to localStorage
+            localStorage.setItem('adminpanel_active_view', view);
         }
 
         // Update dashboard stats
         function updateDashboardStats() {
-            const totalSales = salesData.reduce((sum, item) => sum + item.sales, 0);
-            const todayOrders = salesData[salesData.length - 1].orders;
             const newCustomers = salesData[salesData.length - 1].customers;
             const conversionRate = (Math.random() * 5).toFixed(1);
-            
-            document.getElementById('total-sales').textContent = `₱${totalSales.toLocaleString()}`;
-            document.getElementById('today-orders').textContent = todayOrders;
+
             document.getElementById('new-customers').textContent = newCustomers;
             document.getElementById('conversion-rate').textContent = `${conversionRate}%`;
-            
+
             // Random changes
             document.getElementById('sales-change').textContent = `${Math.floor(Math.random() * 15) + 5}%`;
             document.getElementById('orders-change').textContent = `${Math.floor(Math.random() * 10) + 5}%`;
@@ -1627,7 +720,7 @@ if (!isset($_SESSION['email'])) {
                     <div class="product-rank">${index + 1}</div>
                     <div class="product-info">
                         <div class="product-name">${product.name}</div>
-                        <div class="product-sales"><span class="product-sales-value">₱${product.sales.toLocaleString()}</span> in sales</div>
+                        <div class="product-sales"><span class="product-sales-value">$${product.sales.toLocaleString()}</span> in sales</div>
                     </div>
                 `;
                 
@@ -1638,7 +731,7 @@ if (!isset($_SESSION['email'])) {
         // Update purchase analytics
         function updatePurchaseAnalytics() {
             const analytics = [
-                { icon: 'shopping-cart', name: 'Average Order Value', value: '₱89.50' },
+                { icon: 'shopping-cart', name: 'Average Order Value', value: '$89.50' },
                 { icon: 'user-clock', name: 'Repeat Purchase Rate', value: '32%' },
                 { icon: 'box-open', name: 'Most Purchased Category', value: 'Keyboards' },
                 { icon: 'clock', name: 'Peak Shopping Time', value: '2:00 PM - 5:00 PM' },
@@ -1828,153 +921,77 @@ if (!isset($_SESSION['email'])) {
             closeAddEmployeeModal();
         }
 
-        // Render inventory table
+        // Fetch inventory items from the server and render the table
         function renderInventoryTable() {
-            const tbody = document.getElementById('inventory-table-body');
-            tbody.innerHTML = '';
-            
-            products.forEach(product => {
-                const row = document.createElement('tr');
-                
-                // Determine status
-                let statusClass, statusText;
-                if (product.quantity > 10) {
-                    statusClass = 'status-in-stock';
-                    statusText = 'In Stock';
-                } else if (product.quantity > 0) {
-                    statusClass = 'status-low-stock';
-                    statusText = 'Low Stock';
-                } else {
-                    statusClass = 'status-out-of-stock';
-                    statusText = 'Out of Stock';
-                }
-                
-                row.innerHTML = `
-                    <td>
-                        <div style="display: flex; align-items: center;">
-                            <img src="${product.image}" alt="Product" class="product-image">
-                            <div style="margin-left: 10px;">
-                                <div>${product.name}</div>
-                                <div style="font-size: 12px; color: #8892b0;">${product.brand}</div>
-                            </div>
-                        </div>
-                    </td>
-                    <td>${product.category.charAt(0).toUpperCase() + product.category.slice(1)}</td>
-                    <td>₱${product.price.toFixed(2)}</td>
-                    <td>${product.quantity}</td>
-                    <td><span class="status-badge ${statusClass}">${statusText}</span></td>
-                    <td>
-                        <button class="action-btn edit-btn" onclick="showEditProductModal(${product.id})"><i class="fas fa-edit"></i></button>
-                        <button class="action-btn delete-btn" onclick="showDeleteConfirmModal(${product.id}, 'product')"><i class="fas fa-trash"></i></button>
-                    </td>
-                `;
-                
-                tbody.appendChild(row);
-            });
+            fetch('php/get_inventory_items.php')
+                .then(response => response.json())
+                .then(products => {
+                    const tbody = document.getElementById('inventory-table-body');
+                    tbody.innerHTML = '';
+                    products.forEach(product => {
+                        // Determine status
+                        let statusClass, statusText;
+                        if (product.quantity > 10) {
+                            statusClass = 'status-in-stock';
+                            statusText = 'In Stock';
+                        } else if (product.quantity > 0) {
+                            statusClass = 'status-low-stock';
+                            statusText = 'Low Stock';
+                        } else {
+                            statusClass = 'status-out-of-stock';
+                            statusText = 'Out of Stock';
+                        }
+
+                        const row = document.createElement('tr');
+                        row.innerHTML = `
+                            <td>
+                                <div style="display: flex; align-items: center;">
+                                    <img src="uploads/${product.image}" alt="Product" class="product-image">
+                                    <div style="margin-left: 10px;">
+                                        <div>${product.name}</div>
+                                        <div style="font-size: 12px; color: #8892b0;">${product.brand}</div>
+                                    </div>
+                                </div>
+                            </td>
+                            <td>${product.category}</td>
+                            <td>$${parseFloat(product.price).toFixed(2)}</td>
+                            <td>${product.quantity}</td>
+                            <td><span class="status-badge ${statusClass}">${statusText}</span></td>
+                            <td>
+                                <button class="action-btn edit-btn" data-product='${JSON.stringify(product).replace(/'/g, "&apos;")}'><i class="fas fa-edit"></i></button>
+                                <button class="action-btn delete-btn" onclick="openDeleteProductModal(${product.id})"><i class="fas fa-trash"></i></button>
+                            </td>
+                        `;
+                        tbody.appendChild(row);
+
+                        // Attach event listener for edit button
+                        const editBtn = row.querySelector('.edit-btn');
+                        editBtn.addEventListener('click', function() {
+                            const prod = JSON.parse(this.getAttribute('data-product').replace(/&apos;/g, "'"));
+                            openEditProductModal(prod);
+                        });
+                    });
+                })
+                .catch(() => {
+                    document.getElementById('inventory-table-body').innerHTML = '<tr><td colspan="6">Failed to load inventory.</td></tr>';
+                });
         }
 
-        // Render employee table
-        function renderEmployeeTable() {
-            const tbody = document.getElementById('employee-table-body');
-            tbody.innerHTML = '';
-            
-            employees.forEach(employee => {
-                const row = document.createElement('tr');
-                
-                // Determine role class
-                let roleClass;
-                if (employee.role === 'admin') {
-                    roleClass = 'role-admin';
-                } else if (employee.role === 'manager') {
-                    roleClass = 'role-manager';
-                } else {
-                    roleClass = 'role-staff';
-                }
-                
-                row.innerHTML = `
-                    <td>
-                        <div style="display: flex; align-items: center;">
-                            <img src="${employee.avatar}" alt="Employee" class="employee-avatar">
-                            <div style="margin-left: 10px;">
-                                <div>${employee.name}</div>
-                                <div style="font-size: 12px; color: #8892b0;">ID: EMP${employee.id.toString().padStart(3, '0')}</div>
-                            </div>
-                        </div>
-                    </td>
-                    <td>${employee.email}</td>
-                    <td>${employee.phone}</td>
-                    <td><span class="role-badge ${roleClass}">${employee.role.charAt(0).toUpperCase() + employee.role.slice(1)}</span></td>
-                    <td>${employee.status.charAt(0).toUpperCase() + employee.status.slice(1)}</td>
-                    <td>
-                        <button class="action-btn edit-btn" onclick="showEditEmployeeModal(${employee.id})"><i class="fas fa-edit"></i></button>
-                        <button class="action-btn delete-btn" onclick="showDeleteConfirmModal(${employee.id}, 'employee')"><i class="fas fa-trash"></i></button>
-                    </td>
-                `;
-                
-                tbody.appendChild(row);
-            });
-        }
-
-        // Search products
-        function searchProducts() {
-            const searchTerm = document.getElementById('inventory-search').value.toLowerCase();
-            const rows = document.getElementById('inventory-table-body').querySelectorAll('tr');
-            
-            rows.forEach(row => {
-                const name = row.querySelector('td:first-child div:first-child').textContent.toLowerCase();
-                const brand = row.querySelector('td:first-child div:nth-child(2)').textContent.toLowerCase();
-                const category = row.querySelector('td:nth-child(2)').textContent.toLowerCase();
-                
-                if (name.includes(searchTerm) || brand.includes(searchTerm) || category.includes(searchTerm)) {
-                    row.style.display = '';
-                } else {
-                    row.style.display = 'none';
-                }
-            });
-        }
-
-        // Search employees
-        function searchEmployees() {
-            const searchTerm = document.getElementById('employee-search').value.toLowerCase();
-            const rows = document.getElementById('employee-table-body').querySelectorAll('tr');
-            
-            rows.forEach(row => {
-                const name = row.querySelector('td:first-child div:first-child').textContent.toLowerCase();
-                const email = row.querySelector('td:nth-child(2)').textContent.toLowerCase();
-                const role = row.querySelector('td:nth-child(4) span').textContent.toLowerCase();
-                
-                if (name.includes(searchTerm) || email.includes(searchTerm) || role.includes(searchTerm)) {
-                    row.style.display = '';
-                } else {
-                    row.style.display = 'none';
-                }
-            });
-        }
-
-        // Show add product modal
-        function showAddProductModal() {
-            document.getElementById('add-product-modal').style.display = 'flex';
-        }
-
-        // Close add product modal
-        function closeAddProductModal() {
-            document.getElementById('add-product-modal').style.display = 'none';
-        }
-
-        // Show edit product modal
-        function showEditProductModal(id) {
-            const product = products.find(p => p.id === id);
-            if (!product) return;
-            
+        // Use this function to open the modal and populate fields
+        function openEditProductModal(product) {
             document.getElementById('edit-product-id').value = product.id;
             document.getElementById('edit-product-name').value = product.name;
             document.getElementById('edit-product-category').value = product.category;
             document.getElementById('edit-product-price').value = product.price;
             document.getElementById('edit-product-quantity').value = product.quantity;
-            
-            currentEditId = id;
+            currentEditId = product.id;
             currentEditType = 'product';
             document.getElementById('edit-product-modal').style.display = 'flex';
+        }
+
+        // Close add product modal
+        function closeAddProductModal() {
+            document.getElementById('add-product-modal').style.display = 'none';
         }
 
         // Close edit product modal
@@ -2104,6 +1121,41 @@ if (!isset($_SESSION['email'])) {
             
                         showToast('Item deleted successfully');
                         closeDeleteConfirmModal();
+                    }
+
+                    // Delete product
+                    function openDeleteProductModal(productId) {
+                        currentDeleteProductId = productId;
+                        document.getElementById('delete-product-modal').style.display = 'flex';
+                    }
+
+                    function closeDeleteProductModal() {
+                        currentDeleteProductId = null;
+                        document.getElementById('delete-product-modal').style.display = 'none';
+                    }
+
+                    function deleteProduct() {
+                        if (!currentDeleteProductId) return;
+
+                        fetch('php/delete_product.php', {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                            body: `product_id=${currentDeleteProductId}`
+                        })
+                        .then(response => response.json())
+                        .then(data => {
+                            if (data.success) {
+                                showToast('Product deleted successfully');
+                                renderInventoryTable(); // Refresh inventory table
+                            } else {
+                                showToast(data.message, 'error');
+                            }
+                            closeDeleteProductModal();
+                        })
+                        .catch(() => {
+                            showToast('Failed to delete product', 'error');
+                            closeDeleteProductModal();
+                        });
                     }
             
                     // Show toast notification
