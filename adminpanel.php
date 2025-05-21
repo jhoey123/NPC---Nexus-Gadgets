@@ -272,7 +272,7 @@ $weeklyProfits = getWeeklyProfits();
                 <button class="modal-close" onclick="closeEditProductModal()">&times;</button>
             </div>
             <div class="modal-body">
-                <form id="edit-product-form" action="php/update_product.php" method="POST">
+                <form id="edit-product-form" action="php/update_product.php" method="POST" enctype="multipart/form-data">
                     <input type="hidden" id="edit-product-id" name="product_id">
                     <div class="form-group">
                         <label for="edit-product-name">Product Name</label>
@@ -296,6 +296,10 @@ $weeklyProfits = getWeeklyProfits();
                     <div class="form-group">
                         <label for="edit-product-quantity">Quantity</label>
                         <input type="number" id="edit-product-quantity" name="product_quantity" placeholder="Enter quantity" min="0" required>
+                    </div>
+                    <div class="form-group full-width">
+                        <label for="edit-product-image">Product Image</label>
+                        <input type="file" id="edit-product-image" name="product_image" accept="image/*">
                     </div>
                 </form>
             </div>
@@ -347,7 +351,7 @@ $weeklyProfits = getWeeklyProfits();
                 <thead>
                     <tr>
                         <th>Employee</th>
-                        <th>Email</th>
+                        <th>Date of Birth</th>
                         <th>Phone</th>
                         <th>Role</th>
                         <th>Status</th>
@@ -387,9 +391,8 @@ $weeklyProfits = getWeeklyProfits();
                     <div class="form-group">
                         <label for="modal-employee-role">Role</label>
                         <select id="modal-employee-role" required>
-                            <option value="admin">Admin</option>
-                            <option value="manager">Manager</option>
-                            <option value="staff">Staff</option>
+                            <option value="Manager">Manager</option>
+                            <option value="Staff">Staff</option>
                         </select>
                     </div>
                     <div class="form-group">
@@ -419,12 +422,12 @@ $weeklyProfits = getWeeklyProfits();
                 <form id="edit-employee-form">
                     <input type="hidden" id="edit-employee-id">
                     <div class="form-group">
-                        <label for="edit-employee-name">Full Name</label>
-                        <input type="text" id="edit-employee-name" placeholder="Enter full name" required>
+                        <label for="edit-employee-fname">First Name</label>
+                        <input type="text" id="edit-employee-fname" placeholder="Enter first name" required>
                     </div>
                     <div class="form-group">
-                        <label for="edit-employee-email">Email</label>
-                        <input type="email" id="edit-employee-email" placeholder="Enter email" required>
+                        <label for="edit-employee-lname">Last Name</label>
+                        <input type="text" id="edit-employee-lname" placeholder="Enter last name" required>
                     </div>
                     <div class="form-group">
                         <label for="edit-employee-phone">Phone</label>
@@ -433,9 +436,8 @@ $weeklyProfits = getWeeklyProfits();
                     <div class="form-group">
                         <label for="edit-employee-role">Role</label>
                         <select id="edit-employee-role" required>
-                            <option value="admin">Admin</option>
-                            <option value="manager">Manager</option>
-                            <option value="staff">Staff</option>
+                            <option value="Manager">Manager</option>
+                            <option value="Staff">Staff</option>
                         </select>
                     </div>
                     <div class="form-group">
@@ -454,7 +456,7 @@ $weeklyProfits = getWeeklyProfits();
         </div>
     </div>
 
-    <!-- Delete Confirmation Modal -->
+    <!-- Delete Employee Confirmation Modal -->
     <div class="modal" id="delete-confirm-modal">
         <div class="modal-content">
             <div class="modal-header">
@@ -946,7 +948,7 @@ $weeklyProfits = getWeeklyProfits();
                         row.innerHTML = `
                             <td>
                                 <div style="display: flex; align-items: center;">
-                                    <img src="uploads/${product.image}" alt="Product" class="product-image">
+                                    <img src="${product.image}" alt="Product" class="product-image">
                                     <div style="margin-left: 10px;">
                                         <div>${product.name}</div>
                                         <div style="font-size: 12px; color: #8892b0;">${product.brand}</div>
@@ -974,6 +976,38 @@ $weeklyProfits = getWeeklyProfits();
                 })
                 .catch(() => {
                     document.getElementById('inventory-table-body').innerHTML = '<tr><td colspan="6">Failed to load inventory.</td></tr>';
+                });
+        }
+
+        // Render employee table
+        function renderEmployeeTable() {
+            fetch('php/get_employees.php')
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        const tbody = document.getElementById('employee-table-body');
+                        tbody.innerHTML = '';
+                        data.employees.forEach(employee => {
+                            const row = document.createElement('tr');
+                            row.innerHTML = `
+                                <td>${employee.employee_fname} ${employee.employee_lname}</td>
+                                <td>${employee.employee_dob}</td>
+                                <td>${employee.phone}</td>
+                                <td>${employee.role}</td>
+                                <td><span class="status-badge status-active">Active</span></td>
+                                <td>
+                                    <button class="action-btn edit-btn" onclick="showEditEmployeeModal(${employee.employee_id})"><i class="fas fa-edit"></i></button>
+                                    <button class="action-btn delete-btn" onclick="showDeleteConfirmModal(${employee.employee_id}, 'employee')"><i class="fas fa-trash"></i></button>
+                                </td>
+                            `;
+                            tbody.appendChild(row);
+                        });
+                    } else {
+                        document.getElementById('employee-table-body').innerHTML = '<tr><td colspan="6">Failed to load employees.</td></tr>';
+                    }
+                })
+                .catch(() => {
+                    document.getElementById('employee-table-body').innerHTML = '<tr><td colspan="6">Failed to load employees.</td></tr>';
                 });
         }
 
@@ -1035,19 +1069,34 @@ $weeklyProfits = getWeeklyProfits();
 
         // Show edit employee modal
         function showEditEmployeeModal(id) {
-            const employee = employees.find(e => e.id === id);
-            if (!employee) return;
-            
-            document.getElementById('edit-employee-id').value = employee.id;
-            document.getElementById('edit-employee-name').value = employee.name;
-            document.getElementById('edit-employee-email').value = employee.email;
-            document.getElementById('edit-employee-phone').value = employee.phone;
-            document.getElementById('edit-employee-role').value = employee.role;
-            document.getElementById('edit-employee-status').value = employee.status;
-            
-            currentEditId = id;
-            currentEditType = 'employee';
-            document.getElementById('edit-employee-modal').style.display = 'flex';
+            // Get employee data from the most recent API response
+            fetch('php/get_employees.php')
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        const employee = data.employees.find(e => e.employee_id === id);
+                        if (!employee) {
+                            showToast('Employee not found', 'error');
+                            return;
+                        }
+
+                        // Populate the modal fields
+                        document.getElementById('edit-employee-id').value = employee.employee_id;
+                        document.getElementById('edit-employee-fname').value = employee.employee_fname;
+                        document.getElementById('edit-employee-lname').value = employee.employee_lname;
+                        document.getElementById('edit-employee-phone').value = employee.phone;
+                        document.getElementById('edit-employee-role').value = employee.role;
+                        document.getElementById('edit-employee-status').value = 'active'; // Default to active
+
+                        // Show the modal
+                        document.getElementById('edit-employee-modal').style.display = 'flex';
+                    } else {
+                        showToast('Failed to fetch employee data', 'error');
+                    }
+                })
+                .catch(() => {
+                    showToast('Failed to fetch employee data', 'error');
+                });
         }
 
         // Close edit employee modal
@@ -1070,109 +1119,133 @@ $weeklyProfits = getWeeklyProfits();
 
         // Update employee
         function updateEmployee() {
-            const id = parseInt(document.getElementById('edit-employee-id').value);
-            const name = document.getElementById('edit-employee-name').value;
-            const email = document.getElementById('edit-employee-email').value;
-            const phone = document.getElementById('edit-employee-phone').value;
-            const role = document.getElementById('edit-employee-role').value;
-            const status = document.getElementById('edit-employee-status').value;
+            const employeeId = document.getElementById('edit-employee-id').value;
+            const employeeFname = document.getElementById('edit-employee-fname').value;
+            const employeeLname = document.getElementById('edit-employee-lname').value;
+            const employeePhone = document.getElementById('edit-employee-phone').value;
+            const employeeRole = document.getElementById('edit-employee-role').value;
+            const employeeStatus = document.getElementById('edit-employee-status').value;
+
+            // Send data to server
+            fetch('php/edit_employee.php', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                },
+                body: `employee_id=${employeeId}&employee_fname=${encodeURIComponent(employeeFname)}&employee_lname=${encodeURIComponent(employeeLname)}&employee_phone=${encodeURIComponent(employeePhone)}&employee_role=${employeeRole}&employee_status=${employeeStatus}`
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    showToast('Employee updated successfully');
+                    renderEmployeeTable(); // Refresh the table
+                    closeEditEmployeeModal();
+                } else {
+                    showToast(data.message || 'Failed to update employee', 'error');
+                }
+            })
+            .catch(error => {
+                showToast('Error updating employee', 'error');
+                console.error('Error:', error);
+            });
+        }
+
+        // Show delete confirmation modal
+        function showDeleteConfirmModal(id, type) {
+            currentDeleteId = id;
+            currentDeleteType = type;
             
-            const employeeIndex = employees.findIndex(e => e.id === id);
-            if (employeeIndex === -1) return;
+            const itemType = type === 'product' ? 'product' : 'employee';
+            document.getElementById('delete-item-type').textContent = itemType;
+            document.getElementById('delete-confirm-modal').style.display = 'flex';
+        }
             
-            employees[employeeIndex] = {
-                            ...employees[employeeIndex],
-                            name,
-                            email,
-                            phone,
-                            role,
-                            status
-                        };
+        // Close delete confirmation modal
+        function closeDeleteConfirmModal() {
+            document.getElementById('delete-confirm-modal').style.display = 'none';
+        }
             
+        // Confirm delete
+        function confirmDelete() {
+            if (currentDeleteType === 'product') {
+                products = products.filter(p => p.id !== currentDeleteId);
+                renderInventoryTable();
+                showToast('Item deleted successfully');
+                closeDeleteConfirmModal();
+            } else if (currentDeleteType === 'employee') {
+                // Call PHP to delete employee from database
+                fetch('php/delete_employee.php', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                    body: `employee_id=${currentDeleteId}`
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        showToast('Employee deleted successfully');
                         renderEmployeeTable();
-                        showToast('Employee updated successfully');
-                        closeEditEmployeeModal();
+                    } else {
+                        showToast(data.message || 'Failed to delete employee', 'error');
                     }
-            
-                    // Show delete confirmation modal
-                    function showDeleteConfirmModal(id, type) {
-                        currentDeleteId = id;
-                        currentDeleteType = type;
-            
-                        const itemType = type === 'product' ? 'product' : 'employee';
-                        document.getElementById('delete-item-type').textContent = itemType;
-                        document.getElementById('delete-confirm-modal').style.display = 'flex';
-                    }
-            
-                    // Close delete confirmation modal
-                    function closeDeleteConfirmModal() {
-                        document.getElementById('delete-confirm-modal').style.display = 'none';
-                    }
-            
-                    // Confirm delete
-                    function confirmDelete() {
-                        if (currentDeleteType === 'product') {
-                            products = products.filter(p => p.id !== currentDeleteId);
-                            renderInventoryTable();
-                        } else if (currentDeleteType === 'employee') {
-                            employees = employees.filter(e => e.id !== currentDeleteId);
-                            renderEmployeeTable();
-                        }
-            
-                        showToast('Item deleted successfully');
-                        closeDeleteConfirmModal();
-                    }
+                    closeDeleteConfirmModal();
+                })
+                .catch(() => {
+                    showToast('Failed to delete employee', 'error');
+                    closeDeleteConfirmModal();
+                });
+            }
+        }
 
-                    // Delete product
-                    function openDeleteProductModal(productId) {
-                        currentDeleteProductId = productId;
-                        document.getElementById('delete-product-modal').style.display = 'flex';
-                    }
+        // Delete product
+        function openDeleteProductModal(productId) {
+            currentDeleteProductId = productId;
+            document.getElementById('delete-product-modal').style.display = 'flex';
+        }
 
-                    function closeDeleteProductModal() {
-                        currentDeleteProductId = null;
-                        document.getElementById('delete-product-modal').style.display = 'none';
-                    }
+        function closeDeleteProductModal() {
+            currentDeleteProductId = null;
+            document.getElementById('delete-product-modal').style.display = 'none';
+        }
 
-                    function deleteProduct() {
-                        if (!currentDeleteProductId) return;
+        function deleteProduct() {
+            if (!currentDeleteProductId) return;
 
-                        fetch('php/delete_product.php', {
-                            method: 'POST',
-                            headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-                            body: `product_id=${currentDeleteProductId}`
-                        })
-                        .then(response => response.json())
-                        .then(data => {
-                            if (data.success) {
-                                showToast('Product deleted successfully');
-                                renderInventoryTable(); // Refresh inventory table
-                            } else {
-                                showToast(data.message, 'error');
-                            }
-                            closeDeleteProductModal();
-                        })
-                        .catch(() => {
-                            showToast('Failed to delete product', 'error');
-                            closeDeleteProductModal();
-                        });
-                    }
+            fetch('php/delete_product.php', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                body: `product_id=${currentDeleteProductId}`
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    showToast('Product deleted successfully');
+                    renderInventoryTable(); // Refresh inventory table
+                } else {
+                    showToast(data.message, 'error');
+                }
+                closeDeleteProductModal();
+            })
+            .catch(() => {
+                showToast('Failed to delete product', 'error');
+                closeDeleteProductModal();
+            });
+        }
             
-                    // Show toast notification
-                    function showToast(message, type = 'success') {
-                        const toast = document.getElementById('toast');
-                        const toastMessage = document.getElementById('toast-message');
+        // Show toast notification
+        function showToast(message, type = 'success') {
+            const toast = document.getElementById('toast');
+            const toastMessage = document.getElementById('toast-message');
             
-                        toastMessage.textContent = message;
-                        toast.style.borderLeftColor = type === 'success' ? '#64ffda' : '#ff5555';
-                        toast.style.transform = 'translateY(0)';
-                        toast.style.opacity = '1';
+            toastMessage.textContent = message;
+            toast.style.borderLeftColor = type === 'success' ? '#64ffda' : '#ff5555';
+            toast.style.transform = 'translateY(0)';
+            toast.style.opacity = '1';
             
-                        setTimeout(() => {
-                            toast.style.transform = 'translateY(100px)';
-                            toast.style.opacity = '0';
-                        }, 3000);
-                    }
-                </script>
-            </body>
-            </html>
+            setTimeout(() => {
+                toast.style.transform = 'translateY(100px)';
+                toast.style.opacity = '0';
+            }, 3000);
+        }
+    </script>
+</body>
+</html>
