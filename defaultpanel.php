@@ -741,12 +741,34 @@ if (isset($_session))
 
         function scanBarcode() {
             const barcode = document.getElementById('barcode-input').value;
-            
-            // In a real application, this would search for the barcode
             if (barcode.length > 0) {
-                alert(`Searching for barcode: ${barcode}`);
-                document.getElementById('barcode-input').value = '';
-                toggleBarcodeInput();
+                fetch('php/barcode_scan.php', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/x-www-form-urlencoded'
+                    },
+                    body: 'barcode=' + encodeURIComponent(barcode)
+                })
+                .then(response => response.json())
+                .then(product => {
+                    if (product && product.name && product.price && product.image && product.quantity) {
+                        addToCart(
+                            product.name.replace(/'/g, "\\'"),
+                            parseFloat(product.price),
+                            product.image,
+                            parseInt(product.quantity)
+                        );
+                    } else {
+                        alert('Product not found for barcode: ' + barcode);
+                    }
+                })
+                .catch(() => {
+                    alert('Error scanning barcode.');
+                })
+                .finally(() => {
+                    document.getElementById('barcode-input').value = '';
+                    toggleBarcodeInput();
+                });
             }
         }
 

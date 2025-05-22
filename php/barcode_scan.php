@@ -3,7 +3,7 @@ session_start();
 header('Content-Type: application/json');
 
 try {
-    if(isset($_POST['submit'])) {
+    if(isset($_POST['barcode'])) {
         include "conn_db.php";
 
         if(!$conn) {
@@ -26,15 +26,21 @@ try {
         
         if ($row) {
             error_log("Product found: " . json_encode($row));
+            // Return with keys expected by JS
+            echo json_encode([
+                'name' => $row['Product_Name'],
+                'price' => $row['Product_Price'],
+                'quantity' => $row['Product_Quantity'],
+                'image' => $row['Product_image_path']
+            ]);
         } else {
             error_log("No product found for barcode: " . $barcode);
+            echo json_encode(null);
         }
         
         $stmt->close();
-        
-        echo json_encode($row);
     } else {
-        error_log("Submit parameter not set");
+        error_log("Barcode parameter not set");
         echo json_encode(null);
     }
 } catch(Exception $e) {
