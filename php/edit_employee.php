@@ -8,13 +8,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $employee_id = $_POST['employee_id'];
     $employee_fname = $_POST['employee_fname'];
     $employee_lname = $_POST['employee_lname'];
+    $employee_dob = $_POST['employee_dob'];
     $employee_phone = $_POST['employee_phone'];
     $employee_role = $_POST['employee_role'];
     $employee_status = $_POST['employee_status'];
 
     try {
-        $stmt = $conn->prepare("UPDATE employees SET employee_fname = ?, employee_lname = ?, phone = ?, role = ?, status = ? WHERE employee_id = ?");
-        $stmt->bind_param("sssssi", $employee_fname, $employee_lname, $employee_phone, $employee_role, $employee_status, $employee_id);
+        $stmt = $conn->prepare("UPDATE employees SET employee_fname = ?, employee_lname = ?, employee_dob = ?, phone = ?, role = ?, status = ? WHERE employee_id = ?");
+        $stmt->bind_param("ssssssi", $employee_fname, $employee_lname, $employee_dob, $employee_phone, $employee_role, $employee_status, $employee_id);
 
         if ($stmt->execute()) {
             echo json_encode(['success' => true, 'message' => 'Employee updated successfully']);

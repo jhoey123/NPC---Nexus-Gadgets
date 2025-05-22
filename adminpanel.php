@@ -305,7 +305,7 @@ $weeklyProfits = getWeeklyProfits();
             </div>
             <div class="modal-footer">
                 <button class="modal-btn modal-btn-secondary" onclick="closeEditProductModal()">Cancel</button>
-                <button class="modal-btn modal-btn-primary" onclick="document.getElementById('edit-product-form').submit()">Update Product</button>
+                <button class="modal-btn modal-btn-primary" onclick="submitEditProductForm()">Update Product</button>
             </div>
         </div>
     </div>
@@ -377,12 +377,16 @@ $weeklyProfits = getWeeklyProfits();
             <div class="modal-body">
                 <form id="modal-employee-form">
                     <div class="form-group">
-                        <label for="modal-employee-name">Full Name</label>
-                        <input type="text" id="modal-employee-name" placeholder="Enter full name" required>
+                        <label for="modal-employee-fname">First Name</label>
+                        <input type="text" id="modal-employee-fname" placeholder="Enter first name" required>
                     </div>
                     <div class="form-group">
-                        <label for="modal-employee-email">Email</label>
-                        <input type="email" id="modal-employee-email" placeholder="Enter email" required>
+                        <label for="modal-employee-lname">Last Name</label>
+                        <input type="text" id="modal-employee-lname" placeholder="Enter last name" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="modal-employee-dob">Date of Birth</label>
+                        <input type="date" id="modal-employee-dob" required>
                     </div>
                     <div class="form-group">
                         <label for="modal-employee-phone">Phone</label>
@@ -428,6 +432,10 @@ $weeklyProfits = getWeeklyProfits();
                     <div class="form-group">
                         <label for="edit-employee-lname">Last Name</label>
                         <input type="text" id="edit-employee-lname" placeholder="Enter last name" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="edit-employee-dob">Date of Birth</label>
+                        <input type="date" id="edit-employee-dob" required>
                     </div>
                     <div class="form-group">
                         <label for="edit-employee-phone">Phone</label>
@@ -892,35 +900,40 @@ $weeklyProfits = getWeeklyProfits();
 
         // Add employee from modal
         function addEmployeeFromModal() {
-            const name = document.getElementById('modal-employee-name').value;
-            const email = document.getElementById('modal-employee-email').value;
+            const fname = document.getElementById('modal-employee-fname').value;
+            const lname = document.getElementById('modal-employee-lname').value;
+            const dob = document.getElementById('modal-employee-dob').value;
             const phone = document.getElementById('modal-employee-phone').value;
             const role = document.getElementById('modal-employee-role').value;
             const status = document.getElementById('modal-employee-status').value;
             
-            if (!name || !email || !phone || !role || !status) {
+            if (!fname || !lname || !dob || !phone || !role || !status) {
                 showToast('Please fill all fields', 'error');
                 return;
             }
-            
-            const newEmployee = {
-                id: employees.length > 0 ? Math.max(...employees.map(e => e.id)) + 1 : 1,
-                name,
-                email,
-                phone,
-                role,
-                status,
-                avatar: 'https://via.placeholder.com/40'
-            };
-            
-            employees.push(newEmployee);
-            renderEmployeeTable();
-            
-            // Reset form
-            document.getElementById('modal-employee-form').reset();
-            
-            showToast('Employee added successfully');
-            closeAddEmployeeModal();
+
+            fetch('php/add_employee.php', {
+                method: 'POST',
+                headers: { 
+                    'Content-Type': 'application/x-www-form-urlencoded' 
+                },
+                body: `employee_fname=${encodeURIComponent(fname)}&employee_lname=${encodeURIComponent(lname)}&employee_dob=${encodeURIComponent(dob)}&employee_phone=${encodeURIComponent(phone)}&employee_role=${role}&employee_status=${status}`
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    showToast('Employee added successfully');
+                    renderEmployeeTable();
+                    closeAddEmployeeModal();
+                    document.getElementById('modal-employee-form').reset();
+                } else {
+                    showToast(data.message || 'Failed to add employee', 'error');
+                }
+            })
+            .catch(error => {
+                showToast('Error adding employee', 'error');
+                console.error('Error:', error);
+            });
         }
 
         // Fetch inventory items from the server and render the table
@@ -1034,27 +1047,27 @@ $weeklyProfits = getWeeklyProfits();
         }
 
         // Update product
-        function updateProduct() {
-            const id = parseInt(document.getElementById('edit-product-id').value);
-            const name = document.getElementById('edit-product-name').value;
-            const category = document.getElementById('edit-product-category').value;
-            const price = parseFloat(document.getElementById('edit-product-price').value);
-            const quantity = parseInt(document.getElementById('edit-product-quantity').value);
+        function submitEditProductForm() {
+            const form = document.getElementById('edit-product-form');
+            const formData = new FormData(form);
             
-            const productIndex = products.findIndex(p => p.id === id);
-            if (productIndex === -1) return;
-            
-            products[productIndex] = {
-                ...products[productIndex],
-                name,
-                category,
-                price,
-                quantity
-            };
-            
-            renderInventoryTable();
-            showToast('Product updated successfully');
-            closeEditProductModal();
+            fetch(form.action, {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    showToast('Product updated successfully');
+                    renderInventoryTable();
+                    closeEditProductModal();
+                } else {
+                    showToast(data.message || 'Failed to update product', 'error');
+                }
+            })
+            .catch(() => {
+                showToast('Failed to update product', 'error');
+            });
         }
 
         // Show add employee modal
@@ -1084,6 +1097,7 @@ $weeklyProfits = getWeeklyProfits();
                         document.getElementById('edit-employee-id').value = employee.employee_id;
                         document.getElementById('edit-employee-fname').value = employee.employee_fname;
                         document.getElementById('edit-employee-lname').value = employee.employee_lname;
+                        document.getElementById('edit-employee-dob').value = employee.employee_dob;
                         document.getElementById('edit-employee-phone').value = employee.phone;
                         document.getElementById('edit-employee-role').value = employee.role;
                         document.getElementById('edit-employee-status').value = 'active'; // Default to active
@@ -1122,6 +1136,7 @@ $weeklyProfits = getWeeklyProfits();
             const employeeId = document.getElementById('edit-employee-id').value;
             const employeeFname = document.getElementById('edit-employee-fname').value;
             const employeeLname = document.getElementById('edit-employee-lname').value;
+            const employeeDob = document.getElementById('edit-employee-dob').value;
             const employeePhone = document.getElementById('edit-employee-phone').value;
             const employeeRole = document.getElementById('edit-employee-role').value;
             const employeeStatus = document.getElementById('edit-employee-status').value;
@@ -1132,7 +1147,7 @@ $weeklyProfits = getWeeklyProfits();
                 headers: {
                     'Content-Type': 'application/x-www-form-urlencoded',
                 },
-                body: `employee_id=${employeeId}&employee_fname=${encodeURIComponent(employeeFname)}&employee_lname=${encodeURIComponent(employeeLname)}&employee_phone=${encodeURIComponent(employeePhone)}&employee_role=${employeeRole}&employee_status=${employeeStatus}`
+                body: `employee_id=${employeeId}&employee_fname=${encodeURIComponent(employeeFname)}&employee_lname=${encodeURIComponent(employeeLname)}&employee_dob=${encodeURIComponent(employeeDob)}&employee_phone=${encodeURIComponent(employeePhone)}&employee_role=${employeeRole}&employee_status=${employeeStatus}`
             })
             .then(response => response.json())
             .then(data => {

@@ -1,5 +1,6 @@
 <?php
 include "conn_db.php";
+header('Content-Type: application/json');
 $response = ['success' => false, 'message' => ''];
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
@@ -71,6 +72,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
 $conn->close();
 
-// Redirect back to adminpanel.php
-header("Location: ../adminpanel.php");
+// Return JSON response
+echo json_encode($response);
 exit();
