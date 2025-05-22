@@ -88,7 +88,7 @@ $weeklyProfits = getWeeklyProfits();
             <div class="stat-card">
                 <div class="stat-title">Total Sales</div>
                 <div class="stat-value" id="total-sales">
-                    $<?php echo number_format($totalSales, 2); ?>
+                    ₱<?php echo number_format($totalSales, 2); ?>
                 </div>
                 <div class="stat-change up">
                     <i class="fas fa-arrow-up"></i> <span id="sales-change">12%</span> from yesterday
@@ -730,7 +730,7 @@ $weeklyProfits = getWeeklyProfits();
                     <div class="product-rank">${index + 1}</div>
                     <div class="product-info">
                         <div class="product-name">${product.name}</div>
-                        <div class="product-sales"><span class="product-sales-value">$${product.sales.toLocaleString()}</span> in sales</div>
+                        <div class="product-sales"><span class="product-sales-value">₱${product.sales.toLocaleString()}</span> in sales</div>
                     </div>
                 `;
                 
@@ -741,7 +741,7 @@ $weeklyProfits = getWeeklyProfits();
         // Update purchase analytics
         function updatePurchaseAnalytics() {
             const analytics = [
-                { icon: 'shopping-cart', name: 'Average Order Value', value: '$89.50' },
+                { icon: 'shopping-cart', name: 'Average Order Value', value: '₱89.50' },
                 { icon: 'user-clock', name: 'Repeat Purchase Rate', value: '32%' },
                 { icon: 'box-open', name: 'Most Purchased Category', value: 'Keyboards' },
                 { icon: 'clock', name: 'Peak Shopping Time', value: '2:00 PM - 5:00 PM' },
@@ -969,7 +969,7 @@ $weeklyProfits = getWeeklyProfits();
                                 </div>
                             </td>
                             <td>${product.category}</td>
-                            <td>$${parseFloat(product.price).toFixed(2)}</td>
+                            <td>₱${parseFloat(product.price).toFixed(2)}</td>
                             <td>${product.quantity}</td>
                             <td><span class="status-badge ${statusClass}">${statusText}</span></td>
                             <td>
