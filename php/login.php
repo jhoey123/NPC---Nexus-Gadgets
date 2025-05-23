@@ -38,8 +38,11 @@
                if ($rank === "Admin") {
                   echo json_encode(['success' => true, 'redirect' => 'adminpanel.php']);
                   exit;
-               } else if ($rank === "staff") {
+               } else if ($rank === "Staff") {
                   echo json_encode(['success' => true, 'redirect' => 'defaultpanel.php']);
+                  exit;
+               } else if ($rank === "Customer") {
+                  echo json_encode(['success' => true, 'redirect' => 'customer.php']);
                   exit;
                } else {
                   echo json_encode(['success' => false, 'message' => 'Invalid credentials. Please check your email and password2.']);
