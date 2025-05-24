@@ -1,4 +1,4 @@
-        * {
+* {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
@@ -658,7 +658,7 @@
 
         .employee-subtitle {
             font-size: 16px;
-            color: #6366f1; /* Updated color */
+            color: #8892b0; /* Updated color */
         }
 
         .employee-actions {
@@ -897,6 +897,198 @@
         .toast i {
             margin-right: 10px;
             color: #6366f1;
+        }
+
+        /* --- Transactions Section Styles --- */
+        .transaction-content {
+            flex: 1;
+            padding: 25px;
+            padding-left: 100px;
+            transition: margin-left 0.5s;
+            display: none;
+            background: #0a192f;
+            color: #e6f1ff;
+            min-height: 100vh;
+        }
+
+        .sidebar:hover ~ .transaction-content {
+            margin-left: 130px;
+        }
+
+        .transaction-header {
+            margin-bottom: 30px;
+        }
+
+        .transaction-title {
+            font-size: 24px;
+            font-weight: 700;
+            color: #6366f1;
+            margin-bottom: 10px;
+        }
+
+        .transaction-subtitle {
+            font-size: 16px;
+            color: #8892b0;
+        }
+
+        .transaction-actions {
+            margin-bottom: 20px;
+        }
+
+        .add-transaction-btn {
+            background: #6366f1;
+            color: #fff;
+            border: none;
+            padding: 10px 22px;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: background 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .add-transaction-btn:hover {
+            background: #4f46e5;
+        }
+
+        .transaction-table {
+            width: 100%;
+            background: #112240;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            border: 1px solid #1e2d3d;
+        }
+
+        .transaction-table table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .transaction-table th, .transaction-table td {
+            padding: 12px 15px;
+            text-align: left;
+        }
+
+        .transaction-table th {
+            background: #0a192f;
+            color: #6366f1;
+            font-weight: 600;
+            font-size: 14px;
+            border-bottom: 1px solid #1e2d3d;
+        }
+
+        .transaction-table tr:nth-child(even) {
+            background: #16213a;
+        }
+
+        .transaction-table tr:nth-child(odd) {
+            background: #112240;
+        }
+
+        .transaction-table td {
+            color: #e6f1ff;
+            font-size: 14px;
+            border-bottom: 1px solid #1e2d3d;
+        }
+
+        .transaction-table tr:last-child td {
+            border-bottom: none;
+        }
+
+        /* Modal Styles for Add Transaction */
+        #add-transaction-modal .modal-content {
+            background: #112240;
+            border-radius: 12px;
+            width: 400px;
+            max-width: 95vw;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.25);
+            color: #e6f1ff;
+            padding: 0;
+        }
+
+        #add-transaction-modal .modal-header {
+            padding: 20px;
+            border-bottom: 1px solid #1e2d3d;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        #add-transaction-modal .modal-title {
+            font-size: 20px;
+            font-weight: 600;
+            color: #64ffda;
+        }
+
+        #add-transaction-modal .modal-close {
+            background: none;
+            border: none;
+            color: #ff5555;
+            font-size: 1.5rem;
+            cursor: pointer;
+        }
+
+        #add-transaction-modal .modal-body {
+            padding: 20px;
+        }
+
+        #add-transaction-modal .form-group {
+            margin-bottom: 14px;
+        }
+
+        #add-transaction-modal .form-group label {
+            display: block;
+            margin-bottom: 4px;
+            color: #64ffda;
+            font-size: 0.98rem;
+        }
+
+        #add-transaction-modal .form-group input {
+            width: 100%;
+            padding: 7px 10px;
+            border-radius: 5px;
+            border: 1px solid #1e2d3d;
+            background: #0a192f;
+            color: #e6f1ff;
+            font-size: 1rem;
+        }
+
+        #add-transaction-modal .modal-footer {
+            padding: 20px;
+            border-top: 1px solid #1e2d3d;
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px;
+        }
+
+        #add-transaction-modal .modal-btn {
+            padding: 8px 18px;
+            border-radius: 5px;
+            border: none;
+            font-size: 1rem;
+            cursor: pointer;
+        }
+
+        #add-transaction-modal .modal-btn-primary {
+            background: #6366f1;
+            color: #fff;
+        }
+
+        #add-transaction-modal .modal-btn-primary:hover {
+            background: #4f46e5;
+        }
+
+        #add-transaction-modal .modal-btn-secondary {
+            background: #1e2d3d;
+            color: #e6f1ff;
+        }
+
+        #add-transaction-modal .modal-btn-secondary:hover {
+            background: #233554;
         }
 
         /* Responsive adjustments */
