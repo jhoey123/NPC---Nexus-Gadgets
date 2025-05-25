@@ -1186,22 +1186,6 @@ $weeklyProfits = getWeeklyProfits();
 
         // Show add employee modal
         function showAddEmployeeModal() {
-            // Only allow Admin to add Staff
-            const userRole = "<?php echo isset($rank) ? $rank : ''; ?>";
-            const roleSelect = document.getElementById('modal-employee-role');
-            if (userRole.toLowerCase() !== 'admin') {
-                // If not admin, disable Staff option
-                for (let i = 0; i < roleSelect.options.length; i++) {
-                    if (roleSelect.options[i].value === 'Staff') {
-                        roleSelect.options[i].disabled = true;
-                    }
-                }
-            } else {
-                // If admin, enable all options
-                for (let i = 0; i < roleSelect.options.length; i++) {
-                    roleSelect.options[i].disabled = false;
-                }
-            }
             document.getElementById('add-employee-modal').style.display = 'flex';
         }
 
