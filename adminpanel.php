@@ -1069,7 +1069,7 @@ $weeklyProfits = getWeeklyProfits();
                         row.innerHTML = `
                             <td>
                                 <div style="display: flex; align-items: center;">
-                                    <img src="${product.image}" alt="Product" class="product-image">
+                                    <img src="uploads/${product.image}" alt="Product" class="product-image">
                                     <div style="margin-left: 10px;">
                                         <div>${product.name}</div>
                                         <div style="font-size: 12px; color: #8892b0;">${product.brand}</div>
