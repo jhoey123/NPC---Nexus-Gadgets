@@ -148,11 +148,6 @@ $weeklyProfits = getWeeklyProfits();
             <div class="product-list">
                 <div class="product-list-header">
                     <div class="product-list-title">Top Selling Products</div>
-                        <select id="top-products-period" class="bg-[#0a192f] border border-[#1e2d3d] rounded px-2 py-1 text-sm text-[#e6f1ff] focus:outline-none focus:border-[#6366f1]" onchange="updateTopProducts()">
-                        <option value="week">This Week</option>
-                        <option value="month">This Month</option>
-                        <option value="year">This Year</option>
-                    </select>
                 </div>
                 <div id="top-products-list">
                     <!-- Top products will be populated here by JavaScript -->
@@ -813,53 +808,28 @@ $weeklyProfits = getWeeklyProfits();
 
         // Update top products
         function updateTopProducts() {
-            const period = document.getElementById('top-products-period').value;
-            let topProducts = [];
-            
-            // Generate sample data based on period
-            if (period === 'week') {
-                topProducts = [
-                    { name: 'Nexus Pro Keyboard', sales: 1250 },
-                    { name: 'Ultra HD Monitor', sales: 980 },
-                    { name: 'Gaming Mouse X1', sales: 750 },
-                    { name: 'Wireless Earbuds', sales: 620 },
-                    { name: 'Laptop Stand', sales: 480 }
-                ];
-            } else if (period === 'month') {
-                topProducts = [
-                    { name: 'Ultra HD Monitor', sales: 4500 },
-                    { name: 'Nexus Pro Keyboard', sales: 3800 },
-                    { name: 'Gaming Laptop', sales: 3200 },
-                    { name: 'Wireless Earbuds', sales: 2800 },
-                    { name: 'Smartphone X', sales: 2500 }
-                ];
-            } else { // year
-                topProducts = [
-                    { name: 'Gaming Laptop', sales: 32000 },
-                    { name: 'Smartphone X', sales: 28500 },
-                    { name: 'Ultra HD Monitor', sales: 26500 },
-                    { name: 'Nexus Pro Keyboard', sales: 24000 },
-                    { name: 'Wireless Earbuds', sales: 22000 }
-                ];
-            }
-            
+            fetch('php/top_selling_products.php')
+        .then(response => response.json())
+        .then(data => {
             const topProductsList = document.getElementById('top-products-list');
             topProductsList.innerHTML = '';
-            
-            topProducts.forEach((product, index) => {
+            data.forEach((product, index) => {
+                const totalSales = parseFloat(product.TotalSales);
                 const item = document.createElement('div');
                 item.className = 'product-item';
-                
                 item.innerHTML = `
                     <div class="product-rank">${index + 1}</div>
                     <div class="product-info">
-                        <div class="product-name">${product.name}</div>
-                        <div class="product-sales"><span class="product-sales-value">₱${product.sales.toLocaleString()}</span> in sales</div>
+                        <div class="product-name">${product.Product_name}</div>
+                        <div class="product-sales"><span class="product-sales-value">₱${totalSales.toLocaleString()}</span> in sales</div>
                     </div>
                 `;
-                
                 topProductsList.appendChild(item);
             });
+        })
+        .catch(error => {
+            console.error('Error fetching top products:', error);
+        });
         }
 
         // Update purchase analytics
@@ -1205,53 +1175,28 @@ $weeklyProfits = getWeeklyProfits();
 
         // Update top products
         function updateTopProducts() {
-            const period = document.getElementById('top-products-period').value;
-            let topProducts = [];
-            
-            // Generate sample data based on period
-            if (period === 'week') {
-                topProducts = [
-                    { name: 'Nexus Pro Keyboard', sales: 1250 },
-                    { name: 'Ultra HD Monitor', sales: 980 },
-                    { name: 'Gaming Mouse X1', sales: 750 },
-                    { name: 'Wireless Earbuds', sales: 620 },
-                    { name: 'Laptop Stand', sales: 480 }
-                ];
-            } else if (period === 'month') {
-                topProducts = [
-                    { name: 'Ultra HD Monitor', sales: 4500 },
-                    { name: 'Nexus Pro Keyboard', sales: 3800 },
-                    { name: 'Gaming Laptop', sales: 3200 },
-                    { name: 'Wireless Earbuds', sales: 2800 },
-                    { name: 'Smartphone X', sales: 2500 }
-                ];
-            } else { // year
-                topProducts = [
-                    { name: 'Gaming Laptop', sales: 32000 },
-                    { name: 'Smartphone X', sales: 28500 },
-                    { name: 'Ultra HD Monitor', sales: 26500 },
-                    { name: 'Nexus Pro Keyboard', sales: 24000 },
-                    { name: 'Wireless Earbuds', sales: 22000 }
-                ];
-            }
-            
+            fetch('php/top_selling_products.php')
+        .then(response => response.json())
+        .then(data => {
             const topProductsList = document.getElementById('top-products-list');
             topProductsList.innerHTML = '';
-            
-            topProducts.forEach((product, index) => {
+            data.forEach((product, index) => {
+                const totalSales = parseFloat(product.TotalSales);
                 const item = document.createElement('div');
                 item.className = 'product-item';
-                
                 item.innerHTML = `
                     <div class="product-rank">${index + 1}</div>
                     <div class="product-info">
-                        <div class="product-name">${product.name}</div>
-                        <div class="product-sales"><span class="product-sales-value">₱${product.sales.toLocaleString()}</span> in sales</div>
+                        <div class="product-name">${product.Product_name}</div>
+                        <div class="product-sales"><span class="product-sales-value">₱${totalSales.toLocaleString()}</span> in sales</div>
                     </div>
                 `;
-                
                 topProductsList.appendChild(item);
             });
+        })
+        .catch(error => {
+            console.error('Error fetching top products:', error);
+        });
         }
 
         // Update purchase analytics
@@ -1261,7 +1206,7 @@ $weeklyProfits = getWeeklyProfits();
                 { icon: 'user-clock', name: 'Repeat Purchase Rate', value: '32%' },
                 { icon: 'box-open', name: 'Most Purchased Category', value: 'Keyboards' },
                 { icon: 'clock', name: 'Peak Shopping Time', value: '9:00 AM - 5:00 PM' },
-                { icon: 'map-marker-alt', name: 'Top Location', value: 'Sabang Dano' }
+                { icon: 'map-marker-alt', name: 'Top Location', value: 'Sabang Danao' }
             ];
             
             const analyticsContainer = document.getElementById('purchase-analytics');
