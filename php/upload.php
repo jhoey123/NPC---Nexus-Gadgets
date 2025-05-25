@@ -42,13 +42,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
                 header("Location: ../adminpanel.php?success=1");    
             } else {
-                header("Location: ../adminpanel.php?error=File upload failed");
+                header("Location: ../adminpanel.php?error=" . urlencode("File upload failed"));
             }
         } else {
-            header("Location: ../adminpanel.php?error=Invalid file type");
+            header("Location: ../adminpanel.php?error=" . urlencode("Invalid file type"));
         }
     } else {
-        header("Location: ../adminpanel.php?error=No file uploaded");
+        header("Location: ../adminpanel.php?error=" . urlencode("No file uploaded"));
     }
 } else {
     header("Location: ../adminpanel.php");
