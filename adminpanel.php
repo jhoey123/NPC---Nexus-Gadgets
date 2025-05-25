@@ -584,23 +584,6 @@ $weeklyProfits = getWeeklyProfits();
             }
         })();
 
-        function renderTransactionTable() {
-            const tbody = document.getElementById('transaction-table-body');
-            tbody.innerHTML = '';
-            transactions.forEach(tx => {
-                const row = document.createElement('tr');
-                row.innerHTML = `
-                    <td>${tx.date}</td>
-                    <td>${tx.customer}</td>
-                    <td>${tx.item}</td>
-                    <td>₱${parseFloat(tx.price).toFixed(2)}</td>
-                    <td>${tx.quantity}</td>
-                    <td>₱${(tx.price * tx.quantity).toFixed(2)}</td>
-                `;
-                tbody.appendChild(row);
-            });
-        }
-
         function showAddTransactionModal() {
             document.getElementById('add-transaction-modal').style.display = 'flex';
         }
