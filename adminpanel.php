@@ -623,14 +623,14 @@ $weeklyProfits = getWeeklyProfits();
             }
 
             transactions.push({ date, customer, item, price, quantity });
-            renderTransactionTable();
-            closeAddTransactionModal();
-            showToast('Transaction added successfully');
-        }
-
-        // Inject PHP weekly profits into JS
-        const weeklyProfits = <?php echo json_encode($weeklyProfits); ?>;
-        // Generate labels for the last 7 days (Mon-Sun)
+            renderTransactionTable();   
+            closeAddTransactionModal(); 
+            showToast('Transaction added successfully');    
+        }   
+        
+        // Inject PHP weekly profits into JS    
+        const weeklyProfits = <?php echo json_encode($weeklyProfits); ?>;   
+        // Generate labels for the last 7 days (Mon-Sun)    
         const weeklyLabels = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
 
         // Initialize the application
