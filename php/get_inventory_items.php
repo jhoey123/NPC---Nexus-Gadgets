@@ -12,7 +12,8 @@ $query = "SELECT
     p.Product_quantity AS quantity,
     p.Product_price AS price,
     c.Category_name AS category,
-    p.Product_image_path AS image
+    p.Product_image_path AS image,
+    p.Barcode_id AS barcode
     FROM products p
     LEFT JOIN categories c ON p.Category_id = c.Category_id";
 

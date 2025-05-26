@@ -251,6 +251,7 @@ $weeklyProfits = getWeeklyProfits();
                         <th>Product</th>
                         <th>Category</th>
                         <th>Price</th>
+                        <th>Barcode ID</th>
                         <th>Quantity</th>
                         <th>Status</th>
                         <th>Actions</th>
@@ -937,6 +938,7 @@ $weeklyProfits = getWeeklyProfits();
                             </td>
                             <td>${product.category}</td>
                             <td>₱${parseFloat(product.price).toFixed(2)}</td>
+                            <td>${product.barcode}</td>
                             <td>${product.quantity}</td>
                             <td><span class="status-badge ${statusClass}">${statusText}</span></td>
                             <td>

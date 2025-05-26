@@ -30,7 +30,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 $productId = $stmt->insert_id;
 
                 // Generate barcode using the new product ID
-                $barcode = generateBarcode($productId);
+                $barcode = barcodeGenerator($productId);
 
                 // Update the product with the generated barcode
                 $update = $conn->prepare("UPDATE products SET Barcode_id = ? WHERE Product_id = ?");
