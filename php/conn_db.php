@@ -1,14 +1,14 @@
     <?php 
 
-//$servername = "localhost";
-//$username = "root";
-//$password = "";
-//$dbname = "nexus_db";
-
 $servername = "localhost";
-$username = "u866427573_nexus";
-$password = "@Qetu1357";
-$dbname = "u866427573_nexus";
+$username = "root";
+$password = "";
+$dbname = "nexus_db";
+
+//$servername = "localhost";
+//$username = "u866427573_nexus";
+//$password = "@Qetu1357";
+//$dbname = "u866427573_nexus";
 
 
 $conn = new mysqli($servername, $username, $password, $dbname);

@@ -1,4 +1,4 @@
-        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
         
         @font-face {
             font-family: 'SuperDario';
@@ -155,7 +155,7 @@
 
         .main-container {
             display: grid;
-            grid-template-columns: 1fr 320px;
+            grid-template-columns: 1fr 500px; /* Move order-section to the left */
             height: calc(100vh - 72px);
             width: 100%;
             min-width: 0;
@@ -167,12 +167,17 @@
         }
 
         .order-section {
-            border-left: 1px solid rgba(99, 102, 241, 0.2);
+            border-right: 1px solid rgba(99, 102, 241, 0.2); /* Border on right */
+            border-left: none;
             background: rgba(23, 42, 69, 0.7);
             display: flex;
             flex-direction: column;
             height: 100%;
             backdrop-filter: blur(5px);
+            border-radius: 0.75rem;
+            margin-left: 1rem;   /* Add space on the left side */
+            margin-right: 5rem;     /* Remove right margin */
+            
         }
 
         .categories {
