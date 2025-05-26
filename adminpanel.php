@@ -591,7 +591,7 @@ $weeklyProfits = getWeeklyProfits();
         
         // Inject PHP weekly profits into JS    
         const weeklyProfits = <?php echo json_encode($weeklyProfits); ?>;   
-        // Generate labels for the last 7 days (Mon-Sun)    
+        // Generate labels for the last 7 days (Mon-Sun)
         const weeklyLabels = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
 
         // Initialize the application
@@ -698,7 +698,10 @@ $weeklyProfits = getWeeklyProfits();
                                 color: 'rgba(30, 45, 61, 0.5)'
                             },
                             ticks: {
-                                color: '#8892b0'
+                                color: '#8892b0',
+                                callback: function(value) {
+                                    return '₱' + value.toLocaleString();
+                                }
                             }
                         },
                         x: {

@@ -4,18 +4,20 @@
 function getSales() {
     include 'conn_db.php';
     
-    $sql = "SELECT sales FROM products";
+    $sql = "SELECT sales, Product_price FROM products";
     $stmt = $conn->prepare($sql);
     $stmt->execute();
     $result = $stmt->get_result();
 
     $totalSales = 0;
-    
-    $sales = array();
-    while($row = $result->fetch_assoc()) {
-        $totalSales += $row['sales'];
+
+    while ($row = $result->fetch_assoc()) {
+        $totalSales += $row['sales'] * $row['Product_price']; // Multiply sales by price
     }
-    
+
+    $stmt->close();
+    $conn->close();
+
     return $totalSales;
 }
 
@@ -38,15 +40,13 @@ function getTodaysOrders() {
 }
 
 function weeklyProfits($profit) {
-
     include 'conn_db.php';
-    $todaysProfit = $profit;
 
-    $dayOfWeek = date("l");
+    $dayOfWeek = date("l"); // Get the current day of the week
 
-    $sql = "UPDATE profits SET profit = ? WHERE day = ?";
+    $sql = "UPDATE profits SET Profits = Profits + ? WHERE Day = ?";
     $stmt = $conn->prepare($sql);
-    $stmt->bind_param("ds", $todaysprofit, $dayOfWeek);
+    $stmt->bind_param("ds", $profit, $dayOfWeek);
     $stmt->execute();
     $stmt->close();
     $conn->close();
@@ -69,6 +69,17 @@ function getWeeklyProfits() {
     }
 
     return $profits;
+}
+
+function addSales($id, $quantity) {
+    include 'conn_db.php';
+
+    $sql = "UPDATE products SET Sales = Sales + ? WHERE Product_id = ?";
+    $stmt = $conn->prepare($sql);
+    $stmt->bind_param("ii", $quantity, $id);
+    $stmt->execute();
+    $stmt->close();
+    $conn->close();
 }
 
 

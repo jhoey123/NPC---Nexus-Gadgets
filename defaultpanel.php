@@ -473,13 +473,21 @@
             `;
             document.getElementById('receipt-content').innerHTML = receiptHtml;
 
-            // Update stock
+            // Update product sales in the database
             cart.forEach(cartItem => {
-                const product = products.find(p => p.id === cartItem.id);
-                if (product) {
-                    product.stock -= cartItem.quantity;
-                }
+                fetch('php/update_sales.php', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ id: cartItem.id, quantity: cartItem.quantity })
+                }).catch(error => console.error('Error updating sales:', error));
             });
+
+            // Update weekly profits
+            fetch('php/update_profits.php', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ profit: subtotal })
+            }).catch(error => console.error('Error updating profits:', error));
 
             // Show receipt
             document.getElementById('receipt-modal').style.display = 'flex';
