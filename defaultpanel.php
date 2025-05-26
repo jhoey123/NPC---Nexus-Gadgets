@@ -123,19 +123,10 @@
     <script>
         // Global variables
         let cart = [];
-        let products = [
-            { id: 1, name: "Mechanical Keyboard (RGB)", price: 2499, stock: 10, category: "Keyboards", image: "https://images.unsplash.com/photo-1587829741301-dc798b83add3?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=500&h=300&q=80" },
-            { id: 2, name: "Gaming Mouse (Wireless)", price: 1599, stock: 15, category: "Mouse", image: "https://images.unsplash.com/photo-1527814050087-3793815479db?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=500&h=300&q=80" },
-            { id: 3, name: "27\" IPS Monitor (4K)", price: 15999, stock: 5, category: "Monitors", image: "https://images.unsplash.com/photo-1546538475-4d557ebe27a2?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=500&h=300&q=80" },
-            { id: 4, name: "Gaming Laptop (RTX 3060)", price: 65999, stock: 3, category: "Laptops", image: "https://images.unsplash.com/photo-1593642632823-8f785ba67e45?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=500&h=300&q=80" },
-            { id: 5, name: "Flagship Smartphone (128GB)", price: 39999, stock: 8, category: "Smartphones", image: "https://images.unsplash.com/photo-1601784551446-20c9e07cdbdb?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=500&h=300&q=80" },
-            { id: 6, name: "Wireless Earbuds", price: 3499, stock: 12, category: "Accessories", image: "https://images.unsplash.com/photo-1590658268037-6bf12165a8df?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=500&h=300&q=80" },
-            { id: 7, name: "Ergonomic Keyboard", price: 2999, stock: 7, category: "Keyboards", image: "https://images.unsplash.com/photo-1583445013765-46c20c4a39b9?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=500&h=300&q=80" },
-            { id: 8, name: "Ultrawide Monitor", price: 22999, stock: 4, category: "Monitors", image: "https://images.unsplash.com/photo-1551645120-d70bfe84c826?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=500&h=300&q=80" }
-        ];
+        let products = [];
 
         document.addEventListener('DOMContentLoaded', function() {
-            loadProducts();
+            fetchInventoryItems(); // Replace loadProducts() with fetchInventoryItems()
             setupEventListeners();
             const savedCart = localStorage.getItem('nexusCart');
             if (savedCart) {
@@ -152,6 +143,19 @@
                 barcodeBar.classList.remove('expanded');
             });
         });
+
+        function fetchInventoryItems() {
+            fetch('php/get_inventory_items.php')
+                .then(response => response.json())
+                .then(data => {
+                    products = data;
+                    loadProducts();
+                })
+                .catch(error => {
+                    console.error('Error fetching inventory:', error);
+                    showAlert('Failed to load inventory items', 'error');
+                });
+        }
 
         function setupEventListeners() {
             document.getElementById('cart-toggle').addEventListener('click', function() {
@@ -192,25 +196,26 @@
             });
         }
 
+        // Update addToCart to work with database fields
         function addToCart(productId) {
             const product = products.find(p => p.id === productId);
             if (!product) return;
             const existingItem = cart.find(item => item.id === productId);
             if (existingItem) {
-                if (existingItem.quantity < product.stock) {
+                if (existingItem.quantity < product.quantity) {
                     existingItem.quantity++;
                 } else {
-                    showAlert(`Cannot add more than ${product.stock} of this item.`);
+                    showAlert(`Cannot add more than ${product.quantity} of this item.`);
                     return;
                 }
             } else {
                 cart.push({
                     id: product.id,
                     name: product.name,
-                    price: product.price,
+                    price: parseFloat(product.price),
                     image: product.image,
                     quantity: 1,
-                    maxQuantity: product.stock
+                    maxQuantity: product.quantity
                 });
             }
             updateCartDisplay();
@@ -226,6 +231,7 @@
             updateCartDisplay();
         }
 
+        // Update updateCartDisplay to show total price per item
         function updateCartDisplay() {
             const itemsContainer = document.getElementById('order-items');
             const summaryContainer = document.getElementById('order-summary');
@@ -259,7 +265,7 @@
                         <img src="${item.image}" alt="${item.name}" class="order-item-image">
                         <div class="order-item-details">
                             <div class="order-item-name">${item.name}</div>
-                            <div class="order-item-price">₱${item.price.toFixed(2)}</div>
+                            <div class="order-item-price">₱${(item.price * item.quantity).toFixed(2)}</div>
                         </div>
                     </div>
                     <div class="order-item-controls">
