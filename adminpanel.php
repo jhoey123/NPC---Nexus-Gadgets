@@ -1142,6 +1142,23 @@ $weeklyProfits = getWeeklyProfits();
             });
         }
 
+        function searchProducts() {
+            const searchInput = document.getElementById('inventory-search').value.toLowerCase();
+            const tableRows = document.querySelectorAll('#inventory-table-body tr');
+
+            tableRows.forEach(row => {
+                const productName = row.querySelector('td:nth-child(1) div div').textContent.toLowerCase();
+                const productCategory = row.querySelector('td:nth-child(2)').textContent.toLowerCase();
+                const productBrand = row.querySelector('td:nth-child(1) div div:nth-child(2)').textContent.toLowerCase();
+
+                if (productName.includes(searchInput) || productCategory.includes(searchInput) || productBrand.includes(searchInput)) {
+                    row.style.display = '';
+                } else {
+                    row.style.display = 'none';
+                }
+            });
+        }
+
         // Use this function to open the modal and populate fields
         function openEditProductModal(product) {
             document.getElementById('edit-product-id').value = product.id;
@@ -1395,6 +1412,7 @@ $weeklyProfits = getWeeklyProfits();
                 toast.style.opacity = '0';
             }, 3000);
         }
+
     </script>
 </body>
 </html>
