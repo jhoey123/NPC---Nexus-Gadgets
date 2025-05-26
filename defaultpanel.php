@@ -189,7 +189,7 @@
                 card.setAttribute('data-name', product.name);
                 card.setAttribute('data-category', product.category);
                 card.innerHTML = `
-                    <img src="${product.image}" alt="${product.name}" class="product-image">
+                    <img src="uploads/${product.image}" alt="${product.name}" class="product-image">
                     <div class="product-details">
                         <div class="product-name">${product.name}</div>
                         <div class="product-price">₱${product.price.toLocaleString('en-US', {minimumFractionDigits: 2})}</div>
@@ -268,7 +268,7 @@
                 itemElement.className = 'order-item';
                 itemElement.innerHTML = `
                     <div class="order-item-info">
-                        <img src="${item.image}" alt="${item.name}" class="order-item-image">
+                        <img src="uploads/${item.image}" alt="${item.name}" class="order-item-image">
                         <div class="order-item-details">
                             <div class="order-item-name">${item.name}</div>
                             <div class="order-item-price">₱${(item.price * item.quantity).toFixed(2)}</div>

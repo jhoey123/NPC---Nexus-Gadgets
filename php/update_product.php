@@ -54,11 +54,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
             // Generate new filename
             $new_filename = uniqid() . '.' . $file_ext;
-            $upload_path = '../images/' . $new_filename;
+            $upload_path = "../uploads/" . $new_filename;
 
             if (move_uploaded_file($file_tmp, $upload_path)) {
                 // Update image path and name in database
-                $image_path = 'images/' . $new_filename;
+                $image_path = $new_filename;
                 $stmt = $conn->prepare("UPDATE products SET Product_image_path = ?, Product_image_name = ? WHERE Product_id = ?");
                 $stmt->bind_param("ssi", $image_path, $file_name, $product_id);
                 $stmt->execute();
