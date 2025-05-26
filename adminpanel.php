@@ -586,34 +586,7 @@ $weeklyProfits = getWeeklyProfits();
                 showToast(params.get('error'), 'error');
                 window.history.replaceState({}, document.title, window.location.pathname);
             }
-        })();
-
-        function showAddTransactionModal() {
-            document.getElementById('add-transaction-modal').style.display = 'flex';
-        }
-
-        function closeAddTransactionModal() {
-            document.getElementById('add-transaction-modal').style.display = 'none';
-            document.getElementById('transaction-form').reset();
-        }
-
-        function addTransactionFromModal() {
-            const date = document.getElementById('transaction-date').value;
-            const customer = document.getElementById('transaction-customer').value;
-            const item = document.getElementById('transaction-item').value;
-            const price = parseFloat(document.getElementById('transaction-price').value);
-            const quantity = parseInt(document.getElementById('transaction-quantity').value);
-
-            if (!date || !customer || !item || isNaN(price) || isNaN(quantity)) {
-                showToast('Please fill all fields', 'error');
-                return;
-            }
-
-            transactions.push({ date, customer, item, price, quantity });
-            renderTransactionTable();   
-            closeAddTransactionModal(); 
-            showToast('Transaction added successfully');    
-        }   
+        })();  
         
         // Inject PHP weekly profits into JS    
         const weeklyProfits = <?php echo json_encode($weeklyProfits); ?>;   
@@ -923,113 +896,12 @@ $weeklyProfits = getWeeklyProfits();
             document.getElementById('file-upload-container').style.display = 'flex';
         }
 
-        // Add product from form
-        function addProduct(event) {
-            event.preventDefault();
-            
-            const name = document.getElementById('product-name').value;
-            const brand = document.getElementById('product-brand').value;
-            const price = parseFloat(document.getElementById('product-price').value);
-            const quantity = parseInt(document.getElementById('product-quantity').value);
-            const category = document.getElementById('product-category').value;
-            const description = document.getElementById('product-description').value;
-            
-            const newProduct = {
-                id: products.length > 0 ? Math.max(...products.map(p => p.id)) + 1 : 1,
-                name,
-                brand,
-                price,
-                quantity,
-                category,
-                description,
-                image: selectedFile ? URL.createObjectURL(selectedFile) : 'https://via.placeholder.com/50'
-            };
-            
-            products.push(newProduct);
-            renderInventoryTable();
-            
-            // Reset form
-            document.getElementById('product-form').reset();
-            if (selectedFile) {
-                removeImage();
-            }
-            
-            showToast('Product added successfully');
-            closeAddProductModal();
-        }
 
-        // Add product from modal
-        function addProductFromModal() {
-            const name = document.getElementById('modal-product-name').value;
-            const category = document.getElementById('modal-product-category').value;
-            const price = parseFloat(document.getElementById('modal-product-price').value);
-            const quantity = parseInt(document.getElementById('modal-product-quantity').value);
-            const description = document.getElementById('modal-product-description').value;
-            
-            if (!name || !category || isNaN(price) || isNaN(quantity)) {
-                showToast('Please fill all fields', 'error');
-                return;
-            }
-            
-            const newProduct = {
-                id: products.length > 0 ? Math.max(...products.map(p => p.id)) + 1 : 1,
-                name,
-                brand: 'Nexus',
-                price,
-                quantity,
-                category,
-                description,
-                image: selectedFile ? URL.createObjectURL(selectedFile) : 'https://via.placeholder.com/50'
-            };
-            
-            products.push(newProduct);
-            renderInventoryTable();
-            
-            // Reset form
-            document.getElementById('modal-product-form').reset();
-            
-            showToast('Product added successfully');
-            closeAddProductModal();
-        }
 
-        // Add employee from modal
-        function addEmployeeFromModal() {
-            const fname = document.getElementById('modal-employee-fname').value;
-            const lname = document.getElementById('modal-employee-lname').value;
-            const email = document.getElementById('modal-employee-email').value;
-            const dob = document.getElementById('modal-employee-dob').value;
-            const phone = document.getElementById('modal-employee-phone').value;
-            const role = document.getElementById('modal-employee-role').value;
-            const status = document.getElementById('modal-employee-status').value;
-            
-            if (!fname || !lname || !email || !dob || !phone || !role || !status) {
-                showToast('Please fill all fields', 'error');
-                return;
-            }
+        // DASHBOARD END
 
-            fetch('php/add_employee.php', {
-                method: 'POST',
-                headers: { 
-                    'Content-Type': 'application/x-www-form-urlencoded' 
-                },
-                body: `employee_fname=${encodeURIComponent(fname)}&employee_lname=${encodeURIComponent(lname)}&employee_email=${encodeURIComponent(email)}&employee_dob=${encodeURIComponent(dob)}&employee_phone=${encodeURIComponent(phone)}&employee_role=${encodeURIComponent(role)}&employee_status=${encodeURIComponent(status)}`
-            })
-            .then(response => response.json())
-            .then(data => {
-                if (data.success) {
-                    showToast('Employee added successfully');
-                    renderEmployeeTable();
-                    closeAddEmployeeModal();
-                    document.getElementById('modal-employee-form').reset();
-                } else {
-                    showToast(data.message || 'Failed to add employee', 'error');
-                }
-            })
-            .catch(error => {
-                showToast('Error adding employee', 'error');
-                console.error('Error:', error);
-            });
-        }
+
+        //inventory START
 
         // Fetch inventory items from the server and render the table
         function renderInventoryTable() {
@@ -1087,6 +959,125 @@ $weeklyProfits = getWeeklyProfits();
                 });
         }
 
+
+        function searchProducts() {
+            const searchInput = document.getElementById('inventory-search').value.toLowerCase();
+            const tableRows = document.querySelectorAll('#inventory-table-body tr');
+
+            tableRows.forEach(row => {
+                const productName = row.querySelector('td:nth-child(1) div div').textContent.toLowerCase();
+                const productCategory = row.querySelector('td:nth-child(2)').textContent.toLowerCase();
+                const productBrand = row.querySelector('td:nth-child(1) div div:nth-child(2)').textContent.toLowerCase();
+
+                if (productName.includes(searchInput) || productCategory.includes(searchInput) || productBrand.includes(searchInput)) {
+                    row.style.display = '';
+                } else {
+                    row.style.display = 'none';
+                }
+            });
+        }
+
+        // Close add product modal
+        function closeAddProductModal() {
+            document.getElementById('add-product-modal').style.display = 'none';
+        }
+
+        // Use this function to open the modal and populate fields
+        function openEditProductModal(product) {
+            document.getElementById('edit-product-id').value = product.id;
+            document.getElementById('edit-product-name').value = product.name;
+            document.getElementById('edit-product-brand').value = product.brand;
+            
+            // Map category names to their corresponding IDs
+            const categoryMap = {
+                'LAPTOPS': '1',
+                'SMARTPHONES': '2',
+                'MOUSE': '3',
+                'KEYBOARDS': '4',
+                'MONITORS': '5'
+            };
+            
+            // Set category value based on the product's category name
+            const categoryId = categoryMap[product.category.toUpperCase()] || '';
+            document.getElementById('edit-product-category').value = categoryId;
+            
+            document.getElementById('edit-product-price').value = product.price;
+            document.getElementById('edit-product-quantity').value = product.quantity;
+            currentEditId = product.id;
+            currentEditType = 'product';
+            document.getElementById('edit-product-modal').style.display = 'flex';
+        }
+
+        // Update product
+        function submitEditProductForm() {
+            const form = document.getElementById('edit-product-form');
+            const formData = new FormData(form);
+            
+            fetch(form.action, {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    showToast('Product updated successfully');
+                    renderInventoryTable();
+                    closeEditProductModal();
+                } else {
+                    showToast(data.message || 'Failed to update product', 'error');
+                }
+            })
+            .catch(() => {
+                showToast('Failed to update product', 'error');
+            });
+        }
+
+        // Close edit product modal
+        function closeEditProductModal() {
+            document.getElementById('edit-product-modal').style.display = 'none';
+        }
+
+        // Delete product
+        function openDeleteProductModal(productId) {
+            currentDeleteProductId = productId;
+            document.getElementById('delete-product-modal').style.display = 'flex';
+        }
+
+        function deleteProduct() {
+            if (!currentDeleteProductId) return;
+
+            fetch('php/delete_product.php', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                body: `product_id=${currentDeleteProductId}`
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    showToast('Product deleted successfully');
+                    renderInventoryTable(); // Refresh inventory table
+                } else {
+                    showToast(data.message, 'error');
+                }
+                closeDeleteProductModal();
+            })
+            .catch(() => {
+                showToast('Failed to delete product', 'error');
+                closeDeleteProductModal();
+            });
+        }
+
+        function closeDeleteProductModal() {
+            currentDeleteProductId = null;
+            document.getElementById('delete-product-modal').style.display = 'none';
+        }
+
+
+        // inventory END
+
+
+        // employee START
+
         // Render employee table
         function renderEmployeeTable() {
             fetch('php/get_employees.php')
@@ -1124,104 +1115,49 @@ $weeklyProfits = getWeeklyProfits();
                 });
         }
 
-        // Render transaction table
-        function renderTransactionTable() {
-            const tbody = document.getElementById('transaction-table-body');
-            tbody.innerHTML = '';
-            transactions.forEach(tx => {
-                const row = document.createElement('tr');
-                row.innerHTML = `
-                    <td>${tx.date}</td>
-                    <td>${tx.customer}</td>
-                    <td>${tx.item}</td>
-                    <td>₱${parseFloat(tx.price).toFixed(2)}</td>
-                    <td>${tx.quantity}</td>
-                    <td>₱${(tx.price * tx.quantity).toFixed(2)}</td>
-                `;
-                tbody.appendChild(row);
-            });
-        }
-
-        function searchProducts() {
-            const searchInput = document.getElementById('inventory-search').value.toLowerCase();
-            const tableRows = document.querySelectorAll('#inventory-table-body tr');
-
-            tableRows.forEach(row => {
-                const productName = row.querySelector('td:nth-child(1) div div').textContent.toLowerCase();
-                const productCategory = row.querySelector('td:nth-child(2)').textContent.toLowerCase();
-                const productBrand = row.querySelector('td:nth-child(1) div div:nth-child(2)').textContent.toLowerCase();
-
-                if (productName.includes(searchInput) || productCategory.includes(searchInput) || productBrand.includes(searchInput)) {
-                    row.style.display = '';
-                } else {
-                    row.style.display = 'none';
-                }
-            });
-        }
-
-        // Use this function to open the modal and populate fields
-        function openEditProductModal(product) {
-            document.getElementById('edit-product-id').value = product.id;
-            document.getElementById('edit-product-name').value = product.name;
-            document.getElementById('edit-product-brand').value = product.brand;
-            
-            // Map category names to their corresponding IDs
-            const categoryMap = {
-                'LAPTOPS': '1',
-                'SMARTPHONES': '2',
-                'MOUSE': '3',
-                'KEYBOARDS': '4',
-                'MONITORS': '5'
-            };
-            
-            // Set category value based on the product's category name
-            const categoryId = categoryMap[product.category.toUpperCase()] || '';
-            document.getElementById('edit-product-category').value = categoryId;
-            
-            document.getElementById('edit-product-price').value = product.price;
-            document.getElementById('edit-product-quantity').value = product.quantity;
-            currentEditId = product.id;
-            currentEditType = 'product';
-            document.getElementById('edit-product-modal').style.display = 'flex';
-        }
-
-        // Close add product modal
-        function closeAddProductModal() {
-            document.getElementById('add-product-modal').style.display = 'none';
-        }
-
-        // Close edit product modal
-        function closeEditProductModal() {
-            document.getElementById('edit-product-modal').style.display = 'none';
-        }
-
-        // Update product
-        function submitEditProductForm() {
-            const form = document.getElementById('edit-product-form');
-            const formData = new FormData(form);
-            
-            fetch(form.action, {
-                method: 'POST',
-                body: formData
-            })
-            .then(response => response.json())
-            .then(data => {
-                if (data.success) {
-                    showToast('Product updated successfully');
-                    renderInventoryTable();
-                    closeEditProductModal();
-                } else {
-                    showToast(data.message || 'Failed to update product', 'error');
-                }
-            })
-            .catch(() => {
-                showToast('Failed to update product', 'error');
-            });
-        }
 
         // Show add employee modal
         function showAddEmployeeModal() {
             document.getElementById('add-employee-modal').style.display = 'flex';
+        }
+
+        // Add employee from modal
+        function addEmployeeFromModal() {
+            const fname = document.getElementById('modal-employee-fname').value;
+            const lname = document.getElementById('modal-employee-lname').value;
+            const email = document.getElementById('modal-employee-email').value;
+            const dob = document.getElementById('modal-employee-dob').value;
+            const phone = document.getElementById('modal-employee-phone').value;
+            const role = document.getElementById('modal-employee-role').value;
+            const status = document.getElementById('modal-employee-status').value;
+            
+            if (!fname || !lname || !email || !dob || !phone || !role || !status) {
+                showToast('Please fill all fields', 'error');
+                return;
+            }
+
+            fetch('php/add_employee.php', {
+                method: 'POST',
+                headers: { 
+                    'Content-Type': 'application/x-www-form-urlencoded' 
+                },
+                body: `employee_fname=${encodeURIComponent(fname)}&employee_lname=${encodeURIComponent(lname)}&employee_email=${encodeURIComponent(email)}&employee_dob=${encodeURIComponent(dob)}&employee_phone=${encodeURIComponent(phone)}&employee_role=${encodeURIComponent(role)}&employee_status=${encodeURIComponent(status)}`
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    showToast('Employee added successfully');
+                    renderEmployeeTable();
+                    closeAddEmployeeModal();
+                    document.getElementById('modal-employee-form').reset();
+                } else {
+                    showToast(data.message || 'Failed to add employee', 'error');
+                }
+            })
+            .catch(error => {
+                showToast('Error adding employee', 'error');
+                console.error('Error:', error);
+            });
         }
 
         // Close add employee modal
@@ -1263,24 +1199,6 @@ $weeklyProfits = getWeeklyProfits();
                 });
         }
 
-        // Close edit employee modal
-        function closeEditEmployeeModal() {
-            document.getElementById('edit-employee-modal').style.display = 'none';
-        }
-
-        // Logout function
-        function logout() {
-            const form = document.createElement('form');
-            form.method = 'POST';
-            form.action = 'php/logout.php';
-            const input = document.createElement('input');
-            input.type = 'hidden';
-            input.name = 'logout';
-            form.appendChild(input);
-            document.body.appendChild(form);
-            form.submit();
-        }
-
         // Update employee
         function updateEmployee() {
             const employeeId = document.getElementById('edit-employee-id').value;
@@ -1316,7 +1234,12 @@ $weeklyProfits = getWeeklyProfits();
             });
         }
 
-        // Show delete confirmation modal
+        // Close edit employee modal
+        function closeEditEmployeeModal() {
+            document.getElementById('edit-employee-modal').style.display = 'none';
+        }
+
+        // Show delete EMPLOYEE confirmation modal
         function showDeleteConfirmModal(id, type) {
             currentDeleteId = id;
             currentDeleteType = type;
@@ -1326,12 +1249,12 @@ $weeklyProfits = getWeeklyProfits();
             document.getElementById('delete-confirm-modal').style.display = 'flex';
         }
             
-        // Close delete confirmation modal
+        // Close delete EMPLOYEE confirmation modal
         function closeDeleteConfirmModal() {
             document.getElementById('delete-confirm-modal').style.display = 'none';
         }
-            
-        // Confirm delete
+
+        // Confirm delete EMPLOYEE
         function confirmDelete() {
             if (currentDeleteType === 'product') {
                 products = products.filter(p => p.id !== currentDeleteId);
@@ -1362,39 +1285,20 @@ $weeklyProfits = getWeeklyProfits();
             }
         }
 
-        // Delete product
-        function openDeleteProductModal(productId) {
-            currentDeleteProductId = productId;
-            document.getElementById('delete-product-modal').style.display = 'flex';
-        }
+        // employee END
 
-        function closeDeleteProductModal() {
-            currentDeleteProductId = null;
-            document.getElementById('delete-product-modal').style.display = 'none';
-        }
 
-        function deleteProduct() {
-            if (!currentDeleteProductId) return;
-
-            fetch('php/delete_product.php', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-                body: `product_id=${currentDeleteProductId}`
-            })
-            .then(response => response.json())
-            .then(data => {
-                if (data.success) {
-                    showToast('Product deleted successfully');
-                    renderInventoryTable(); // Refresh inventory table
-                } else {
-                    showToast(data.message, 'error');
-                }
-                closeDeleteProductModal();
-            })
-            .catch(() => {
-                showToast('Failed to delete product', 'error');
-                closeDeleteProductModal();
-            });
+        // Logout function
+        function logout() {
+            const form = document.createElement('form');
+            form.method = 'POST';
+            form.action = 'php/logout.php';
+            const input = document.createElement('input');
+            input.type = 'hidden';
+            input.name = 'logout';
+            form.appendChild(input);
+            document.body.appendChild(form);
+            form.submit();
         }
             
         // Show toast notification
@@ -1412,6 +1316,25 @@ $weeklyProfits = getWeeklyProfits();
                 toast.style.opacity = '0';
             }, 3000);
         }
+
+        // Render transaction table
+        function renderTransactionTable() {
+            const tbody = document.getElementById('transaction-table-body');
+            tbody.innerHTML = '';
+            transactions.forEach(tx => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${tx.date}</td>
+                    <td>${tx.customer}</td>
+                    <td>${tx.item}</td>
+                    <td>₱${parseFloat(tx.price).toFixed(2)}</td>
+                    <td>${tx.quantity}</td>
+                    <td>₱${(tx.price * tx.quantity).toFixed(2)}</td>
+                `;
+                tbody.appendChild(row);
+            });
+        }
+
 
     </script>
 </body>
