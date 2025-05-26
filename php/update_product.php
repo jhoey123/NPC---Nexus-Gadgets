@@ -6,9 +6,11 @@ $response = ['success' => false, 'message' => ''];
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $product_id = $_POST['product_id'];
     $product_name = $_POST['product_name'];
+    $product_brand = $_POST['product_brand']; // Add this line
     $product_desc = isset($_POST['product_desc']) ? $_POST['product_desc'] : ''; // Default to an empty string if not provided
     $product_price = $_POST['product_price'];
     $product_quantity = $_POST['product_quantity'];
+    $category_id = $_POST['Category_id'];
 
 
     // Start transaction
@@ -18,16 +20,20 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         // Update basic product information
         $stmt = $conn->prepare("UPDATE products SET 
             Product_name = ?, 
+            Product_brand = ?, 
             Product_desc = ?, 
             Product_price = ?, 
-            Product_quantity = ? 
+            Product_quantity = ?,
+            Category_id = ?
             WHERE Product_id = ?");
         
-        $stmt->bind_param("ssdii", 
-            $product_name, 
+        $stmt->bind_param("sssdiis", 
+            $product_name,
+            $product_brand, 
             $product_desc, 
             $product_price, 
-            $product_quantity, 
+            $product_quantity,
+            $category_id,
             $product_id
         );
         

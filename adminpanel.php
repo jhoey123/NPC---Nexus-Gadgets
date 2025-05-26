@@ -278,14 +278,18 @@ $weeklyProfits = getWeeklyProfits();
                         <input type="text" id="edit-product-name" name="product_name" placeholder="Enter product name" required>
                     </div>
                     <div class="form-group">
+                        <label for="edit-product-brand">Brand</label>
+                        <input type="text" id="edit-product-brand" name="product_brand" placeholder="Enter brand name" required>
+                    </div>
+                    <div class="form-group">
                         <label for="edit-product-category">Category</label>
-                        <select id="edit-product-category" name="product_category" required>
+                        <select id="edit-product-category" name="Category_id" required>
                             <option value="">Select category</option>
-                            <option value="laptops">Laptops</option>
-                            <option value="smartphones">Smartphones</option>
-                            <option value="keyboards">Keyboards</option>
-                            <option value="mice">Mouse</option> 
-                            <option value="monitors">Monitors</option>
+                            <option value="1">Laptops</option>
+                            <option value="2">Smartphones</option>
+                            <option value="4">Keyboards</option>
+                            <option value="3">Mouse</option> 
+                            <option value="5">Monitors</option>
                         </select>
                     </div>
                     <div class="form-group">
@@ -1142,7 +1146,21 @@ $weeklyProfits = getWeeklyProfits();
         function openEditProductModal(product) {
             document.getElementById('edit-product-id').value = product.id;
             document.getElementById('edit-product-name').value = product.name;
-            document.getElementById('edit-product-category').value = product.category;
+            document.getElementById('edit-product-brand').value = product.brand;
+            
+            // Map category names to their corresponding IDs
+            const categoryMap = {
+                'LAPTOPS': '1',
+                'SMARTPHONES': '2',
+                'MOUSE': '3',
+                'KEYBOARDS': '4',
+                'MONITORS': '5'
+            };
+            
+            // Set category value based on the product's category name
+            const categoryId = categoryMap[product.category.toUpperCase()] || '';
+            document.getElementById('edit-product-category').value = categoryId;
+            
             document.getElementById('edit-product-price').value = product.price;
             document.getElementById('edit-product-quantity').value = product.quantity;
             currentEditId = product.id;
