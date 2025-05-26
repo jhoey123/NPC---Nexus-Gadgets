@@ -962,6 +962,7 @@ $weeklyProfits = getWeeklyProfits();
 
         function searchProducts() {
             const searchInput = document.getElementById('inventory-search').value.toLowerCase();
+            const searchTerms = searchInput.split(' ').filter(term => term.trim() !== '');
             const tableRows = document.querySelectorAll('#inventory-table-body tr');
 
             tableRows.forEach(row => {
@@ -969,11 +970,10 @@ $weeklyProfits = getWeeklyProfits();
                 const productCategory = row.querySelector('td:nth-child(2)').textContent.toLowerCase();
                 const productBrand = row.querySelector('td:nth-child(1) div div:nth-child(2)').textContent.toLowerCase();
 
-                if (productName.includes(searchInput) || productCategory.includes(searchInput) || productBrand.includes(searchInput)) {
-                    row.style.display = '';
-                } else {
-                    row.style.display = 'none';
-                }
+                const rowText = `${productName} ${productCategory} ${productBrand}`;
+                const matches = searchTerms.every(term => rowText.includes(term));
+
+                row.style.display = matches ? '' : 'none';
             });
         }
 
@@ -1115,6 +1115,25 @@ $weeklyProfits = getWeeklyProfits();
                 });
         }
 
+
+        // Add this function to enable employee search
+        function searchEmployees() {
+            const searchInput = document.getElementById('employee-search').value.toLowerCase();
+            const searchTerms = searchInput.split(' ').filter(term => term.trim() !== '');
+            const tableRows = document.querySelectorAll('#employee-table-body tr');
+
+            tableRows.forEach(row => {
+                const firstName = row.querySelector('td:nth-child(1)').textContent.toLowerCase();
+                const lastName = row.querySelector('td:nth-child(2)').textContent.toLowerCase();
+                const email = row.querySelector('td:nth-child(3)').textContent.toLowerCase();
+                const role = row.querySelector('td:nth-child(6)').textContent.toLowerCase();
+
+                const rowText = `${firstName} ${lastName} ${email} ${role}`;
+                const matches = searchTerms.every(term => rowText.includes(term));
+
+                row.style.display = matches ? '' : 'none';
+            });
+        }
 
         // Show add employee modal
         function showAddEmployeeModal() {
