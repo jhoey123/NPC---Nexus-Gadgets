@@ -5,7 +5,7 @@ header('Content-Type: application/json');
 $limit = 5;
 
 $query = "
-    SELECT Product_name, (Product_price * Sales) AS TotalSales
+    SELECT Product_name, (Product_price * Items_sold) AS TotalSales
     FROM products
     ORDER BY TotalSales DESC
     LIMIT ?
@@ -18,7 +18,7 @@ $result = $stmt->get_result();
 
 $topProducts = [];
 while ($row = $result->fetch_assoc()) {
-    $row['TotalSales'] = (float)$row['TotalSales'];
+    $row['TotalSales'] = (float)$row['TotalSales']; // Ensure TotalSales is a float
     $topProducts[] = $row;
 }
 

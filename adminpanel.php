@@ -30,7 +30,7 @@ if (!isset($_SESSION['email'])) {
     }
 }
 
-$totalSales = getSales();
+$totalSales = getItems_sold();
 $todaysOrders = getTodaysOrders();
 $weeklyProfits = getWeeklyProfits();
 ?>
@@ -94,32 +94,20 @@ $weeklyProfits = getWeeklyProfits();
                 <div class="stat-value" id="total-sales">
                     ₱<?php echo number_format($totalSales, 2); ?>
                 </div>
-                <div class="stat-change up">
-                    <i class="fas fa-arrow-up"></i> <span id="sales-change">12%</span> from yesterday
-                </div>
             </div>
             <div class="stat-card">
                 <div class="stat-title">Today's Orders</div>
                 <div class="stat-value" id="today-orders">
                     <?php echo $todaysOrders; ?>
                 </div>
-                <div class="stat-change up">
-                    <i class="fas fa-arrow-up"></i> <span id="orders-change">8%</span> from yesterday
-                </div>
             </div>
             <div class="stat-card">
                 <div class="stat-title">New Customers</div>
                 <div class="stat-value" id="new-customers">15</div>
-                <div class="stat-change down">
-                    <i class="fas fa-arrow-down"></i> <span id="customers-change">3%</span> from yesterday
-                </div>
             </div>
             <div class="stat-card">
                 <div class="stat-title">Conversion Rate</div>
                 <div class="stat-value" id="conversion-rate">3.2%</div>
-                <div class="stat-change up">
-                    <i class="fas fa-arrow-up"></i> <span id="conversion-change">0.5%</span> from yesterday
-                </div>
             </div>
         </div>
 
@@ -775,12 +763,6 @@ $weeklyProfits = getWeeklyProfits();
 
             document.getElementById('new-customers').textContent = newCustomers;
             document.getElementById('conversion-rate').textContent = `${conversionRate}%`;
-
-            // Random changes
-            document.getElementById('sales-change').textContent = `${Math.floor(Math.random() * 15) + 5}%`;
-            document.getElementById('orders-change').textContent = `${Math.floor(Math.random() * 10) + 5}%`;
-            document.getElementById('customers-change').textContent = `${Math.floor(Math.random() * 10) + 5}%`;
-            document.getElementById('conversion-change').textContent = `${(Math.random() * 1).toFixed(1)}%`;
         }
 
         // Update top products
@@ -791,7 +773,7 @@ $weeklyProfits = getWeeklyProfits();
             const topProductsList = document.getElementById('top-products-list');
             topProductsList.innerHTML = '';
             data.forEach((product, index) => {
-                const totalSales = parseFloat(product.TotalSales);
+                const totalSales = parseFloat(product.TotalSales); // Use the correct key
                 const item = document.createElement('div');
                 item.className = 'product-item';
                 item.innerHTML = `

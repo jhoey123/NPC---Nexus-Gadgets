@@ -426,7 +426,7 @@
             const tax = subtotal * 0.12;
             const total = subtotal + tax;
             const now = new Date();
-            const change = cashAmount ? cashAmount - total : null;
+            const change = cashAmount ? cashAmount - total : 0;
 
             let receiptHtml = `
                 <h2 style="text-align:center;">NexusGadgets POS</h2>
@@ -472,6 +472,21 @@
                 <div style="text-align:center; margin-top:1rem;">Thank you!</div>
             `;
             document.getElementById('receipt-content').innerHTML = receiptHtml;
+
+            // Record transaction in the database
+            const purchaseList = cart.map(item => `${item.name} (x${item.quantity})`).join(', ');
+            fetch('php/transactions.php', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    purchaseList: purchaseList,
+                    subtotalAmount: parseFloat(subtotal.toFixed(2)),
+                    totalAmount: parseFloat(total.toFixed(2)),
+                    paymentMethod: method,
+                    cashAmount: parseFloat((method === 'Cash' ? cashAmount : total).toFixed(2)),
+                    changeAmount: parseFloat((method === 'Cash' ? change : 0).toFixed(2))
+                })
+            }).catch(error => console.error('Error recording transaction:', error));
 
             // Update product sales in the database
             cart.forEach(cartItem => {
