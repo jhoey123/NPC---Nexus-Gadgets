@@ -102,10 +102,21 @@
             <h2 style="font-size:1.25rem; font-weight:600; margin-bottom:1rem;">Select Payment Method</h2>
             <div style="display:flex; flex-direction:column; gap:1rem;">
                 <button onclick="selectPayment('Cash')" class="checkout-btn">Cash</button>
-                <button onclick="selectPayment('Card')" class="checkout-btn">Card</button>
-                <button onclick="selectPayment('E-wallet')" class="checkout-btn">E-wallet</button>
+                <button onclick="showEwalletModal()" class="checkout-btn">E-wallet</button>
             </div>
             <button style="margin-top:2rem; color:#94a3b8; background:none; border:none;" onclick="closePaymentModal()">Cancel</button>
+        </div>
+    </div>
+
+    <!-- E-wallet Modal -->
+    <div id="ewallet-modal" style="display:none; position:fixed; top:0; left:0; right:0; bottom:0; z-index:101; background:rgba(0,0,0,0.6); align-items:center; justify-content:center;">
+        <div style="background:#172a45; padding:2rem; border-radius:0.75rem; min-width:300px; box-shadow:0 8px 32px rgba(0,0,0,0.3); color:white; text-align:center;">
+            <h2 style="font-size:1.25rem; font-weight:600; margin-bottom:1rem;">Select E-wallet</h2>
+            <div style="display:flex; flex-direction:column; gap:1rem;">
+                <button onclick="selectPayment('PayMaya')" class="checkout-btn">PayMaya</button>
+                <button onclick="selectPayment('GCash')" class="checkout-btn">GCash</button>
+            </div>
+            <button style="margin-top:2rem; color:#94a3b8; background:none; border:none;" onclick="closeEwalletModal()">Cancel</button>
         </div>
     </div>
 
@@ -122,6 +133,20 @@
                 <button onclick="closeReceiptModal()" style="background:#e5e7eb; color:#172a45; border:none; border-radius:0.5rem; padding:0.5rem 1.5rem; font-weight:600; cursor:pointer;">
                     <i class="fas fa-times"></i> Close
                 </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Cash Input Modal -->
+    <div id="cash-modal" style="display:none; position:fixed; top:0; left:0; right:0; bottom:0; z-index:102; background:rgba(0,0,0,0.6); align-items:center; justify-content:center;">
+        <div style="background:#172a45; padding:2rem; border-radius:0.75rem; min-width:300px; box-shadow:0 8px 32px rgba(0,0,0,0.3); color:white; text-align:center;">
+            <h2 style="font-size:1.25rem; font-weight:600; margin-bottom:1rem;">Enter Cash Amount</h2>
+            <div id="cash-total-display" style="margin-bottom:1rem; font-size:1.5rem; color:#6366f1;"></div>
+            <div id="cash-modal-alert" style="display:none; color:#f87171; font-size:0.875rem; margin-bottom:1rem;"></div>
+            <input type="number" id="cash-input" step="0.01" style="width:100%; padding:0.5rem; border-radius:0.375rem; margin-bottom:1rem; background:#1f3556; color:white; border:1px solid #6366f1;" placeholder="Enter amount">
+            <div style="display:flex; flex-direction:column; gap:1rem;">
+                <button onclick="processCashPayment()" class="checkout-btn">Submit</button>
+                <button onclick="closeCashModal()" style="color:#94a3b8; background:none; border:none;">Cancel</button>
             </div>
         </div>
     </div>
@@ -351,12 +376,58 @@
         // Called when user chooses payment method
         function selectPayment(method) {
             document.getElementById('payment-modal').style.display = 'none';
+            document.getElementById('ewallet-modal').style.display = 'none'; // Ensure e-wallet modal is hidden
 
-            // Prepare receipt content
+            const subtotal = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+            const tax = subtotal * 0.12;
+            const total = subtotal + tax;
+
+            if (method === 'Cash') {
+                document.getElementById('cash-total-display').textContent = `Total: ₱${total.toFixed(2)}`;
+                document.getElementById('cash-modal').style.display = 'flex';
+                document.getElementById('cash-input').value = '';
+                return;
+            }
+
+            if (method === 'PayMaya' || method === 'GCash') {
+                // Hide PayMaya and GCash buttons
+                const ewalletButtons = document.querySelectorAll('#ewallet-modal .checkout-btn');
+                ewalletButtons.forEach(button => button.style.display = 'none');
+                showAlert(`${method} selected. Puchase complete. Thank you!`, 'success');
+            }
+
+            generateReceipt(method);
+        }
+
+        function processCashPayment() {
+            const cashInput = document.getElementById('cash-input');
+            const cashAmount = parseFloat(cashInput.value);
+            const total = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0) * 1.12; // Including tax
+
+            const alertContainer = document.getElementById('cash-modal-alert');
+            if (isNaN(cashAmount) || cashAmount < total) {
+                alertContainer.textContent = 'Insufficient amount!';
+                alertContainer.style.display = 'block';
+                return;
+            }
+
+            alertContainer.style.display = 'none';
+            document.getElementById('cash-modal').style.display = 'none';
+            showAlert('Purchase complete. Thank you!', 'success'); // Add success alert
+            generateReceipt('Cash', cashAmount);
+        }
+
+        function closeCashModal() {
+            document.getElementById('cash-modal').style.display = 'none';
+        }
+
+        function generateReceipt(method, cashAmount = null) {
             const subtotal = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
             const tax = subtotal * 0.12;
             const total = subtotal + tax;
             const now = new Date();
+            const change = cashAmount ? cashAmount - total : null;
+
             let receiptHtml = `
                 <h2 style="text-align:center;">NexusGadgets POS</h2>
                 <hr>
@@ -387,6 +458,16 @@
                 <div style="display:flex; justify-content:space-between; font-weight:700;">
                     <span>Total</span><span>₱${total.toFixed(2)}</span>
                 </div>
+                ${
+                    method === 'Cash'
+                    ? `<div style="display:flex; justify-content:space-between;">
+                            <span>Cash</span><span>₱${cashAmount.toFixed(2)}</span>
+                        </div>
+                        <div style="display:flex; justify-content:space-between;">
+                            <span>Change</span><span>₱${change.toFixed(2)}</span>
+                        </div>`
+                    : ''
+                }
                 <hr>
                 <div style="text-align:center; margin-top:1rem;">Thank you!</div>
             `;
@@ -446,6 +527,15 @@
             setTimeout(() => {
                 alert.remove();
             }, 3000);
+        }
+
+        function showEwalletModal() {
+            document.getElementById('payment-modal').style.display = 'none';
+            document.getElementById('ewallet-modal').style.display = 'flex';
+        }
+
+        function closeEwalletModal() {
+            document.getElementById('ewallet-modal').style.display = 'none';
         }
     </script>
 </body>
