@@ -68,6 +68,10 @@ $weeklyProfits = getWeeklyProfits();
             <i class="fas fa-users"></i>
             <span class="sidebar-text">Employees</span>
         </div>
+        <div class="sidebar-icon" id="user-button" onclick="switchView('user')">
+            <i class="fas fa-user"></i>
+            <span class="sidebar-text">Users</span>
+        </div>
         <div class="sidebar-icon" id="transaction-button" onclick="switchView('transaction')">
             <i class="fas fa-receipt"></i>
             <span class="sidebar-text">Transactions</span>
@@ -321,7 +325,38 @@ $weeklyProfits = getWeeklyProfits();
     </div>
 
 
-    <!-- User Management Content -->
+    <!-- User Section Content -->
+    <div class="user-content" id="user-content" style="display:none;">
+        <div class="user-header">
+            <h2 class="user-title">User Management</h2>
+            <p class="user-subtitle">View and manage all registered users</p>
+        </div>
+        <div class="user-actions">
+            <div class="user-search">
+                <i class="fas fa-search"></i>
+                <input type="text" id="user-search" placeholder="Search users..." oninput="searchUsers()">
+            </div>
+        </div>
+        <div class="user-table">
+            <table>
+                <thead>
+                    <tr>
+                        <th>User ID</th>
+                        <th>Username</th>
+                        <th>Email</th>
+                        <th>Role</th>
+                        <th>Status</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody id="user-table-body">
+                    <!-- Users will be populated here by JavaScript -->
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- Employee Management Content -->
     <div class="employee-content" id="employee-content" style="display:none;">
         <div class="employee-header">
             <h2 class="employee-title">Employee Management</h2>
@@ -885,7 +920,8 @@ $weeklyProfits = getWeeklyProfits();
             document.getElementById('upload-content').style.display = 'none';
             document.getElementById('inventory-content').style.display = 'none';
             document.getElementById('employee-content').style.display = 'none';
-            document.getElementById('transaction-content').style.display = 'none'; // Add this line
+            document.getElementById('transaction-content').style.display = 'none';
+            document.getElementById('user-content').style.display = 'none'; // Add this line
 
             document.getElementById(`${view}-content`).style.display = 'block';
 
