@@ -1,11 +1,20 @@
 <?php
 include "conn_db.php";
 
+// Debug log
+error_log("POST data received: " . print_r($_POST, true));
+
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $username = $_POST['username'];
     $password = password_hash($_POST['password'], PASSWORD_DEFAULT);
-    $employee_id = $_POST['employee_id'];
+    $employee_id = isset($_POST['employee_id']) ? intval($_POST['employee_id']) : 0;
     $rank_id = $_POST['rank_id'];
+    $first_name = $_POST['first_name'];
+    $last_name = $_POST['last_name'];
+    $email = $_POST['email'];
+
+    // Debug log
+    error_log("Processed data - employee_id: $employee_id, rank_id: $rank_id");
 
     // Start transaction
     $conn->begin_transaction();
@@ -21,9 +30,19 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             throw new Exception("Username already exists");
         }
 
-        // Create user account
-        $stmt = $conn->prepare("INSERT INTO users (user_id, username, password, rank_id) VALUES (?, ?, ?, ?)");
-        $stmt->bind_param("issi", $employee_id, $username, $password, $rank_id);
+        // Check if employee_id exists in the employees table
+        $stmt = $conn->prepare("SELECT employee_id FROM employees WHERE employee_id = ?");
+        $stmt->bind_param("i", $employee_id);
+        $stmt->execute();
+        $result = $stmt->get_result();
+
+        if ($result->num_rows === 0) {
+            throw new Exception("Invalid employee ID");
+        }
+
+        // Create user account and link it to the employee using employee_id foreign key
+        $stmt = $conn->prepare("INSERT INTO users (username, password, rank_id, firstname, lastname, email, employee_id) VALUES (?, ?, ?, ?, ?, ?, ?)");
+        $stmt->bind_param("ssisssi", $username, $password, $rank_id, $first_name, $last_name, $email, $employee_id);
         $stmt->execute();
 
         $conn->commit();

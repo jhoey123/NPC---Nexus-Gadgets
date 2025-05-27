@@ -66,7 +66,7 @@ $weeklyProfits = getWeeklyProfits();
         </div>
         <div class="sidebar-icon" id="employee-button" onclick="switchView('employee')">
             <i class="fas fa-users"></i>
-            <span class="sidebar-text">Users</span>
+            <span class="sidebar-text">Employees</span>
         </div>
         <div class="sidebar-icon" id="transaction-button" onclick="switchView('transaction')">
             <i class="fas fa-receipt"></i>
@@ -342,6 +342,7 @@ $weeklyProfits = getWeeklyProfits();
             <table>
                 <thead>
                     <tr>
+                        <th>Employee ID</th>
                         <th>First Name</th>
                         <th>Last Name</th>
                         <th>Email</th>
@@ -556,6 +557,57 @@ $weeklyProfits = getWeeklyProfits();
     <div class="toast" id="toast">
         <i class="fas fa-check-circle"></i>
         <span id="toast-message">Operation completed successfully</span>
+    </div>
+
+    <!-- Create Account Modal -->
+    <div class="modal" id="create-account-modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <div class="modal-title">Create Account</div>
+                <button class="modal-close" onclick="closeCreateAccountModal()">&times;</button>
+            </div>
+            <div class="modal-body">
+                <form id="create-account-form" action="php/create_account.php" method="POST">
+                    <input type="hidden" id="create-account-employee-id" name="employee_id">
+                    <div class="form-group">
+                        <label for="create-account-username">Username</label>
+                        <input type="text" id="create-account-username" name="username" placeholder="Enter username" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="create-account-fname">First Name</label>
+                        <input type="text" id="create-account-fname" name="first_name" placeholder="Enter first name" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="create-account-lname">Last Name</label>
+                        <input type="text" id="create-account-lname" name="last_name" placeholder="Enter last name" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="create-account-email">Email</label>
+                        <input type="email" id="create-account-email" name="email" placeholder="Enter email" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="create-account-password">Password</label>
+                        <input type="password" id="create-account-password" name="password" placeholder="Enter password" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="create-account-confirm-password">Confirm Password</label>
+                        <input type="password" id="create-account-confirm-password" name="confirm_password" placeholder="Confirm password" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="create-account-role">Role</label>
+                        <select id="create-account-role" name="rank_id" required>
+                            <option value="">Select Role</option>
+                            <option value="1">Admin</option>
+                            <option value="2">Staff</option>
+                        </select>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button class="modal-btn modal-btn-secondary" onclick="closeCreateAccountModal()">Cancel</button>
+                <button class="modal-btn modal-btn-primary" onclick="submitCreateAccountForm()">Create Account</button>
+            </div>
+        </div>
     </div>
 
     <script>
@@ -1077,6 +1129,7 @@ $weeklyProfits = getWeeklyProfits();
                             const row = document.createElement('tr');
                             row.style.width = '100%';
                             row.innerHTML = `
+                                <td style="width: 10%">${employee.employee_id}</td>
                                 <td style="width: 12%">${employee.employee_fname}</td>
                                 <td style="width: 12%">${employee.employee_lname}</td>
                                 <td style="width: 12%">${employee.employee_email || ''}</td>
@@ -1084,10 +1137,11 @@ $weeklyProfits = getWeeklyProfits();
                                 <td style="width: 12%">${employee.phone}</td>
                                 <td style="width: 12%">${employee.role}</td>
                                 <td style="width: 10%"><span class="status-badge status-${employee.status}">${employee.status.charAt(0).toUpperCase() + employee.status.slice(1)}</span></td>
-                                <td style="width: 10%; text-align: center; padding-left: 12px;">
+                                <td style="width: 10%; text-align: center; padding-left: 0px;">
                                     <div style="display: flex; justify-content: flex-start; align-items: center; gap: 8px;">
                                         <button class="action-btn edit-btn" onclick="showEditEmployeeModal(${employee.employee_id})"><i class="fas fa-edit"></i></button>
                                         <button class="action-btn delete-btn" onclick="showDeleteConfirmModal(${employee.employee_id}, 'employee')"><i class="fas fa-trash"></i></button>
+                                        <button class="action-btn create-account-btn" style="color: #007bff;" onclick="showCreateAccountModal(${employee.employee_id})"><i class="fas fa-user-plus"></i></button>
                                     </div>
                                 </td>
                             `;
@@ -1291,8 +1345,55 @@ $weeklyProfits = getWeeklyProfits();
             }
         }
 
-        // employee END
+        // Show employee create account modal
+        function showCreateAccountModal(employeeId) {
+            // Ensure the employee_id is set correctly
+            const inputField = document.getElementById('create-account-employee-id');
+            inputField.value = employeeId ? employeeId : ''; // Set the value or clear it if null
+            document.getElementById('create-account-modal').style.display = 'flex';
+        }
 
+        // Close employee create account modal
+        function closeCreateAccountModal() {
+            document.getElementById('create-account-modal').style.display = 'none';
+        }
+
+        // Submit employee create account form
+        function submitCreateAccountForm() {
+            const form = document.getElementById('create-account-form');
+            const formData = {};
+            // Get all form inputs including the hidden employee_id
+            const inputs = form.querySelectorAll('input, select');
+            inputs.forEach(input => {
+                // Only add if input has a name (avoid empty names)
+                if (input.name) {
+                    formData[input.name] = input.value;
+                }
+            });
+
+            // Debug: log employee_id
+            console.log('employee_id sent:', formData['employee_id']);
+
+            fetch('php/create_account.php', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded'
+                },
+                body: new URLSearchParams(formData).toString()
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    showToast('Account created successfully');
+                    closeCreateAccountModal();
+                } else {
+                    showToast(data.message || 'Failed to create account', 'error');
+                }
+            })
+            .catch(error => {
+                showToast('Error creating account', 'error');
+            });
+        }
 
         // Logout function
         function logout() {
