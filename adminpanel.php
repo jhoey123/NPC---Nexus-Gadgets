@@ -675,7 +675,7 @@ $weeklyProfits = getWeeklyProfits();
             display: block;
             font-weight: bold;
             margin-bottom: 10px;
-            color: white;
+                color: white;
             font-size: 1.5rem; /* Make section labels bigger */
         }
         
@@ -1496,54 +1496,7 @@ $weeklyProfits = getWeeklyProfits();
             });
         }
 
-        // Logout function
-        function logout() {
-            const form = document.createElement('form');
-            form.method = 'POST';
-            form.action = 'php/logout.php';
-            const input = document.createElement('input');
-            input.type = 'hidden';
-            input.name = 'logout';
-            form.appendChild(input);
-            document.body.appendChild(form);
-            form.submit();
-        }
-            
-        // Show toast notification
-        function showToast(message, type = 'success') {
-            const toast = document.getElementById('toast');
-            const toastMessage = document.getElementById('toast-message');
-            
-            toastMessage.textContent = message;
-            toast.style.borderLeftColor = type === 'success' ? '#64ffda' : '#ff5555';
-            toast.style.transform = 'translateY(0)';
-            toast.style.opacity = '1';
-            
-            setTimeout(() => {
-                toast.style.transform = 'translateY(100px)';
-                toast.style.opacity = '0';
-            }, 3000);
-        }
-
-        // Render transaction table
-        function renderTransactionTable() {
-            const tbody = document.getElementById('transaction-table-body');
-            tbody.innerHTML = '';
-            transactions.forEach(tx => {
-                const row = document.createElement('tr');
-                row.innerHTML = `
-                    <td>${tx.date}</td>
-                    <td>${tx.customer}</td>
-                    <td>${tx.item}</td>
-                    <td>₱${parseFloat(tx.price).toFixed(2)}</td>
-                    <td>${tx.quantity}</td>
-                    <td>₱${(tx.price * tx.quantity).toFixed(2)}</td>
-                `;
-                tbody.appendChild(row);
-            });
-        }
-
-        function showAccountDetails(employeeId) {
+            function showAccountDetails(employeeId) {
     fetch(`php/get_account_details.php?employee_id=${employeeId}`)
         .then(response => {
             if (!response.ok) {
@@ -1683,6 +1636,55 @@ $weeklyProfits = getWeeklyProfits();
             showToast('Error deleting account', 'error');
         });
     }
+
+    // employee END
+
+        // Logout function
+        function logout() {
+            const form = document.createElement('form');
+            form.method = 'POST';
+            form.action = 'php/logout.php';
+            const input = document.createElement('input');
+            input.type = 'hidden';
+            input.name = 'logout';
+            form.appendChild(input);
+            document.body.appendChild(form);
+            form.submit();
+        }
+            
+        // Show toast notification
+        function showToast(message, type = 'success') {
+            const toast = document.getElementById('toast');
+            const toastMessage = document.getElementById('toast-message');
+            
+            toastMessage.textContent = message;
+            toast.style.borderLeftColor = type === 'success' ? '#64ffda' : '#ff5555';
+            toast.style.transform = 'translateY(0)';
+            toast.style.opacity = '1';
+            
+            setTimeout(() => {
+                toast.style.transform = 'translateY(100px)';
+                toast.style.opacity = '0';
+            }, 3000);
+        }
+
+        // Render transaction table
+        function renderTransactionTable() {
+            const tbody = document.getElementById('transaction-table-body');
+            tbody.innerHTML = '';
+            transactions.forEach(tx => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${tx.date}</td>
+                    <td>${tx.customer}</td>
+                    <td>${tx.item}</td>
+                    <td>₱${parseFloat(tx.price).toFixed(2)}</td>
+                    <td>${tx.quantity}</td>
+                    <td>₱${(tx.price * tx.quantity).toFixed(2)}</td>
+                `;
+                tbody.appendChild(row);
+            });
+        }
     </script>
 </body>
 </html>
