@@ -710,7 +710,8 @@ $weeklyProfits = getWeeklyProfits();
             display: block;
             font-weight: bold;
             margin-bottom: 10px;
-            color: white;  /* Changed from #6366f1 to white */
+            color: white;
+            font-size: 1.5rem; /* Make section labels bigger */
         }
         
         .detail-group div {
