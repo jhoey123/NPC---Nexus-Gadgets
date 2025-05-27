@@ -20,13 +20,13 @@
         <div class="flex justify-between items-center">
             <!-- Logo -->
             <div class="flex items-center">
-                <a href="#" class="flex items-center">
-                    <img src="images/NEXUS GADGETS.png" alt="NEXUS GADGETS Logo" class="w-24 h-24 mr-6">
-                    <span class="text-2xl font-bold text-white superdario-font">
-    NEXUS <span class="text-indigo-400 superdario-font">Gadget</span>
-</span>
-                </a>
-            </div>
+                    <a href="#" class="flex items-center">
+                        <img src="images/NEXUS GADGETS.png" alt="NEXUS GADGETS Logo" class="w-24 h-24 mr-6">
+                        <span class="text-3xl font-bold superdario-font tracking-wide">
+                            NEXUS <span class="text-indigo-400 superdario-font tracking-wide">GADGETS</span>
+                        </span>
+                    </a>
+                </div>
             <div class="search-container">
                 <div class="search-bar">
                     <i class="fas fa-search mr-2 text-blue-300"></i>
