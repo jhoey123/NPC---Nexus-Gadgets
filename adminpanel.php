@@ -342,10 +342,11 @@ $weeklyProfits = getWeeklyProfits();
                 <thead>
                     <tr>
                         <th>User ID</th>
+                        <th>First Name</th>
+                        <th>Last Name</th>
                         <th>Username</th>
                         <th>Email</th>
                         <th>Role</th>
-                        <th>Status</th>
                         <th>Actions</th>
                     </tr>
                 </thead>
@@ -450,7 +451,7 @@ $weeklyProfits = getWeeklyProfits();
         </div>
     </div>
 
-    <!-- Edit User Modal -->
+    <!-- Edit Employee Modal -->
     <div class="modal" id="edit-employee-modal">
         <div class="modal-content">
             <div class="modal-header">
@@ -550,44 +551,6 @@ $weeklyProfits = getWeeklyProfits();
         </div>
     </div>
 
-    <!-- Add Transaction Modal -->
-    <div class="modal" id="add-transaction-modal">
-        <div class="modal-content">
-            <div class="modal-header">
-                <div class="modal-title">Add Transaction</div>
-                <button class="modal-close" onclick="closeAddTransactionModal()">&times;</button>
-            </div>
-            <div class="modal-body">
-                <form id="transaction-form">
-                    <div class="form-group">
-                        <label for="transaction-date">Date</label>
-                        <input type="date" id="transaction-date" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="transaction-customer">Customer Name</label>
-                        <input type="text" id="transaction-customer" placeholder="Enter customer name" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="transaction-item">Item</label>
-                        <input type="text" id="transaction-item" placeholder="Enter item name" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="transaction-price">Price</label>
-                        <input type="number" id="transaction-price" min="0" step="0.01" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="transaction-quantity">Quantity</label>
-                        <input type="number" id="transaction-quantity" min="1" required>
-                    </div>
-                </form>
-            </div>
-            <div class="modal-footer">
-                <button class="modal-btn modal-btn-secondary" onclick="closeAddTransactionModal()">Cancel</button>
-                <button class="modal-btn modal-btn-primary" onclick="addTransactionFromModal()">Add Transaction</button>
-            </div>
-        </div>
-    </div>
-
     <!-- Toast Notification -->
     <div class="toast" id="toast">
         <i class="fas fa-check-circle"></i>
@@ -677,6 +640,14 @@ $weeklyProfits = getWeeklyProfits();
                         <input type="email" id="edit-account-email" name="email" required>
                     </div>
                     <div class="form-group">
+                        <label for="edit-account-firstname">First Name</label>
+                        <input type="text" id="edit-account-firstname" name="firstname" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="edit-account-lastname">Last Name</label>
+                        <input type="text" id="edit-account-lastname" name="lastname" required>
+                    </div>
+                    <div class="form-group">
                         <label for="edit-account-password">Password <span style="font-weight:normal">(leave blank to keep current)</span></label>
                         <input type="password" id="edit-account-password" name="password" autocomplete="new-password">
                     </div>
@@ -695,6 +666,9 @@ $weeklyProfits = getWeeklyProfits();
             </div>
         </div>
     </div>
+
+
+    
 
     <style>
         /* Add these styles to your existing styles */
@@ -733,6 +707,18 @@ $weeklyProfits = getWeeklyProfits();
         .modal-btn-primary {
             background-color: #6366f1;
             color: white;
+        }
+
+        .action-btn.edit-btn {
+            color: #22c55e;  /* green color */
+        }
+        
+        .action-btn.delete-btn {
+            color: #ef4444;  /* red color */
+        }
+        
+        .action-btn:hover {
+            opacity: 0.8;
         }
     </style>
 
@@ -933,8 +919,70 @@ $weeklyProfits = getWeeklyProfits();
 
             // Save current view to localStorage
             localStorage.setItem('adminpanel_active_view', view);
+
+            // Call renderUserTable when switching to user view
+            if (view === 'user') {
+                renderUserTable();
+            }
+        }
+        
+        // Render user table
+        function renderUserTable() {
+            fetch('php/get_users.php')
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        const tbody = document.getElementById('user-table-body');
+                        tbody.innerHTML = '';
+                        data.users.forEach(user => {
+                            const row = document.createElement('tr');
+                            row.innerHTML = `
+                                <td>${user.user_id}</td>
+                                <td>${user.firstname || ''}</td>
+                                <td>${user.lastname || ''}</td>
+                                <td>${user.username}</td>
+                                <td>${user.email}</td>
+                                <td>${user.role}</td>
+                                <td>
+                                    <div class="action-buttons">
+                                        <button class="action-btn edit-btn" onclick="editUser(${user.user_id})">
+                                            <i class="fas fa-edit"></i>
+                                        </button>
+                                        <button class="action-btn delete-btn" onclick="deleteUser(${user.user_id})">
+                                            <i class="fas fa-trash"></i>
+                                        </button>
+                                    </div>
+                                </td>
+                            `;
+                            tbody.appendChild(row);
+                        });
+                    } else {
+                        showToast(data.message || 'Failed to load users', 'error');
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    showToast('Failed to load users', 'error');
+                });
         }
 
+        // Search users function
+        function searchUsers() {
+            const searchInput = document.getElementById('user-search').value.toLowerCase();
+            const searchTerms = searchInput.split(' ').filter(term => term.trim() !== '');
+            const tableRows = document.querySelectorAll('#user-table-body tr');
+
+            tableRows.forEach(row => {
+                const cells = row.getElementsByTagName('td');
+                const searchText = Array.from(cells)
+                    .map(cell => cell.textContent.toLowerCase())
+                    .join(' ');
+                
+                const matches = searchTerms.every(term => searchText.includes(term));
+                row.style.display = matches ? '' : 'none';
+            });
+        }
+        
         // Update dashboard stats
         function updateDashboardStats() {
             const newCustomers = salesData[salesData.length - 1].customers;
@@ -1721,6 +1769,102 @@ $weeklyProfits = getWeeklyProfits();
                 tbody.appendChild(row);
             });
         }
+
+        // Function to show the edit user modal
+    function editUser(userId) {
+        fetch(`php/get_user_details.php?user_id=${userId}`)
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                return response.json();
+            })
+            .then(data => {
+                if (data.success) {
+                    const user = data.user;
+                    document.getElementById('edit-account-id').value = user.user_id;
+                    document.getElementById('edit-account-username').value = user.username;
+                    document.getElementById('edit-account-email').value = user.email;
+                    document.getElementById('edit-account-role').value = user.rank_id;
+                    document.getElementById('edit-account-firstname').value = user.firstname;
+                    document.getElementById('edit-account-lastname').value = user.lastname;
+
+                    document.getElementById('edit-account-modal').style.display = 'flex';
+                } else {
+                    showToast(data.message || 'Failed to fetch user details', 'error');
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                showToast('Failed to fetch user details: ' + error.message, 'error');
+            });
+    }
+
+    // Close the edit user modal
+    function closeEditAccountModal() {
+        document.getElementById('edit-account-modal').style.display = 'none';
+    }
+
+    // Submit the edit user form
+    function submitEditAccountForm() {
+        const form = document.getElementById('edit-account-form');
+        const formData = new FormData(form);
+
+        fetch('php/edit_user.php', {
+            method: 'POST',
+            body: new URLSearchParams(formData)
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                showToast('User updated successfully');
+                closeEditAccountModal();
+                renderUserTable(); // Refresh the user table
+            } else {
+                showToast(data.message || 'Failed to update user', 'error');
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            showToast('Error updating user', 'error');
+        });
+    }
+
+    function deleteUser(userId) {
+    const confirmDeleteModal = document.getElementById('delete-confirm-modal');
+    const confirmDeleteButton = document.getElementById('confirm-delete-btn');
+
+    // Set up the confirmation button to delete the user
+    confirmDeleteButton.onclick = function () {
+        fetch(`php/delete_user.php`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+            body: `user_id=${userId}`
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                showToast('User deleted successfully');
+                renderUserTable(); // Refresh the user table
+            } else {
+                showToast(data.message || 'Failed to delete user', 'error');
+            }
+            closeDeleteConfirmModal();
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            showToast('Failed to delete user', 'error');
+            closeDeleteConfirmModal();
+        });
+    };
+
+    // Show the modal
+    confirmDeleteModal.style.display = 'flex';
+}
+
+function closeDeleteConfirmModal() {
+    document.getElementById('delete-confirm-modal').style.display = 'none';
+}
     </script>
 </body>
 </html>
