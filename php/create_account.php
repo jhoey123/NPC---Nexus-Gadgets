@@ -45,6 +45,11 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $stmt->bind_param("ssisssi", $username, $password, $rank_id, $first_name, $last_name, $email, $employee_id);
         $stmt->execute();
 
+        // Update has_account field in employees table
+        $update_stmt = $conn->prepare("UPDATE employees SET has_account = 1 WHERE employee_id = ?");
+        $update_stmt->bind_param("i", $employee_id);
+        $update_stmt->execute();
+
         $conn->commit();
         echo json_encode(['success' => true]);
     } catch (Exception $e) {

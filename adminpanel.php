@@ -610,6 +610,58 @@ $weeklyProfits = getWeeklyProfits();
         </div>
     </div>
 
+    <!-- Account Details Modal -->
+    <div class="modal" id="account-details-modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <div class="modal-title">Account Details</div>
+                <button class="modal-close" onclick="closeAccountDetailsModal()">&times;</button>
+            </div>
+            <div class="modal-body" id="account-details-modal-body">
+                <!-- Content will be populated dynamically -->
+            </div>
+        </div>
+    </div>
+
+    <style>
+        /* Add these styles to your existing styles */
+        .account-details {
+            padding: 20px;
+        }
+        
+        .detail-group {
+            margin-bottom: 20px;
+        }
+        
+        .detail-group label {
+            display: block;
+            font-weight: bold;
+            margin-bottom: 10px;
+            color: white;  /* Changed from #6366f1 to white */
+        }
+        
+        .detail-group div {
+            margin: 8px 0;
+            color: white;
+        }
+        
+        .detail-actions {
+            display: flex;
+            gap: 10px;
+            margin-top: 20px;
+        }
+        
+        .modal-btn-danger {
+            background-color: #dc2626;
+            color: white;
+        }
+        
+        .modal-btn-primary {
+            background-color: #6366f1;
+            color: white;
+        }
+    </style>
+
     <script>
         // Data storage
         let products = [];
@@ -1126,7 +1178,9 @@ $weeklyProfits = getWeeklyProfits();
                         const tbody = document.getElementById('employee-table-body');
                         tbody.innerHTML = '';
                         data.employees.forEach(employee => {
+                            const hasAccount = parseInt(employee.has_account) === 1;
                             const row = document.createElement('tr');
+                            row.setAttribute('data-employee-id', employee.employee_id);
                             row.style.width = '100%';
                             row.innerHTML = `
                                 <td style="width: 10%">${employee.employee_id}</td>
@@ -1141,7 +1195,14 @@ $weeklyProfits = getWeeklyProfits();
                                     <div style="display: flex; justify-content: flex-start; align-items: center; gap: 8px;">
                                         <button class="action-btn edit-btn" onclick="showEditEmployeeModal(${employee.employee_id})"><i class="fas fa-edit"></i></button>
                                         <button class="action-btn delete-btn" onclick="showDeleteConfirmModal(${employee.employee_id}, 'employee')"><i class="fas fa-trash"></i></button>
-                                        <button class="action-btn create-account-btn" style="color: #007bff;" onclick="showCreateAccountModal(${employee.employee_id})"><i class="fas fa-user-plus"></i></button>
+                                        ${hasAccount 
+                                            ? `<button class="action-btn account-created-btn" style="color: #22c55e;" title="Account Created" onclick="showAccountDetails(${employee.employee_id})">
+                                                <i class="fas fa-user-check"></i>
+                                               </button>`
+                                            : `<button class="action-btn create-account-btn" style="color: #007bff;" onclick="showCreateAccountModal(${employee.employee_id})">
+                                                <i class="fas fa-user-plus"></i>
+                                               </button>`
+                                        }
                                     </div>
                                 </td>
                             `;
@@ -1386,6 +1447,7 @@ $weeklyProfits = getWeeklyProfits();
                 if (data.success) {
                     showToast('Account created successfully');
                     closeCreateAccountModal();
+                    renderEmployeeTable(); // Refresh the table to update buttons
                 } else {
                     showToast(data.message || 'Failed to create account', 'error');
                 }
@@ -1442,6 +1504,55 @@ $weeklyProfits = getWeeklyProfits();
             });
         }
 
+        function showAccountDetails(employeeId) {
+    fetch(`php/get_account_details.php?employee_id=${employeeId}`)
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
+            }
+            return response.json();
+        })
+        .then(data => {
+            if (data.success) {
+                const account = data.account;
+                const modalContent = `
+                    <div class="account-details">
+                        <div class="detail-group">
+                            <label>Account Information</label>
+                            <div><strong>Username:</strong> ${account.username}</div>
+                            <div><strong>Account Email:</strong> ${account.email}</div>
+                            <div><strong>Role:</strong> ${account.role}</div>
+                            <div><strong>Name:</strong> ${account.firstname} ${account.lastname}</div>
+                        </div>
+                        
+                        <div class="detail-group">
+                            <label>Employee Information</label>
+                            <div><strong>Employee Name:</strong> ${account.employee_fname} ${account.employee_lname}</div>
+                            <div><strong>Employee Email:</strong> ${account.employee_email}</div>
+                        </div>
+                        
+                        <div class="detail-actions">
+                            <button class="modal-btn modal-btn-primary" onclick="editAccount(${account.account_id})">
+                                <i class="fas fa-edit"></i> Edit Account
+                            </button>
+                            <button class="modal-btn modal-btn-danger" onclick="deleteAccount(${account.account_id}, ${employeeId})">
+                                <i class="fas fa-trash"></i> Delete Account
+                            </button>
+                        </div>
+                    </div>
+                `;
+                
+                document.getElementById('account-details-modal-body').innerHTML = modalContent;
+                document.getElementById('account-details-modal').style.display = 'flex';
+            } else {
+                showToast(data.message || 'Failed to fetch account details', 'error');
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            showToast('Failed to fetch account details: ' + error.message, 'error');
+        });
+}
 
     </script>
 </body>
