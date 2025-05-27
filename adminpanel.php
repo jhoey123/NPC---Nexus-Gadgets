@@ -656,6 +656,7 @@ $weeklyProfits = getWeeklyProfits();
                         <select id="edit-account-role" name="rank_id" required>
                             <option value="1">Admin</option>
                             <option value="2">Staff</option>
+                            <option value="3">Customer</option>
                         </select>
                     </div>
                 </form>
