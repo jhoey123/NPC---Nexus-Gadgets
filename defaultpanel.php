@@ -1,7 +1,6 @@
 <?php 
 session_start();
 
-session_start();
 
 if (!isset($_SESSION['email'])) {
     header("Location: index.php");
@@ -20,8 +19,11 @@ if (!isset($_SESSION['email'])) {
 
     if ($email_rank) {
         $rank = $email_rank['rank_name'];
-        if ($rank === "staff") {
-            header("Location: defaultpanel.php");
+        if ($rank === "Admin") {
+            header("Location: adminpanel.php");
+            exit();
+        } else if ($rank === "Customer") {
+            header("Location: customer.php");
             exit();
         }
     } else {

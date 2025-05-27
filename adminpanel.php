@@ -20,8 +20,11 @@ if (!isset($_SESSION['email'])) {
 
     if ($email_rank) {
         $rank = $email_rank['rank_name'];
-        if ($rank === "staff") {
+        if ($rank === "Staff") {
             header("Location: defaultpanel.php");
+            exit();
+        } else if ($rank === "Customer") {
+            header("Location: customer.php");
             exit();
         }
     } else {
