@@ -623,6 +623,44 @@ $weeklyProfits = getWeeklyProfits();
         </div>
     </div>
 
+    <!-- Edit Account Modal -->
+    <div class="modal" id="edit-account-modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <div class="modal-title">Edit Account</div>
+                <button class="modal-close" onclick="closeEditAccountModal()">&times;</button>
+            </div>
+            <div class="modal-body">
+                <form id="edit-account-form">
+                    <input type="hidden" id="edit-account-id" name="account_id">
+                    <div class="form-group">
+                        <label for="edit-account-username">Username</label>
+                        <input type="text" id="edit-account-username" name="username" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="edit-account-email">Email</label>
+                        <input type="email" id="edit-account-email" name="email" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="edit-account-password">Password <span style="font-weight:normal">(leave blank to keep current)</span></label>
+                        <input type="password" id="edit-account-password" name="password" autocomplete="new-password">
+                    </div>
+                    <div class="form-group">
+                        <label for="edit-account-role">Role</label>
+                        <select id="edit-account-role" name="rank_id" required>
+                            <option value="1">Admin</option>
+                            <option value="2">Staff</option>
+                        </select>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button class="modal-btn modal-btn-secondary" onclick="closeEditAccountModal()">Cancel</button>
+                <button class="modal-btn modal-btn-primary" onclick="submitEditAccountForm()">Update Account</button>
+            </div>
+        </div>
+    </div>
+
     <style>
         /* Add these styles to your existing styles */
         .account-details {
@@ -1522,7 +1560,6 @@ $weeklyProfits = getWeeklyProfits();
                             <div><strong>Username:</strong> ${account.username}</div>
                             <div><strong>Account Email:</strong> ${account.email}</div>
                             <div><strong>Role:</strong> ${account.role}</div>
-                            <div><strong>Name:</strong> ${account.firstname} ${account.lastname}</div>
                         </div>
                         
                         <div class="detail-group">
@@ -1554,6 +1591,97 @@ $weeklyProfits = getWeeklyProfits();
         });
 }
 
+        // Add this function to handle closing the modal
+        function closeAccountDetailsModal() {
+            document.getElementById('account-details-modal').style.display = 'none';
+        }
+
+    function editAccount(accountId) {
+        // Get the account details from the modal
+        const modalBody = document.getElementById('account-details-modal-body');
+        const accountDetails = modalBody.querySelector('.account-details');
+        let username = '', email = '', role = '';
+
+        // Find all divs in the first detail-group (Account Information)
+        const detailGroups = accountDetails.querySelectorAll('.detail-group');
+        if (detailGroups.length > 0) {
+            const infoDivs = detailGroups[0].querySelectorAll('div');
+            infoDivs.forEach(div => {
+                if (div.textContent.includes('Username:')) {
+                    username = div.textContent.replace('Username:', '').trim();
+                }
+                if (div.textContent.includes('Account Email:')) {
+                    email = div.textContent.replace('Account Email:', '').trim();
+                }
+                if (div.textContent.includes('Role:')) {
+                    role = div.textContent.replace('Role:', '').trim();
+                }
+            });
+        }
+
+        document.getElementById('edit-account-id').value = accountId;
+        document.getElementById('edit-account-username').value = username;
+        document.getElementById('edit-account-email').value = email;
+        document.getElementById('edit-account-role').value = role.toLowerCase() === 'admin' ? '1' : '2';
+
+        closeAccountDetailsModal();
+        document.getElementById('edit-account-modal').style.display = 'flex';
+    }
+
+    function closeEditAccountModal() {
+        document.getElementById('edit-account-modal').style.display = 'none';
+    }
+
+    function submitEditAccountForm() {
+        const form = document.getElementById('edit-account-form');
+        const formData = new FormData(form);
+        // If password is blank, remove it from the request
+        if (!formData.get('password')) {
+            formData.delete('password');
+        }
+        fetch('php/edit_account.php', {
+            method: 'POST',
+            body: new URLSearchParams(formData)
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                showToast('Account updated successfully');
+                closeEditAccountModal();
+                renderEmployeeTable(); // Refresh the employee table
+            } else {
+                showToast(data.message || 'Failed to update account', 'error');
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            showToast('Error updating account', 'error');
+        });
+    }
+
+    function deleteAccount(accountId, employeeId) {
+        if (!confirm('Are you sure you want to delete this account? This action cannot be undone.')) {
+            return;
+        }
+        fetch('php/delete_account.php', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+            body: `account_id=${encodeURIComponent(accountId)}&employee_id=${encodeURIComponent(employeeId)}`
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                showToast('Account deleted successfully');
+                closeAccountDetailsModal();
+                renderEmployeeTable();
+            } else {
+                showToast(data.message || 'Failed to delete account', 'error');
+            }
+        })
+        .catch(error => {
+            showToast('Error deleting account', 'error');
+        });
+    }
     </script>
 </body>
 </html>
