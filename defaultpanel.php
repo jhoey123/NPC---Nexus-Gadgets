@@ -41,6 +41,10 @@
                         <i class="fas fa-shopping-cart"></i>
                         <div class="cart-count" id="cart-count">0</div>
                     </div>
+                    <!-- Logout Button -->
+                    <button id="logout-btn" onclick="logoutUser()" title="Logout" style="margin-left: 1rem; background: none; border: none; cursor: pointer;">
+                        <i class="fas fa-sign-out-alt text-white text-xl"></i>
+                    </button>
                 </div>
             </div>
         </div>
@@ -559,6 +563,13 @@
 
         function closeEwalletModal() {
             document.getElementById('ewallet-modal').style.display = 'none';
+        }
+
+        // Logout function
+        function logoutUser() {
+            // Optionally clear localStorage or session data here
+            localStorage.removeItem('nexusCart');
+            window.location.href = 'php/logout.php'; // Redirect to your logout handler
         }
     </script>
 </body>
