@@ -259,7 +259,20 @@ $weeklyProfits = getWeeklyProfits();
         </div>
     </div>
 
-        <!-- Edit Product Modal -->
+    <!-- Product Details Modal -->
+    <div class="modal" id="product-details-modal" style="display:none;">
+        <div class="modal-content" style="max-width:500px;">
+            <div class="modal-header">
+                <div class="modal-title" id="product-details-title">Product Details</div>
+                <button class="modal-close" onclick="closeProductDetailsModal()">&times;</button>
+            </div>
+            <div class="modal-body" id="product-details-body">
+                <!-- Populated by JS -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Edit Product Modal -->
     <div class="modal" id="edit-product-modal">
         <div class="modal-content">
             <div class="modal-header">
@@ -1142,6 +1155,8 @@ $weeklyProfits = getWeeklyProfits();
                         }
 
                         const row = document.createElement('tr');
+                        row.setAttribute('data-product-id', product.id);
+                        row.style.cursor = 'pointer';
                         row.innerHTML = `
                             <td>
                                 <div style="display: flex; align-items: center;">
@@ -1162,11 +1177,17 @@ $weeklyProfits = getWeeklyProfits();
                                 <button class="action-btn delete-btn" onclick="openDeleteProductModal(${product.id})"><i class="fas fa-trash"></i></button>
                             </td>
                         `;
+                        // Make the row clickable except for the actions column
+                        row.addEventListener('click', function(e) {
+                            if (e.target.closest('.action-btn')) return;
+                            showProductDetails(product.id);
+                        });
                         tbody.appendChild(row);
 
                         // Attach event listener for edit button
                         const editBtn = row.querySelector('.edit-btn');
-                        editBtn.addEventListener('click', function() {
+                        editBtn.addEventListener('click', function(event) {
+                            event.stopPropagation();
                             const prod = JSON.parse(this.getAttribute('data-product').replace(/&apos;/g, "'"));
                             openEditProductModal(prod);
                         });
@@ -1177,22 +1198,43 @@ $weeklyProfits = getWeeklyProfits();
                 });
         }
 
+        // Show product details modal
+        function showProductDetails(productId) {
+            fetch(`php/get_inventory_details.php?id=${productId}`)
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        const p = data.product;
+                        document.getElementById('product-details-title').textContent = p.Product_name || 'Product Details';
+                        document.getElementById('product-details-body').innerHTML = `
+                            <div style="display:flex;align-items:center;gap:16px;">
+                                <img src="uploads/${p.Product_image_path}" alt="Product" style="width:100px;height:100px;object-fit:cover;border-radius:8px;">
+                                <div>
+                                    <div><strong>Brand:</strong> ${p.Product_brand}</div>
+                                    <div><strong>Category:</strong> ${p.Category_name || p.Category_id}</div>
+                                    <div><strong>Barcode:</strong> ${p.Barcode_id}</div>
+                                    <div><strong>Price:</strong> ₱${parseFloat(p.Product_price).toFixed(2)}</div>
+                                    <div><strong>Quantity:</strong> ${p.Product_quantity}</div>
+                                    <div><strong>Status:</strong> ${p.status}</div>
+                                </div>
+                            </div>
+                            <div style="margin-top:16px;">
+                                <strong>Description:</strong>
+                                <div style="margin-top:4px;">${p.Product_desc || '<em>No description</em>'}</div>
+                            </div>
+                        `;
+                        document.getElementById('product-details-modal').style.display = 'flex';
+                    } else {
+                        showToast(data.message || 'Failed to fetch product details', 'error');
+                    }
+                })
+                .catch(() => {
+                    showToast('Failed to fetch product details', 'error');
+                });
+        }
 
-        function searchProducts() {
-            const searchInput = document.getElementById('inventory-search').value.toLowerCase();
-            const searchTerms = searchInput.split(' ').filter(term => term.trim() !== '');
-            const tableRows = document.querySelectorAll('#inventory-table-body tr');
-
-            tableRows.forEach(row => {
-                const productName = row.querySelector('td:nth-child(1) div div').textContent.toLowerCase();
-                const productCategory = row.querySelector('td:nth-child(2)').textContent.toLowerCase();
-                const productBrand = row.querySelector('td:nth-child(1) div div:nth-child(2)').textContent.toLowerCase();
-
-                const rowText = `${productName} ${productCategory} ${productBrand}`;
-                const matches = searchTerms.every(term => rowText.includes(term));
-
-                row.style.display = matches ? '' : 'none';
-            });
+        function closeProductDetailsModal() {
+            document.getElementById('product-details-modal').style.display = 'none';
         }
 
         // Close add product modal
