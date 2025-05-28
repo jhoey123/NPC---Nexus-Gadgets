@@ -639,27 +639,28 @@
             fetch('php/get_inventory_items.php')
                 .then(response => response.json())
                 .then(data => {
-                    // Map database fields to expected product fields, including brand
                     products = data.map(item => ({
                         id: parseInt(item.id),
                         name: item.name,
-                        brand: item.brand || '', // <-- ensure brand is included
+                        brand: item.brand || '',
                         price: parseFloat(item.price),
                         category: (item.category || '').toLowerCase(),
                         image: item.image ? ('uploads/' + item.image) : '',
                         description: item.description || '',
                         featured: false
                     }));
-                    // Optionally, set some products as featured (e.g., first 3)
-                    products.slice(0, 3).forEach(p => p.featured = true);
 
-                    // Load featured products on home page
+                    // Set 1 keyboard, 1 monitor, 1 smartphone as featured (if available)
+                    let keyboard = products.find(p => p.category.replace(/\s+/g, '').replace(/s$/, '') === 'keyboard');
+                    let monitor = products.find(p => p.category.replace(/\s+/g, '').replace(/s$/, '') === 'monitor');
+                    let smartphone = products.find(p => p.category.replace(/\s+/g, '').replace(/s$/, '') === 'smartphone');
+                    if (keyboard) keyboard.featured = true;
+                    if (monitor) monitor.featured = true;
+                    if (smartphone) smartphone.featured = true;
+
                     loadFeaturedProducts();
-
-                    // Load all products
                     loadProducts();
                 });
-
             // Load orders
             loadOrders();
 
