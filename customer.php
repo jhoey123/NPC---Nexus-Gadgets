@@ -1364,6 +1364,8 @@
         document.addEventListener('DOMContentLoaded', function() {
             // ...existing DOMContentLoaded code...
             const savedPage = localStorage.getItem('customer_active_page') || 'home';
+            // Reset category filter to 'all' on every load
+            if (categoryFilter) categoryFilter.value = 'all';
             if (savedPage === 'products') {
                 showProducts();
             } else if (savedPage === 'orders') {
