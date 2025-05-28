@@ -270,6 +270,12 @@
         .text-gray-600 {
             color: #bdbdbd !important;
         }
+
+        /* Update active link styles */
+        .nav-link-active {
+            color: #90caf9 !important; /* lighter blue */
+            background-color: rgba(144, 202, 249, 0.1);
+        }
     </style>
 </head>
 <body>
@@ -292,14 +298,14 @@
                 <!-- Desktop Navigation -->
                 <div class="hidden md:block">
                     <div class="ml-10 flex items-center space-x-4">
-                        <a href="#" class="text-gray-900 hover:text-blue-600 px-3 py-2 rounded-md text-sm font-medium" onclick="showHome()">Home</a>
-                        <a href="#" class="text-gray-500 hover:text-blue-600 px-3 py-2 rounded-md text-sm font-medium" onclick="showProducts()">Products</a>
-                        <a href="#" class="text-gray-500 hover:text-blue-600 px-3 py-2 rounded-md text-sm font-medium" onclick="showOrders()">My Orders</a>
-                        <button id="cartButton" class="relative text-gray-500 hover:text-blue-600 px-3 py-2 rounded-md text-sm font-medium" onclick="toggleCart()">
+                        <a href="#" class="text-white hover:text-blue-300 px-3 py-2 rounded-md text-sm font-medium nav-link" data-page="home" onclick="showHome()">Home</a>
+                        <a href="#" class="text-white hover:text-blue-300 px-3 py-2 rounded-md text-sm font-medium nav-link" data-page="products" onclick="showProducts()">Products</a>
+                        <a href="#" class="text-white hover:text-blue-300 px-3 py-2 rounded-md text-sm font-medium nav-link" data-page="orders" onclick="showOrders()">My Orders</a>
+                        <button id="cartButton" class="relative text-white hover:text-blue-300 px-3 py-2 rounded-md text-sm font-medium" onclick="toggleCart()">
                             <i class="fas fa-shopping-cart"></i>
                             <span id="cartBadge" class="absolute -top-1 -right-1 bg-blue-600 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center badge">0</span>
                         </button>
-                        <button onclick="logout()" class="text-gray-500 hover:text-blue-600 px-3 py-2 rounded-md text-sm font-medium">
+                        <button onclick="logout()" class="text-white hover:text-blue-300 px-3 py-2 rounded-md text-sm font-medium">
                             <i class="fas fa-sign-out-alt"></i> Logout
                         </button>
                     </div>
@@ -307,10 +313,10 @@
                 
                 <!-- Mobile menu button -->
                 <div class="md:hidden flex items-center">
-                    <button id="mobileMenuButton" class="text-gray-500 hover:text-blue-600 focus:outline-none" onclick="toggleMobileMenu()">
+                    <button id="mobileMenuButton" class="text-white hover:text-blue-300 focus:outline-none" onclick="toggleMobileMenu()">
                         <i class="fas fa-bars text-xl"></i>
                     </button>
-                    <button id="mobileCartButton" class="ml-4 relative text-gray-500 hover:text-blue-600 focus:outline-none" onclick="toggleCart()">
+                    <button id="mobileCartButton" class="ml-4 relative text-white hover:text-blue-300 focus:outline-none" onclick="toggleCart()">
                         <i class="fas fa-shopping-cart text-xl"></i>
                         <span id="mobileCartBadge" class="absolute -top-1 -right-1 bg-blue-600 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center badge">0</span>
                     </button>
@@ -321,10 +327,10 @@
         <!-- Mobile Navigation -->
         <div id="mobileMenu" class="md:hidden hidden bg-white border-t">
             <div class="px-2 pt-2 pb-3 space-y-1 sm:px-3">
-                <a href="#" class="text-gray-900 block px-3 py-2 rounded-md text-base font-medium" onclick="showHome()">Home</a>
-                <a href="#" class="text-gray-500 hover:text-blue-600 block px-3 py-2 rounded-md text-base font-medium" onclick="showProducts()">Products</a>
-                <a href="#" class="text-gray-500 hover:text-blue-600 block px-3 py-2 rounded-md text-base font-medium" onclick="showOrders()">My Orders</a>
-                <button onclick="logout()" class="text-gray-500 hover:text-blue-600 block px-3 py-2 rounded-md text-base font-medium w-full text-left">
+                <a href="#" class="text-white hover:text-blue-300 block px-3 py-2 rounded-md text-base font-medium nav-link" data-page="home" onclick="showHome()">Home</a>
+                <a href="#" class="text-white hover:text-blue-300 block px-3 py-2 rounded-md text-base font-medium nav-link" data-page="products" onclick="showProducts()">Products</a>
+                <a href="#" class="text-white hover:text-blue-300 block px-3 py-2 rounded-md text-base font-medium nav-link" data-page="orders" onclick="showOrders()">My Orders</a>
+                <button onclick="logout()" class="text-white hover:text-blue-300 block px-3 py-2 rounded-md text-base font-medium w-full text-left">
                     <i class="fas fa-sign-out-alt"></i> Logout
                 </button>
             </div>
@@ -774,6 +780,7 @@
             productsSection.classList.add('hidden');
             ordersSection.classList.add('hidden');
             closeMobileMenu();
+            setActivePage('home');
         }
 
         // Show products section
@@ -782,6 +789,7 @@
             productsSection.classList.remove('hidden');
             ordersSection.classList.add('hidden');
             closeMobileMenu();
+            setActivePage('products');
         }
 
         // Show orders section
@@ -790,7 +798,7 @@
             productsSection.classList.add('hidden');
             ordersSection.classList.remove('hidden');
             closeMobileMenu();
-            loadOrders(); // Refresh orders after placing a new one
+            setActivePage('orders');
         }
 
         // Load featured products
@@ -1296,6 +1304,50 @@
             // Show home page
             showHome();
         }
+
+        // Add these functions after the existing ones
+        function setActivePage(page) {
+            // Remove active class from all nav links
+            document.querySelectorAll('.nav-link').forEach(link => {
+                link.classList.remove('nav-link-active');
+            });
+            
+            // Add active class to current page's nav links
+            document.querySelectorAll(`.nav-link[data-page="${page}"]`).forEach(link => {
+                link.classList.add('nav-link-active');
+            });
+        }
+
+        // Update the existing navigation functions
+        function showHome() {
+            homeSection.classList.remove('hidden');
+            productsSection.classList.add('hidden');
+            ordersSection.classList.add('hidden');
+            closeMobileMenu();
+            setActivePage('home');
+        }
+
+        function showProducts() {
+            homeSection.classList.add('hidden');
+            productsSection.classList.remove('hidden');
+            ordersSection.classList.add('hidden');
+            closeMobileMenu();
+            setActivePage('products');
+        }
+
+        function showOrders() {
+            homeSection.classList.add('hidden');
+            productsSection.classList.add('hidden');
+            ordersSection.classList.remove('hidden');
+            closeMobileMenu();
+            setActivePage('orders');
+        }
+
+        // Set home as active on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            // ...existing DOMContentLoaded code...
+            setActivePage('home');
+        });
     </script>
 </body>
 </html>
