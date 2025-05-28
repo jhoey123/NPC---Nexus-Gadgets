@@ -362,11 +362,11 @@
                 <div class="relative">
                     <select id="categoryFilter" class="block appearance-none bg-white border border-gray-300 text-gray-700 py-2 px-4 pr-8 rounded leading-tight focus:outline-none focus:border-blue-500">
                         <option value="all">All Categories</option>
-                        <option value="Keyboard">Keyboard</option>
-                        <option value="laptops">Laptops</option>
-                        <option value="monitors">Monitors</option>
-                        <option value="mouse">Mouse</option>
-                        <option value="smartphone">Smartphone</option>
+                        <option value="4">Keyboard</option>
+                        <option value="1">Laptops</option>
+                        <option value="5">Monitors</option>
+                        <option value="3">Mouse</option>
+                        <option value="2">Smartphone</option>
                     </select>
                     <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">
                         <i class="fas fa-chevron-down"></i>
@@ -558,83 +558,20 @@
             <span id="toastMessage">Product added to cart!</span>
         </div>
     </div>
+
+    <!-- Product Details Modal -->
+    <div id="productDetailsModal" class="fixed inset-0 bg-black bg-opacity-50 z-50 hidden flex items-center justify-center p-4">
+        <div class="bg-white rounded-lg shadow-xl w-full max-w-md modal relative" style="max-height:90vh; overflow-y:auto;">
+            <button onclick="closeProductDetailsModal()" class="absolute top-3 right-3 text-gray-500 hover:text-gray-700 text-xl">&times;</button>
+            <div id="productDetailsContent" class="p-6">
+                <!-- Product details will be injected here -->
+            </div>
+        </div>
+    </div>
     
     <script>
-        // Sample product data
-        const products = [
-            {
-                id: 1,
-                name: "Wireless Headphones Pro",
-                price: 149.99,
-                category: "electronics",
-                image: "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8M3x8aGVhZHBob25lc3xlbnwwfHwwfHx8MA%3D%3D&auto=format&fit=crop&w=500&q=60",
-                description: "Premium wireless headphones with active noise cancellation.",
-                featured: true
-            },
-            {
-                id: 2,
-                name: "Ultra HD Smart TV",
-                price: 899.99,
-                category: "electronics",
-                image: "https://images.unsplash.com/photo-1567690187548-f07b1d7bf5a9?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8NXx8c21hcnQlMjB0dnxlbnwwfHwwfHx8MA%3D%3D&auto=format&fit=crop&w=500&q=60",
-                description: "65-inch 4K Ultra HD Smart LED TV with HDR",
-                featured: true
-            },
-            {
-                id: 3,
-                name: "Gaming Laptop",
-                price: 1599.99,
-                category: "laptops",
-                image: "https://images.unsplash.com/photo-1593642632823-8f785ba67e45?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8Z2FtaW5nJTIwbGFwdG9wfGVufDB8fDB8fHww&auto=format&fit=crop&w=500&q=60",
-                description: "High-performance gaming laptop with RTX graphics",
-                featured: true
-            },
-            {
-                id: 4,
-                name: "Smartphone Pro Max",
-                price: 1099.99,
-                category: "phones",
-                image: "https://images.unsplash.com/photo-1592899677977-9c10df588f62?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8c21hcnRwaG9uZXxlbnwwfHwwfHx8MA%3D%3D&auto=format&fit=crop&w=500&q=60",
-                description: "Latest flagship smartphone with triple camera system",
-                featured: false
-            },
-            {
-                id: 5,
-                name: "Wireless Earbuds",
-                price: 129.99,
-                category: "electronics",
-                image: "https://images.unsplash.com/photo-1590658268037-6bf12165a8df?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Nnx8ZWFyYnVkc3xlbnwwfHwwfHx8MA%3D%3D&auto=format&fit=crop&w=500&q=60",
-                description: "True wireless earbuds with 24-hour battery life",
-                featured: false
-            },
-            {
-                id: 6,
-                name: "Smart Watch 3",
-                price: 249.99,
-                category: "electronics",
-                image: "https://images.unsplash.com/photo-1523275335684-37898b6baf30?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8c21hcnQlMjB3YXRjaHxlbnwwfHwwfHx8MA%3D%3D&auto=format&fit=crop&w=500&q=60",
-                description: "Advanced smartwatch with health monitoring features",
-                featured: false
-            },
-            {
-                id: 7,
-                name: "Bluetooth Speaker",
-                price: 79.99,
-                category: "electronics",
-                image: "https://images.unsplash.com/photo-1572569511254-d8f925fe2cbb?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8NHx8Ymx1ZXRvb3RoJTIwc3BlYWtlcnxlbnwwfHwwfHx8MA%3D%3D&auto=format&fit=crop&w=500&q=60",
-                description: "Portable Bluetooth speaker with 20W output",
-                featured: false
-            },
-            {
-                id: 8,
-                name: "Laptop Stand",
-                price: 39.99,
-                category: "accessories",
-                image: "https://images.unsplash.com/photo-1593642634315-48d541308d3a?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTB8fGxhcHRvcCUyMHN0YW5kfGVufDB8fDB8fHww&auto=format&fit=crop&w=500&q=60",
-                description: "Ergonomic aluminum laptop stand for better posture",
-                featured: false
-            }
-        ];
+        // Product data will be loaded from the server
+        let products = [];
         
         // Sample order data
         let orders = [
@@ -698,11 +635,30 @@
         
         // Initialize the app
         document.addEventListener('DOMContentLoaded', function() {
-            // Load featured products on home page
-            loadFeaturedProducts();
+            // Fetch products from the server
+            fetch('php/get_inventory_items.php')
+                .then(response => response.json())
+                .then(data => {
+                    // Map database fields to expected product fields, including brand
+                    products = data.map(item => ({
+                        id: parseInt(item.id),
+                        name: item.name,
+                        brand: item.brand || '', // <-- ensure brand is included
+                        price: parseFloat(item.price),
+                        category: (item.category || '').toLowerCase(),
+                        image: item.image ? ('uploads/' + item.image) : '',
+                        description: item.description || '',
+                        featured: false
+                    }));
+                    // Optionally, set some products as featured (e.g., first 3)
+                    products.slice(0, 3).forEach(p => p.featured = true);
 
-            // Load all products
-            loadProducts();
+                    // Load featured products on home page
+                    loadFeaturedProducts();
+
+                    // Load all products
+                    loadProducts();
+                });
 
             // Load orders
             loadOrders();
@@ -824,19 +780,35 @@
             });
         }
         
-        // Filter products by category
+        // Filter products by category (fix for Keyboard)
         function filterProducts() {
-            const category = categoryFilter.value;
-            
-            if (category === 'all') {
+            const categoryValue = categoryFilter.value;
+            if (categoryValue === 'all') {
                 loadProducts();
                 return;
             }
-            
+            // Map select value to category name (case-insensitive)
+            let categoryName = '';
+            switch (categoryValue) {
+                case '1': categoryName = 'laptops'; break;
+                case '2': categoryName = 'smartphone'; break;
+                case '3': categoryName = 'mouse'; break;
+                case '4': categoryName = 'keyboard'; break;
+                case '5': categoryName = 'monitor'; break; // fix: singular
+                default: categoryName = categoryValue.toLowerCase();
+            }
+
             productsContainer.innerHTML = '';
-            
-            const filteredProducts = products.filter(product => product.category === category);
-            
+            // Compare category ignoring case, whitespace, and plural/singular
+            const filteredProducts = products.filter(product => {
+                if (!product.category) return false;
+                let prodCat = product.category.replace(/\s+/g, '').toLowerCase();
+                // Accept both singular and plural for monitor/monitors, keyboard/keyboards, etc.
+                if (prodCat.endsWith('s')) prodCat = prodCat.slice(0, -1);
+                let catName = categoryName;
+                if (catName.endsWith('s')) catName = catName.slice(0, -1);
+                return prodCat === catName;
+            });
             filteredProducts.forEach(product => {
                 const productCard = createProductCard(product);
                 productsContainer.appendChild(productCard);
@@ -846,27 +818,71 @@
         // Create product card element
         function createProductCard(product) {
             const card = document.createElement('div');
-            card.className = 'product-card bg-white rounded-lg shadow-md overflow-hidden transition duration-300';
-            
+            card.className = 'product-card bg-white rounded-lg shadow-md overflow-hidden transition duration-300 cursor-pointer';
+            card.tabIndex = 0;
+            card.setAttribute('role', 'button');
+            card.setAttribute('aria-label', product.name);
+
+            // Show brand under the title
             card.innerHTML = `
                 <div class="h-48 overflow-hidden">
                     <img src="${product.image}" alt="${product.name}" class="w-full h-full object-cover">
                 </div>
                 <div class="p-4">
                     <h3 class="font-semibold text-lg mb-1">${product.name}</h3>
-                    <p class="text-gray-600 text-sm mb-2">${product.description}</p>
+                    <p class="text-gray-400 text-sm mb-2">${product.brand ? product.brand : '<em>Unknown</em>'}</p>
                     <div class="flex justify-between items-center mt-4">
                         <span class="font-bold text-blue-600">$${product.price.toFixed(2)}</span>
-                        <button onclick="addToCart(${product.id})" class="bg-blue-600 hover:bg-blue-700 text-white px-3 py-1 rounded-md text-sm transition duration-300">
+                        <button onclick="event.stopPropagation(); addToCart(${product.id})" class="bg-blue-600 hover:bg-blue-700 text-white px-3 py-1 rounded-md text-sm transition duration-300">
                             <i class="fas fa-cart-plus mr-1"></i> Add to Cart
                         </button>
                     </div>
                 </div>
             `;
-            
+
+            // Show details modal on click
+            card.addEventListener('click', function() {
+                showProductDetailsModal(product);
+            });
+
+            // Also allow keyboard accessibility
+            card.addEventListener('keydown', function(e) {
+                if (e.key === 'Enter' || e.key === ' ') {
+                    showProductDetailsModal(product);
+                }
+            });
+
             return card;
         }
-        
+
+        // Show product details modal
+        function showProductDetailsModal(product) {
+            const modal = document.getElementById('productDetailsModal');
+            const content = document.getElementById('productDetailsContent');
+            // Show the brand (from product.brand) in the modal
+            content.innerHTML = `
+                <div class="flex flex-col items-center">
+                    <img src="${product.image}" alt="${product.name}" class="w-40 h-40 object-cover rounded mb-4">
+                    <h2 class="text-2xl font-bold mb-2">${product.name}</h2>
+                    <div class="mb-2"><span class="font-semibold">Brand:</span> ${product.brand ? product.brand : '<em>Unknown</em>'}</div>
+                    <div class="mb-2"><span class="font-semibold">Category:</span> ${product.category ? product.category : ''}</div>
+                    <div class="mb-2"><span class="font-semibold">Price:</span> $${product.price.toFixed(2)}</div>
+                    <div class="mb-2"><span class="font-semibold">Description:</span> ${product.description ? product.description : '<em>No description</em>'}</div>
+                    <button onclick="addToCart(${product.id})" class="mt-4 bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg font-semibold transition duration-300">
+                        <i class="fas fa-cart-plus mr-1"></i> Add to Cart
+                    </button>
+                </div>
+            `;
+            modal.classList.remove('hidden');
+            document.body.style.overflow = 'hidden';
+        }
+
+        // Close product details modal
+        function closeProductDetailsModal() {
+            document.getElementById('productDetailsModal').classList.add('hidden');
+            document.body.style.overflow = 'auto';
+        }
+
         // Load orders
         function loadOrders() {
             ordersList.innerHTML = '';
@@ -1305,20 +1321,20 @@
             showHome();
         }
 
-        // Add these functions after the existing ones
+        // Save and restore active page on refresh
         function setActivePage(page) {
             // Remove active class from all nav links
             document.querySelectorAll('.nav-link').forEach(link => {
                 link.classList.remove('nav-link-active');
             });
-            
             // Add active class to current page's nav links
             document.querySelectorAll(`.nav-link[data-page="${page}"]`).forEach(link => {
                 link.classList.add('nav-link-active');
             });
+            // Save to localStorage
+            localStorage.setItem('customer_active_page', page);
         }
 
-        // Update the existing navigation functions
         function showHome() {
             homeSection.classList.remove('hidden');
             productsSection.classList.add('hidden');
@@ -1343,10 +1359,17 @@
             setActivePage('orders');
         }
 
-        // Set home as active on page load
+        // Set active page on page load (restore from localStorage)
         document.addEventListener('DOMContentLoaded', function() {
             // ...existing DOMContentLoaded code...
-            setActivePage('home');
+            const savedPage = localStorage.getItem('customer_active_page') || 'home';
+            if (savedPage === 'products') {
+                showProducts();
+            } else if (savedPage === 'orders') {
+                showOrders();
+            } else {
+                showHome();
+            }
         });
     </script>
 </body>
