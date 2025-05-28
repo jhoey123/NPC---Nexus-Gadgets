@@ -831,7 +831,7 @@
                 </div>
                 <div class="p-4">
                     <h3 class="font-semibold text-lg mb-1">${product.name}</h3>
-                    <p class="text-gray-400 text-sm mb-2">${product.brand ? product.brand : '<em>Unknown</em>'}</p>
+                    <p class="text-gray-400 text-sm mb-2">${product.brand}</p>
                     <div class="flex justify-between items-center mt-4">
                         <span class="font-bold text-blue-600">$${product.price.toFixed(2)}</span>
                         <button onclick="event.stopPropagation(); addToCart(${product.id})" class="bg-blue-600 hover:bg-blue-700 text-white px-3 py-1 rounded-md text-sm transition duration-300">
