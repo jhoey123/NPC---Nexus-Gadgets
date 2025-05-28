@@ -243,6 +243,7 @@ $weeklyProfits = getWeeklyProfits();
             <table>
                 <thead>
                     <tr>
+                        <th>ID</th>
                         <th>Product</th>
                         <th>Category</th>
                         <th>Price</th>
@@ -1158,6 +1159,7 @@ $weeklyProfits = getWeeklyProfits();
                         row.setAttribute('data-product-id', product.id);
                         row.style.cursor = 'pointer';
                         row.innerHTML = `
+                            <td>${product.id}</td>
                             <td>
                                 <div style="display: flex; align-items: center;">
                                     <img src="uploads/${product.image}" alt="Product" class="product-image">
