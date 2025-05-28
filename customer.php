@@ -1,3 +1,40 @@
+<?php 
+session_start();
+
+
+if (!isset($_SESSION['email'])) {
+    header("Location: index.php");
+    exit();
+} else {
+    include "php/conn_db.php";
+    include "php/functions.php";
+    $email = $_SESSION['email'];
+    $stmt = $conn->prepare("SELECT u.email, r.rank_name FROM users u JOIN ranks r ON u.rank_id = r.rank_id WHERE u.email = ?");
+    $stmt->bind_param("s", $email);
+    $stmt->execute();
+    $result = $stmt->get_result();
+    $email_rank = $result->fetch_assoc();
+    $stmt->close();
+    $conn->close();
+
+    if ($email_rank) {
+        $rank = $email_rank['rank_name'];
+        if ($rank === "Admin") {
+            header("Location: adminpanel.php");
+            exit();
+        } else if ($rank === "Staff") {
+            header("Location: defaultpanel.php");
+            exit();
+        }
+    } else {
+        header("Location: index.php");
+        exit();
+    }
+}
+
+
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
