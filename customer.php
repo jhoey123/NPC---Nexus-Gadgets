@@ -1310,16 +1310,18 @@
         
         // Logout
         function logout() {
-            // In a real app, this would call a logout API
-            showToast('You have been logged out');
-            
-            // Clear cart for demo purposes
-            cart = [];
-            localStorage.removeItem('cart');
-            updateCartBadge();
-            
-            // Show home page
-            showHome();
+            // Use POST to logout.php for real logout, with a logout field
+            const form = document.createElement('form');
+            form.method = 'POST';
+            form.action = 'php/logout.php';
+            // Add a hidden input named 'logout'
+            const input = document.createElement('input');
+            input.type = 'hidden';
+            input.name = 'logout';
+            input.value = '1';
+            form.appendChild(input);
+            document.body.appendChild(form);
+            form.submit();
         }
 
         // Save and restore active page on refresh

@@ -598,9 +598,18 @@ if (!isset($_SESSION['email'])) {
 
         // Logout function
         function logoutUser() {
-            // Optionally clear localStorage or session data here
-            localStorage.removeItem('nexusCart');
-            window.location.href = 'php/logout.php'; // Redirect to your logout handler
+            // Use POST to logout.php for real logout, with a logout field
+            const form = document.createElement('form');
+            form.method = 'POST';
+            form.action = 'php/logout.php';
+            // Add a hidden input named 'logout'
+            const input = document.createElement('input');
+            input.type = 'hidden';
+            input.name = 'logout';
+            input.value = '1';
+            form.appendChild(input);
+            document.body.appendChild(form);
+            form.submit();
         }
     </script>
 </body>
