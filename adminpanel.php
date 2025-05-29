@@ -555,11 +555,12 @@ $weeklyProfits = getWeeklyProfits();
                     <tr>
                         <th>Cashier name</th>
                         <th>Transaction id</th>
-                        <th>Item</th>
+                        <th>Items</th>
                         <th>Subtotal</th>
                         <th>Cash</th>
                         <th>Change</th>
                         <th>Total</th>
+                        <th>Payment method</th>
                         <th>Transaction date</th>
                     </tr>
                 </thead>
@@ -567,6 +568,19 @@ $weeklyProfits = getWeeklyProfits();
                     <!-- Transactions will be populated here by JavaScript -->
                 </tbody>
             </table>
+        </div>
+    </div>
+
+    <!-- Transaction Details Modal -->
+    <div class="modal" id="transaction-details-modal" style="display:none;">
+        <div class="modal-content" style="max-width:500px;">
+            <div class="modal-header">
+                <div class="modal-title">Transaction Details</div>
+                <button class="modal-close" onclick="closeTransactionDetailsModal()">&times;</button>
+            </div>
+            <div class="modal-body" id="transaction-details-body">
+                <!-- Populated by JS -->
+            </div>
         </div>
     </div>
 
@@ -1804,117 +1818,67 @@ $weeklyProfits = getWeeklyProfits();
 
         // Render transaction table
         function renderTransactionTable() {
-            const tbody = document.getElementById('transaction-table-body');
-            tbody.innerHTML = '';
-            transactions.forEach(tx => {
-                const row = document.createElement('tr');
-                row.innerHTML = `
-                    <td>${tx.date}</td>
-                    <td>${tx.customer}</td>
-                    <td>${tx.item}</td>
-                    <td>₱${parseFloat(tx.price).toFixed(2)}</td>
-                    <td>${tx.quantity}</td>
-                    <td>₱${(tx.price * tx.quantity).toFixed(2)}</td>
-                `;
-                tbody.appendChild(row);
-            });
+            fetch('php/transactions_get.php')
+                .then(response => response.json())
+                .then(data => {
+                    const tbody = document.getElementById('transaction-table-body');
+                    tbody.innerHTML = '';
+                    if (Array.isArray(data)) {
+                        data.forEach((tx, idx) => {
+                            const row = document.createElement('tr');
+                            // Truncate items if too long
+                            let itemsDisplay = tx.purchase_list || '';
+                            if (itemsDisplay.length > 40) {
+                                itemsDisplay = itemsDisplay.substring(0, 40) + '...';
+                            }
+                            row.innerHTML = `
+                                <td>${tx.cashier_name || ''}</td>
+                                <td>${tx.transaction_id || ''}</td>
+                                <td>${itemsDisplay}</td>
+                                <td>₱${parseFloat(tx.subtotal_amount || 0).toFixed(2)}</td>
+                                <td>₱${parseFloat(tx.cash_amount || 0).toFixed(2)}</td>
+                                <td>₱${parseFloat(tx.change_amount || 0).toFixed(2)}</td>
+                                <td>₱${parseFloat(tx.total_amount || 0).toFixed(2)}</td>
+                                <td>${tx.payment_method || ''}</td>
+                                <td>${tx.transaction_date || ''}</td>
+                            `;
+                            row.style.cursor = 'pointer';
+                            row.addEventListener('click', function(e) {
+                                showTransactionDetailsModal(tx);
+                            });
+                            tbody.appendChild(row);
+                        });
+                    } else {
+                        tbody.innerHTML = '<tr><td colspan="9">No transactions found.</td></tr>';
+                    }
+                })
+                .catch(() => {
+                    document.getElementById('transaction-table-body').innerHTML = '<tr><td colspan="9">Failed to load transactions.</td></tr>';
+                });
         }
 
-        // Function to show the edit user modal
-    function editUser(userId) {
-        fetch(`php/get_user_details.php?user_id=${userId}`)
-            .then(response => {
-                if (!response.ok) {
-                    throw new Error(`HTTP error! status: ${response.status}`);
-                }
-                return response.json();
-            })
-            .then(data => {
-                if (data.success) {
-                    const user = data.user;
-                    document.getElementById('edit-account-id').value = user.user_id;
-                    document.getElementById('edit-account-username').value = user.username;
-                    document.getElementById('edit-account-email').value = user.email;
-                    document.getElementById('edit-account-role').value = user.rank_id;
-                    document.getElementById('edit-account-firstname').value = user.firstname;
-                    document.getElementById('edit-account-lastname').value = user.lastname;
+        // Show transaction details modal
+        function showTransactionDetailsModal(tx) {
+            const body = document.getElementById('transaction-details-body');
+            body.innerHTML = `
+                <div><strong>Cashier name:</strong> ${tx.cashier_name || ''}</div>
+                <div><strong>Transaction id:</strong> ${tx.transaction_id || ''}</div>
+                <div><strong>Items:</strong><br><span style="word-break:break-all;">${tx.purchase_list || ''}</span></div>
+                <div><strong>Subtotal:</strong> ₱${parseFloat(tx.subtotal_amount || 0).toFixed(2)}</div>
+                <div><strong>Cash:</strong> ₱${parseFloat(tx.cash_amount || 0).toFixed(2)}</div>
+                <div><strong>Change:</strong> ₱${parseFloat(tx.change_amount || 0).toFixed(2)}</div>
+                <div><strong>Total:</strong> ₱${parseFloat(tx.total_amount || 0).toFixed(2)}</div>
+                <div><strong>Payment method:</strong> ${tx.payment_method || ''}</div>
+                <div><strong>Transaction date:</strong> ${tx.transaction_date || ''}</div>
+            `;
+            document.getElementById('transaction-details-modal').style.display = 'flex';
+        }
 
-                    document.getElementById('edit-account-modal').style.display = 'flex';
-                } else {
-                    showToast(data.message || 'Failed to fetch user details', 'error');
-                }
-            })
-            .catch(error => {
-                console.error('Error:', error);
-                showToast('Failed to fetch user details: ' + error.message, 'error');
-            });
-    }
+        function closeTransactionDetailsModal() {
+            document.getElementById('transaction-details-modal').style.display = 'none';
+        }
 
-    // Close the edit user modal
-    function closeEditAccountModal() {
-        document.getElementById('edit-account-modal').style.display = 'none';
-    }
-
-    // Submit the edit user form
-    function submitEditAccountForm() {
-        const form = document.getElementById('edit-account-form');
-        const formData = new FormData(form);
-
-        fetch('php/edit_user.php', {
-            method: 'POST',
-            body: new URLSearchParams(formData)
-        })
-        .then(response => response.json())
-        .then(data => {
-            if (data.success) {
-                showToast('User updated successfully');
-                closeEditAccountModal();
-                renderUserTable(); // Refresh the user table
-            } else {
-                showToast(data.message || 'Failed to update user', 'error');
-            }
-        })
-        .catch(error => {
-            console.error('Error:', error);
-            showToast('Error updating user', 'error');
-        });
-    }
-
-    function deleteUser(userId) {
-    const confirmDeleteModal = document.getElementById('delete-confirm-modal');
-    const confirmDeleteButton = document.getElementById('confirm-delete-btn');
-
-    // Set up the confirmation button to delete the user
-    confirmDeleteButton.onclick = function () {
-        fetch(`php/delete_user.php`, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-            body: `user_id=${userId}`
-        })
-        .then(response => response.json())
-        .then(data => {
-            if (data.success) {
-                showToast('User deleted successfully');
-                renderUserTable(); // Refresh the user table
-            } else {
-                showToast(data.message || 'Failed to delete user', 'error');
-            }
-            closeDeleteConfirmModal();
-        })
-        .catch(error => {
-            console.error('Error:', error);
-            showToast('Failed to delete user', 'error');
-            closeDeleteConfirmModal();
-        });
-    };
-
-    // Show the modal
-    confirmDeleteModal.style.display = 'flex';
-}
-
-function closeDeleteConfirmModal() {
-    document.getElementById('delete-confirm-modal').style.display = 'none';
-}
+        // ...existing code...
     </script>
 </body>
 </html>
