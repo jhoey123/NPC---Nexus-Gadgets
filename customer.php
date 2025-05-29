@@ -483,27 +483,27 @@ if (!isset($_SESSION['email'])) {
                 
                 <form id="checkoutForm" class="space-y-4">
                     <div>
-                        <label for="fullName" class="block text-sm font-medium text-gray-700 mb-1">Full Name</label>
-                        <input type="text" id="fullName" required class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+                        <label for="fullName" class="block text-sm font-medium text-gray-300 mb-1">Full Name</label>
+                        <input type="text" id="fullName" required class="w-full px-3 py-2 bg-gray-700 border border-gray-600 text-white rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
                     </div>
                     
                     <div>
-                        <label for="email" class="block text-sm font-medium text-gray-700 mb-1">Email</label>
-                        <input type="email" id="email" required class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+                        <label for="email" class="block text-sm font-medium text-gray-300 mb-1">Email</label>
+                        <input type="email" id="email" required class="w-full px-3 py-2 bg-gray-700 border border-gray-600 text-white rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
                     </div>
                     
                     <div>
-                        <label for="address" class="block text-sm font-medium text-gray-700 mb-1">Shipping Address</label>
-                        <textarea id="address" required rows="3" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"></textarea>
+                        <label for="address" class="block text-sm font-medium text-gray-300 mb-1">Shipping Address</label>
+                        <textarea id="address" required rows="3" class="w-full px-3 py-2 bg-gray-700 border border-gray-600 text-white rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"></textarea>
                     </div>
                     
                     <div>
-                        <label for="phone" class="block text-sm font-medium text-gray-700 mb-1">Phone Number</label>
-                        <input type="tel" id="phone" required class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+                        <label for="phone" class="block text-sm font-medium text-gray-300 mb-1">Phone Number</label>
+                        <input type="tel" id="phone" required class="w-full px-3 py-2 bg-gray-700 border border-gray-600 text-white rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
                     </div>
                     
                     <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-2">Payment Method</label>
+                        <label class="block text-sm font-medium text-gray-300 mb-2">Payment Method</label>
                         <div class="space-y-2">
                             <div class="flex items-center">
                                 <input type="radio" id="creditCard" name="paymentMethod" value="creditCard" checked class="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300">
@@ -526,18 +526,18 @@ if (!isset($_SESSION['email'])) {
                     
                     <div id="creditCardFields" class="space-y-4">
                         <div>
-                            <label for="cardNumber" class="block text-sm font-medium text-gray-700 mb-1">Card Number</label>
-                            <input type="text" id="cardNumber" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="1234 5678 9012 3456">
+                            <label for="cardNumber" class="block text-sm font-medium text-gray-300 mb-1">Card Number</label>
+                            <input type="text" id="cardNumber" class="w-full px-3 py-2 bg-gray-700 border border-gray-600 text-white rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="1234 5678 9012 3456">
                         </div>
                         
                         <div class="grid grid-cols-2 gap-4">
                             <div>
-                                <label for="expiryDate" class="block text-sm font-medium text-gray-700 mb-1">Expiry Date</label>
-                                <input type="text" id="expiryDate" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="MM/YY">
+                                <label for="expiryDate" class="block text-sm font-medium text-gray-300 mb-1">Expiry Date</label>
+                                <input type="text" id="expiryDate" class="w-full px-3 py-2 bg-gray-700 border border-gray-600 text-white rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="MM/YY">
                             </div>
                             <div>
-                                <label for="cvv" class="block text-sm font-medium text-gray-700 mb-1">CVV</label>
-                                <input type="text" id="cvv" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="123">
+                                <label for="cvv" class="block text-sm font-medium text-gray-300 mb-1">CVV</label>
+                                <input type="text" id="cvv" class="w-full px-3 py-2 bg-gray-700 border border-gray-600 text-white rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="123">
                             </div>
                         </div>
                     </div>
