@@ -75,6 +75,10 @@ $weeklyProfits = getWeeklyProfits();
             <i class="fas fa-user"></i>
             <span class="sidebar-text">Users</span>
         </div>
+        <div class="sidebar-icon" id="orders-button" onclick="switchView('orders')">
+            <i class="fas fa-shopping-bag"></i>
+            <span class="sidebar-text">Orders</span>
+        </div>
         <div class="sidebar-icon" id="transaction-button" onclick="switchView('transaction')">
             <i class="fas fa-receipt"></i>
             <span class="sidebar-text">Transactions</span>
@@ -571,6 +575,35 @@ $weeklyProfits = getWeeklyProfits();
         </div>
     </div>
 
+    <!-- Orders Content -->
+    <div class="transaction-content" id="orders-content" style="display:none;">
+        <div class="transaction-header">
+            <h2 class="transaction-title">Order Records</h2>
+            <p class="transaction-subtitle">View and manage customer orders</p>
+        </div>
+        <div class="transaction-table">
+            <table>
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Order ID</th>
+                        <th>Name</th>
+                        <th>Email</th>
+                        <th>Shipping Address</th>
+                        <th>Phone</th>
+                        <th>Order Date</th>
+                        <th>Items Ordered</th>
+                        <th>Order Total</th>
+                        <th>Payment Method</th>
+                    </tr>
+                </thead>
+                <tbody id="orders-table-body">
+                    <!-- Orders will be populated here by JavaScript -->
+                </tbody>
+            </table>
+        </div>
+    </div>
+
     <!-- Transaction Details Modal -->
     <div class="modal" id="transaction-details-modal" style="display:none;">
         <div class="modal-content" style="max-width:500px;">
@@ -941,6 +974,7 @@ $weeklyProfits = getWeeklyProfits();
             document.getElementById('inventory-content').style.display = 'none';
             document.getElementById('employee-content').style.display = 'none';
             document.getElementById('transaction-content').style.display = 'none';
+            document.getElementById('orders-content').style.display = 'none';
             document.getElementById('user-content').style.display = 'none'; // Add this line
 
             document.getElementById(`${view}-content`).style.display = 'block';
@@ -957,6 +991,8 @@ $weeklyProfits = getWeeklyProfits();
             // Call renderUserTable when switching to user view
             if (view === 'user') {
                 renderUserTable();
+            } else if (view === 'orders') {
+                renderOrdersTable();
             }
         }
         
@@ -1878,7 +1914,40 @@ $weeklyProfits = getWeeklyProfits();
             document.getElementById('transaction-details-modal').style.display = 'none';
         }
 
-        // ...existing code...
+        // Render orders table
+        function renderOrdersTable() {
+            fetch('php/orders_get.php')
+                .then(response => response.json())
+                .then(data => {
+                    const tbody = document.getElementById('orders-table-body');
+                    tbody.innerHTML = '';
+                    if (data.success && Array.isArray(data.orders)) {
+                        data.orders.forEach(order => {
+                            const row = document.createElement('tr');
+                            row.innerHTML = `
+                                <td>${order.id}</td>
+                                <td>${order.order_id}</td>
+                                <td>${order.name}</td>
+                                <td>${order.email}</td>
+                                <td>${order.shipping_address}</td>
+                                <td>${order.phone}</td>
+                                <td>${order.order_date}</td>
+                                <td>${order.items_ordered}</td>
+                                <td>₱${parseFloat(order.order_total).toFixed(2)}</td>
+                                <td>${order.payment_method}</td>
+                            `;
+                            tbody.appendChild(row);
+                        });
+                    } else {
+                        tbody.innerHTML = '<tr><td colspan="10">No orders found.</td></tr>';
+                    }
+                })
+                .catch(() => {
+                    const tbody = document.getElementById('orders-table-body');
+                    tbody.innerHTML = '<tr><td colspan="10">Failed to load orders.</td></tr>';
+                });
+        }
+
     </script>
 </body>
 </html>
