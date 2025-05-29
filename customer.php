@@ -454,15 +454,15 @@ if (!isset($_SESSION['email'])) {
         <div class="p-4 border-t bg-gray-50">
             <div class="flex justify-between mb-2">
                 <span class="font-medium">Subtotal:</span>
-                <span id="cartSubtotal" class="font-medium">$0.00</span>
+                <span id="cartSubtotal" class="font-medium">₱0.00</span>
             </div>
             <div class="flex justify-between mb-4">
                 <span class="font-medium">Shipping:</span>
-                <span id="cartShipping" class="font-medium">$5.99</span>
+                <span id="cartShipping" class="font-medium">₱5.99</span>
             </div>
-            <div class="flex justify-between text-lg font-bold mb-4">
+            <div class="flex justify-between text-lg font-bold mb-4">   
                 <span>Total:</span>
-                <span id="cartTotal">$5.99</span>
+                <span id="cartTotal">₱5.99</span>
             </div>
             <button id="checkoutButton" class="w-full bg-blue-600 hover:bg-blue-700 text-white py-3 px-4 rounded-lg font-semibold transition duration-300">
                 Proceed to Checkout
@@ -870,7 +870,7 @@ if (!isset($_SESSION['email'])) {
                     <h3 class="font-semibold text-lg mb-1">${product.name}</h3>
                     <p class="text-gray-400 text-sm mb-2">${product.brand}</p>
                     <div class="flex justify-between items-center mt-4">
-                        <span class="font-bold text-blue-600">$${product.price.toFixed(2)}</span>
+                        <span class="font-bold text-blue-600">₱${product.price.toFixed(2)}</span>
                         <button onclick="event.stopPropagation(); addToCart(${product.id})" class="bg-blue-600 hover:bg-blue-700 text-white px-3 py-1 rounded-md text-sm transition duration-300">
                             <i class="fas fa-cart-plus mr-1"></i> Add to Cart
                         </button>
@@ -904,7 +904,7 @@ if (!isset($_SESSION['email'])) {
                     <h2 class="text-2xl font-bold mb-2">${product.name}</h2>
                     <div class="mb-2"><span class="font-semibold">Brand:</span> ${product.brand ? product.brand : '<em>Unknown</em>'}</div>
                     <div class="mb-2"><span class="font-semibold">Category:</span> ${product.category ? product.category : ''}</div>
-                    <div class="mb-2"><span class="font-semibold">Price:</span> $${product.price.toFixed(2)}</div>
+                    <div class="mb-2"><span class="font-semibold">Price:</span> ₱${product.price.toFixed(2)}</div>
                     <div class="mb-2"><span class="font-semibold">Description:</span> ${product.description ? product.description : '<em>No description</em>'}</div>
                     <button onclick="addToCart(${product.id})" class="mt-4 bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg font-semibold transition duration-300">
                         <i class="fas fa-cart-plus mr-1"></i> Add to Cart
@@ -950,13 +950,13 @@ if (!isset($_SESSION['email'])) {
                         ${order.items.map(item => `
                             <div class="flex justify-between text-sm mb-1">
                                 <span>${item.name} × ${item.quantity}</span>
-                                <span>$${(item.price * item.quantity).toFixed(2)}</span>
+                                <span>₱${(item.price * item.quantity).toFixed(2)}</span>
                             </div>
                         `).join('')}
                     </div>
                     <div class="flex justify-between mt-3 pt-2 border-t">
                         <span class="font-medium">Total:</span>
-                        <span class="font-bold">$${order.total.toFixed(2)}</span>
+                        <span class="font-bold">₱${order.total.toFixed(2)}</span>
                     </div>
                 `;
                 
@@ -1025,7 +1025,7 @@ if (!isset($_SESSION['email'])) {
                         <div class="ml-4 flex-1">
                             <div class="flex justify-between">
                                 <h4 class="text-sm font-medium">${item.name}</h4>
-                                <p class="text-sm font-medium">$${(item.price * item.quantity).toFixed(2)}</p>
+                                <p class="text-sm font-medium">₱${(item.price * item.quantity).toFixed(2)}</p>
                             </div>
                             <div class="flex justify-between mt-1 text-sm text-gray-500">
                                 <div class="flex items-center">
@@ -1053,9 +1053,9 @@ if (!isset($_SESSION['email'])) {
                 const shipping = subtotal > 100 ? 0 : 5.99;
                 const total = subtotal + shipping;
                 
-                cartSubtotal.textContent = `$${subtotal.toFixed(2)}`;
-                cartShipping.textContent = `$${shipping.toFixed(2)}`;
-                cartTotal.textContent = `$${total.toFixed(2)}`;
+                cartSubtotal.textContent = `₱${subtotal.toFixed(2)}`;
+                cartShipping.textContent = `₱${shipping.toFixed(2)}`;
+                cartTotal.textContent = `₱${total.toFixed(2)}`;
                 
                 // Enable checkout button
                 checkoutButton.disabled = false;
@@ -1204,12 +1204,51 @@ if (!isset($_SESSION['email'])) {
                     phone: phone
                 },
                 paymentMethod: paymentMethod === 'cod' ? 'Cash on Delivery' : 
-                              paymentMethod === 'creditCard' ? 'Credit Card' :
-                              paymentMethod === 'paypal' ? 'PayPal' : 'Bank Transfer'
+                  paymentMethod === 'creditCard' ? 'Credit Card' :
+                  paymentMethod === 'paypal' ? 'PayPal' : 'Bank Transfer'
             };
 
             // Add to orders (in a real app, this would be sent to a server)
             orders.unshift(currentOrder);
+
+            // --- Record order in database ---
+            // Log for debugging
+            console.log('Order items sent to backend:', currentOrder.items);
+
+            fetch('php/orders.php', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    order_id: orderId,
+                    name: fullName,
+                    email: email,
+                    shipping_address: address,
+                    phone: phone,
+                    order_date: orderDate,
+                    items: currentOrder.items, // send full items array
+                    order_total: total,
+                    payment_method: currentOrder.paymentMethod
+                })
+            }).catch(error => console.error('Error saving order:', error));
+            // --- End record order ---
+
+            // --- Update sales for each product ---
+            cart.forEach(cartItem => {
+                fetch('php/update_sales.php', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ id: cartItem.id, quantity: cartItem.quantity })
+                }).catch(error => console.error('Error updating sales:', error));
+            });
+            // --- End update sales ---
+
+            // --- Update weekly profits ---
+            fetch('php/update_profits.php', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ profit: subtotal })
+            }).catch(error => console.error('Error updating profits:', error));
+            // --- End update weekly profits ---
 
             // Clear cart
             cart = [];
@@ -1282,7 +1321,7 @@ if (!isset($_SESSION['email'])) {
                         ${currentOrder.items.map(item => `
                             <div class="flex justify-between">
                                 <span>${item.name} × ${item.quantity}</span>
-                                <span>$${(item.price * item.quantity).toFixed(2)}</span>
+                                <span>₱${(item.price * item.quantity).toFixed(2)}</span>
                             </div>
                         `).join('')}
                     </div>
@@ -1291,15 +1330,15 @@ if (!isset($_SESSION['email'])) {
                 <div class="border-t pt-4">
                     <div class="flex justify-between mb-1">
                         <span class="font-medium">Subtotal:</span>
-                        <span>$${(currentOrder.total - (currentOrder.total > 100 ? 0 : 5.99)).toFixed(2)}</span>
+                        <span>₱${(currentOrder.total - (currentOrder.total > 100 ? 0 : 5.99)).toFixed(2)}</span>
                     </div>
                     <div class="flex justify-between mb-1">
                         <span class="font-medium">Shipping:</span>
-                        <span>$${(currentOrder.total > 100 ? 0 : 5.99).toFixed(2)}</span>
+                        <span>₱${(currentOrder.total > 100 ? 0 : 5.99).toFixed(2)}</span>
                     </div>
                     <div class="flex justify-between text-lg font-bold">
                         <span>Total:</span>
-                        <span>$${currentOrder.total.toFixed(2)}</span>
+                        <span>₱${currentOrder.total.toFixed(2)}</span>
                     </div>
                 </div>
                 
