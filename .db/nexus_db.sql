@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: May 29, 2025 at 04:28 AM
+-- Generation Time: May 29, 2025 at 06:02 AM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -89,6 +89,13 @@ CREATE TABLE `orders` (
   `payment_method` varchar(255) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
+--
+-- Dumping data for table `orders`
+--
+
+INSERT INTO `orders` (`id`, `order_id`, `name`, `email`, `shipping_address`, `phone`, `order_date`, `items_ordered`, `order_total`, `payment_method`) VALUES
+(17, 'ORD-96829', 'TEST', 'test@test.com', 'test', 'test', '2025-05-29', 'Redragon K552 x1', 1699.00, 'PayPal');
+
 -- --------------------------------------------------------
 
 --
@@ -114,18 +121,18 @@ CREATE TABLE `products` (
 --
 
 INSERT INTO `products` (`Product_id`, `Product_name`, `Product_brand`, `Product_desc`, `Product_quantity`, `Product_price`, `Category_id`, `Barcode_id`, `Product_image_name`, `Product_image_path`, `Items_sold`) VALUES
-(103, 'Xiaomi Redmi 9A', 'Xiaomi', 'Released 2020, July 07', 100, 3999.00, 2, '480010300103', 'CP1.png', '6837102e86128.png', 0),
-(104, 'Infinix Hot 40 Pro', 'Infinix', 'Released 2023, December', 100, 2599.00, 2, '480010400104', 'CP2.png', '683710c2ce6c1.png', 0),
-(105, 'Realme 9 Pro+', 'Realme', 'Released 2022, February 21', 100, 11599.00, 2, '480010500105', 'CP3.png', '6837112de0c4d.png', 0),
-(106, 'Infinix GT 20 Pro', 'Infinix', 'Available. Released 2024, April 26', 100, 16599.00, 2, '480010600106', 'CP4.png', '68371177b9985.png', 0),
-(107, 'Itel P65', 'Itel', 'Released 2024, August 08', 100, 3499.00, 2, '480010700107', 'CP5.png', '6837120fcc088.png', 0),
-(108, 'Redragon K552', 'Redragon', 'A redragon keyboard', 100, 1699.00, 4, '480010800108', 'KB1.png', '683715e68b081.png', 0),
-(109, 'MageGee Mechanical Gaming Keyboard', 'MageGee', 'A MageGee Mechanical Keyboard', 100, 1999.00, 4, '480010900109', 'KB2.png', '68371a43affb2.png', 0),
-(110, 'Redragon Mitra Rgb', 'Redragon', 'A redragon keyboard', 100, 1999.00, 4, '480011000110', 'KB3.png', '68371ab5b9d10.png', 0),
-(111, 'Keychron K2', 'Keychron', 'A keychron k2 keyboard', 100, 3800.00, 4, '480011100111', 'KB4.png', '68371b18cb5ff.png', 0),
-(112, 'Attack Shark M87', 'AttackShark', 'A attack shark m87 keyboard', 100, 3599.00, 4, '480011200112', 'KB5.png', '68371b5b527b1.png', 0),
-(113, 'ACER Aspire A315-59-570Z', 'ACER', 'Intel® Core™ i5-1235U processor\r\n8GB RAM\r\n512GB SSD\r\n15.6\" display with Full HD 1920 x 1080\r\nWindows 11 Home\r\nUltra-slim design\r\nMercury free, environment friendly\r\n2 Years Warranty\r\n\r\n', 100, 30999.00, 1, '480011300113', 'LT1.png', '68371e980f29c.png', 0),
-(114, 'ASUS FA506NC-HN011W', 'ASUS', 'ASUS FA506NC-HN011W TUF GAMING A15 GRAPHITE BLACK (90NR0JF7-M003T0) AMD RYZEN 5-7535HS/8GB DDR5 4800MHZ/512GB M.2 NVME PCIE SSD/NVIDIA GEFORCE RTX3050 4GB GDDR6/15.6\" FHD 144HZ/WINDOWS 11 HOME SL 64BIT/WEBCAM/RGB BACKLIT KB/WIFI/BT/LAN/AUDIO PORT/USB PORT', 100, 51999.00, 1, '480011400114', 'LT2.png', '68371f76d8cda.png', 0),
+(103, 'Xiaomi Redmi 9A', 'Xiaomi', 'Released 2020, July 07', 100, 3999.00, 2, '480010300103', 'CP1.png', '6837102e86128.png', 2),
+(104, 'Infinix Hot 40 Pro', 'Infinix', 'Released 2023, December', 100, 2599.00, 2, '480010400104', 'CP2.png', '683710c2ce6c1.png', 1),
+(105, 'Realme 9 Pro+', 'Realme', 'Released 2022, February 21', 100, 11599.00, 2, '480010500105', 'CP3.png', '6837112de0c4d.png', 1),
+(106, 'Infinix GT 20 Pro', 'Infinix', 'Available. Released 2024, April 26', 100, 16599.00, 2, '480010600106', 'CP4.png', '68371177b9985.png', 1),
+(107, 'Itel P65', 'Itel', 'Released 2024, August 08', 100, 3499.00, 2, '480010700107', 'CP5.png', '6837120fcc088.png', 1),
+(108, 'Redragon K552', 'Redragon', 'A redragon keyboard', 100, 1699.00, 4, '480010800108', 'KB1.png', '683715e68b081.png', 2),
+(109, 'MageGee Mechanical Gaming Keyboard', 'MageGee', 'A MageGee Mechanical Keyboard', 100, 1999.00, 4, '480010900109', 'KB2.png', '68371a43affb2.png', 1),
+(110, 'Redragon Mitra Rgb', 'Redragon', 'A redragon keyboard', 100, 1999.00, 4, '480011000110', 'KB3.png', '68371ab5b9d10.png', 1),
+(111, 'Keychron K2', 'Keychron', 'A keychron k2 keyboard', 100, 3800.00, 4, '480011100111', 'KB4.png', '68371b18cb5ff.png', 1),
+(112, 'Attack Shark M87', 'AttackShark', 'A attack shark m87 keyboard', 100, 3599.00, 4, '480011200112', 'KB5.png', '68371b5b527b1.png', 1),
+(113, 'ACER Aspire A315-59-570Z', 'ACER', 'Intel® Core™ i5-1235U processor\r\n8GB RAM\r\n512GB SSD\r\n15.6\" display with Full HD 1920 x 1080\r\nWindows 11 Home\r\nUltra-slim design\r\nMercury free, environment friendly\r\n2 Years Warranty\r\n\r\n', 100, 30999.00, 1, '480011300113', 'LT1.png', '68371e980f29c.png', 1),
+(114, 'ASUS FA506NC-HN011W', 'ASUS', 'ASUS FA506NC-HN011W TUF GAMING A15 GRAPHITE BLACK (90NR0JF7-M003T0) AMD RYZEN 5-7535HS/8GB DDR5 4800MHZ/512GB M.2 NVME PCIE SSD/NVIDIA GEFORCE RTX3050 4GB GDDR6/15.6\" FHD 144HZ/WINDOWS 11 HOME SL 64BIT/WEBCAM/RGB BACKLIT KB/WIFI/BT/LAN/AUDIO PORT/USB PORT', 100, 51999.00, 1, '480011400114', 'LT2.png', '68371f76d8cda.png', 1),
 (115, 'DELL Inspiron 15 3520-I71255U', 'DELL', 'DELL INSPIRON 15 3520-I71255U PLATINUM SILVER INTEL CORE I7 1255U/16GB DDR4/512GB M.2 PCIE NVME SSD/INTEL UHD GRAPHICS/WINDOWS 11 HOME SL 64BIT/MS OFFICE HOME & STUDENT 2021/15.6\" FHD/WEBCAM/WIFI/BT/AUDIO PORT/CARD READER/USB PORT/HDMI/LAPTOP', 100, 48990.00, 1, '480011500115', 'LT3.png', '68372046d699e.png', 0),
 (116, 'HP 14-EM0105AU', 'HP', 'HP\r\n14-EM0105AU (983L7PA) NATURAL SILVER AMD RYZEN 5-7520U/8GB LPDDR5/256GB M.2\r\nPCIE NVME SSD/AMD RADEON GRAPHICS/14\" FHD/WINDOWS 11 HOME SL\r\n64BIT/WEBCAM/WIFI/BT/AUDIO PORT/CARD READER/USB 3.0/USB TYPE-C/HDMI/LAPTOP', 100, 26999.00, 1, '480011600116', 'LT4.png', '683720b647299.png', 0),
 (117, 'LENOVO LOQ 15IRX9', 'Lenovo', 'LENOVO LOQ 15IRX9 (83DV00QWPH) LUNA GREY INTEL CORE I7-13650HX/24GB DDR5 4800MHZ/512GB M.2 2280 PCIE NVME SSD/NVIDIA GEFORCE RTX4060 8GB GDDR6/15.6\" FHD/WINDOWS 11 HOME SL 64BIT/MS OFFICE HOME & STUDENT 2021/WEBCAM/BACKLIT KB/WIFI/BT/LAN/AUDIO PORT/USB PORT', 100, 80499.00, 1, '480011700117', 'LT5.png', '68372141c8b97.png', 0),
@@ -160,7 +167,7 @@ INSERT INTO `profits` (`id`, `Day`, `Profits`) VALUES
 (1, 'Monday', 0),
 (2, 'Tuesday', 0),
 (3, 'Wednesday', 0),
-(4, 'Thursday', 0),
+(4, 'Thursday', 140087),
 (5, 'Friday', 0),
 (6, 'Saturday', 0),
 (7, 'Sunday', 0);
@@ -194,6 +201,7 @@ INSERT INTO `ranks` (`rank_id`, `rank_name`, `rank_desc`) VALUES
 
 CREATE TABLE `transactions` (
   `id` int(11) NOT NULL,
+  `cashier_name` varchar(255) NOT NULL,
   `transaction_id` varchar(7) NOT NULL,
   `purchase_list` text NOT NULL,
   `subtotal_amount` decimal(10,2) NOT NULL,
@@ -203,6 +211,14 @@ CREATE TABLE `transactions` (
   `payment_method` varchar(10) NOT NULL,
   `transaction_date` timestamp NOT NULL DEFAULT current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `transactions`
+--
+
+INSERT INTO `transactions` (`id`, `cashier_name`, `transaction_id`, `purchase_list`, `subtotal_amount`, `cash_amount`, `change_amount`, `total_amount`, `payment_method`, `transaction_date`) VALUES
+(24, 'test test', 'VLYKUTR', 'Xiaomi Redmi 9A (x1)', 3999.00, 5000.00, 521.12, 4478.88, 'Cash', '2025-05-28 21:14:46'),
+(25, 'test test', '3M6JHQB', 'Xiaomi Redmi 9A (x1), Infinix Hot 40 Pro (x1), Realme 9 Pro+ (x1), Infinix GT 20 Pro (x1), Itel P65 (x1), Redragon K552 (x1), MageGee Mechanical Gaming Keyboard (x1), Redragon Mitra Rgb (x1), Keychron K2 (x1), Attack Shark M87 (x1), ACER Aspire A315-59-570Z (x1), ASUS FA506NC-HN011W (x1)', 134389.00, 150515.68, 0.00, 150515.68, 'GCash', '2025-05-28 21:15:18');
 
 -- --------------------------------------------------------
 
@@ -227,7 +243,7 @@ CREATE TABLE `users` (
 
 INSERT INTO `users` (`user_id`, `firstname`, `lastname`, `username`, `password`, `email`, `rank_id`, `employee_id`) VALUES
 (1, '', '', 'admin', '$2y$10$7xgeJUqZ4AlLKfsvcwOhp.Vo0GWpGnFfnP1ObHOpUKwbkc8UZ6TtO', 'admin@admin.com', 1, NULL),
-(5, '', '', 'staff2', '$2y$10$SaWJMu/ZYT30D8HLzUDwdOgvTp23QarK/E4GYwuK/a9ZSgQAr..oK', 'staff2@staff.com', 2, NULL),
+(5, 'test', 'test', 'staff2', '$2y$10$SaWJMu/ZYT30D8HLzUDwdOgvTp23QarK/E4GYwuK/a9ZSgQAr..oK', 'staff2@staff.com', 2, NULL),
 (42, 'testfirstname', 'testinglastname', 'hahalol', '$2y$10$9K2nSDnHQ5LXbuAaPmBQRO6XbIUx7n2dSI6VKbKOqg9KC/CKYcYzK', 'testtest@test.com', 3, NULL);
 
 --
@@ -305,7 +321,7 @@ ALTER TABLE `employees`
 -- AUTO_INCREMENT for table `orders`
 --
 ALTER TABLE `orders`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=16;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=18;
 
 --
 -- AUTO_INCREMENT for table `products`
@@ -329,7 +345,7 @@ ALTER TABLE `ranks`
 -- AUTO_INCREMENT for table `transactions`
 --
 ALTER TABLE `transactions`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=12;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=26;
 
 --
 -- AUTO_INCREMENT for table `users`
