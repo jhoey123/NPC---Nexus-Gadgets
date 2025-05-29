@@ -209,6 +209,14 @@ if (!isset($_SESSION['email'])) {
             barcodeInput.addEventListener('blur', function() {
                 barcodeBar.classList.remove('expanded');
             });
+            // Also handle paste event for barcode input
+            barcodeInput.addEventListener('paste', function(e) {
+                setTimeout(() => {
+                    if (barcodeInput.value.length === 12) {
+                        handleBarcodeScan(barcodeInput);
+                    }
+                }, 0);
+            });
         });
 
         function fetchInventoryItems() {
@@ -384,19 +392,70 @@ if (!isset($_SESSION['email'])) {
         }
 
         function barcodeScanHandler(event) {
-            if (event.key === 'Enter') {
-                const barcode = event.target.value.trim();
-                if (!barcode) return;
-                const productId = parseInt(barcode, 10);
-                const product = products.find(p => p.id === productId);
-                if (product) {
-                    addToCart(productId);
+            const barcodeInputElem = event.target;
+            // Automatically scan when 12 characters are entered via typing
+            if (barcodeInputElem.value.length === 12) {
+                handleBarcodeScan(barcodeInputElem);
+            }
+        }
+
+        // Also handle paste event for barcode input
+        document.addEventListener('DOMContentLoaded', function() {
+            // ...existing code...
+            const barcodeInput = document.getElementById('barcode-input');
+            // ...existing code...
+            barcodeInput.addEventListener('paste', function(e) {
+                setTimeout(() => {
+                    if (barcodeInput.value.length === 12) {
+                        handleBarcodeScan(barcodeInput);
+                    }
+                }, 0);
+            });
+        });
+
+        function handleBarcodeScan(barcodeInputElem) {
+            const barcode = barcodeInputElem.value.trim();
+            barcodeInputElem.value = ''; // Immediately clear input field
+            if (!barcode) return;
+            fetch('php/barcode_scan.php', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                body: 'barcode=' + encodeURIComponent(barcode)
+            })
+            .then(response => response.json())
+            .then(product => {
+                if (product && product.name) {
+                    // Try to find in cart by name
+                    let existingIndex = cart.findIndex(item => item.name === product.name);
+                    if (existingIndex !== -1) {
+                        if (cart[existingIndex].quantity < product.quantity) {
+                            cart[existingIndex].quantity++;
+                        } else {
+                            showAlert(`Cannot add more than ${product.quantity} of this item.`);
+                            updateCartDisplay();
+                            return;
+                        }
+                    } else {
+                        cart.push({
+                            id: null,
+                            name: product.name,
+                            price: parseFloat(product.price),
+                            image: product.image,
+                            quantity: 1,
+                            maxQuantity: product.quantity
+                        });
+                    }
+                    updateCartDisplay();
                     showAlert(`${product.name} added via barcode`, 'success');
                 } else {
                     showAlert('Product not found for barcode: ' + barcode, 'info');
+                    updateCartDisplay();
                 }
-                event.target.value = '';
-            }
+            })
+            .catch(() => {
+                showAlert('Error scanning barcode', 'error');
+                updateCartDisplay();
+            });
         }
 
         // Modified placeOrder to show payment modal
