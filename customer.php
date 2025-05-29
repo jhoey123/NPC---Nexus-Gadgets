@@ -907,10 +907,10 @@ if (!isset($_SESSION['email'])) {
             card.setAttribute('role', 'button');
             card.setAttribute('aria-label', product.name);
 
-            // Show brand under the title
             card.innerHTML = `
-                <div class="h-48 overflow-hidden">
-                    <img src="${product.image}" alt="${product.name}" class="w-full h-full object-cover">
+                <div style="height: 200px; display: flex; align-items: center; justify-content: center;">
+                    <img src="${product.image}" alt="${product.name}" 
+                        style="max-width: 100%; max-height: 100%; width: auto; height: auto; object-fit: contain;">
                 </div>
                 <div class="p-4">
                     <h3 class="font-semibold text-lg mb-1">${product.name}</h3>
