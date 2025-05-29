@@ -10,12 +10,14 @@
         @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
         
         @font-face {
-            font-family: 'SuperDario';
-            src: url('uploads/Valorax-lg25V.otf') format('truetype'); /* Update the path to your font file */
+            font-family: 'Valorax';
+            src: url('Font/Valorax-lg25V.otf') format('opentype');
         }
 
         .superdario-font {
-            font-family: 'SuperDario', sans-serif;
+            font-family: 'Valorax', sans-serif;
+            letter-spacing: 1px;
+            font-weight: normal !important;
         }
 
         body {
@@ -233,8 +235,8 @@
                 <!-- Logo -->
                 <div class="flex items-center">
                     <a href="#" class="flex items-center">
-                        <img src="images/NEXUS GADGETS.png" alt="NEXUS GADGETS Logo" class="w-24 h-24 mr-6"> <!-- Updated logo -->
-                        <span class="text-2xl font-bold text-white superdario-font">NEXUS <span class="text-indigo-400">Gadget</span></span>
+                        <img src="images/NEXUS GADGETS.png" alt="NEXUS GADGETS Logo" class="w-24 h-24 mr-6"> 
+                        <span class="text-2xl superdario-font text-white">NEXUS <span class="text-indigo-400">GADGET</span></span>
                     </a>
                 </div>
                 
@@ -570,8 +572,8 @@
                 <div>
                    <div class="flex items-center">
                     <a href="#" class="flex items-center">
-                        <img src="images/NEXUS GADGETS.png" alt="NEXUS GADGETS Logo" class="w-20 h-20 mr-6"> <!-- Updated logo -->
-                        <span class="text-2xl font-bold text-white superdario-font">NEXUS <span class="text-indigo-400">Gadget</span></span>
+                        <img src="images/NEXUS GADGETS.png" alt="NEXUS GADGETS Logo" class="w-20 h-20 mr-6">
+                        <span class="text-2xl superdario-font text-white">NEXUS <span class="text-indigo-400">GADGET</span></span>
                     </a>
                 </div>
                     <p class="text-gray-400 mb-4">Your one-stop shop for premium computer parts, laptops, and smartphones.</p>

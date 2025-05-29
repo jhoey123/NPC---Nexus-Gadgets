@@ -81,7 +81,7 @@
         }
         @font-face {
             font-family: 'SuperDario';
-            src: url('uploads/Valorax-lg25V.otf') format('truetype'); /* Update the path to your font file */
+            src: url('Font/Valorax-lg25V.otf') format('truetype'); /* Update the path to your font file */
         }
 
         .superdario-font {
