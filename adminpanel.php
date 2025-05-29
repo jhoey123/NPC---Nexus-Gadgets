@@ -617,6 +617,19 @@ $weeklyProfits = getWeeklyProfits();
         </div>
     </div>
 
+    <!-- Order Details Modal -->
+    <div class="modal" id="order-details-modal" style="display:none;">
+        <div class="modal-content" style="max-width:500px; padding: 24px 32px;">
+            <div class="modal-header" style="border-bottom: 1px solid #2d3748; margin-bottom: 16px;">
+                <div class="modal-title" style="font-size: 1.5rem; font-weight: bold;">Order Details</div>
+                <button class="modal-close" onclick="closeOrderDetailsModal()" style="font-size: 2rem; line-height: 1; background: none; border: none; color: #fff; cursor: pointer;">&times;</button>
+            </div>
+            <div class="modal-body" id="order-details-body" style="display: flex; flex-direction: column; gap: 12px; color: #e6f1ff; font-size: 1rem;">
+                <!-- Populated by JS -->
+            </div>
+        </div>
+    </div>
+
     <!-- Toast Notification -->
     <div class="toast" id="toast">
         <i class="fas fa-check-circle"></i>
@@ -1897,15 +1910,20 @@ $weeklyProfits = getWeeklyProfits();
         function showTransactionDetailsModal(tx) {
             const body = document.getElementById('transaction-details-body');
             body.innerHTML = `
-                <div><strong>Cashier name:</strong> ${tx.cashier_name || ''}</div>
-                <div><strong>Transaction id:</strong> ${tx.transaction_id || ''}</div>
-                <div><strong>Items:</strong><br><span style="word-break:break-all;">${tx.purchase_list || ''}</span></div>
-                <div><strong>Subtotal:</strong> ₱${parseFloat(tx.subtotal_amount || 0).toFixed(2)}</div>
-                <div><strong>Cash:</strong> ₱${parseFloat(tx.cash_amount || 0).toFixed(2)}</div>
-                <div><strong>Change:</strong> ₱${parseFloat(tx.change_amount || 0).toFixed(2)}</div>
-                <div><strong>Total:</strong> ₱${parseFloat(tx.total_amount || 0).toFixed(2)}</div>
-                <div><strong>Payment method:</strong> ${tx.payment_method || ''}</div>
-                <div><strong>Transaction date:</strong> ${tx.transaction_date || ''}</div>
+                <div style="margin-bottom: 8px; color: #fff;"><strong>Cashier name:</strong> <span style="color:#fff">${tx.cashier_name || ''}</span></div>
+                <div style="margin-bottom: 8px; color: #fff;"><strong>Transaction id:</strong> <span style="color:#fff">${tx.transaction_id || ''}</span></div>
+                <div style="margin-bottom: 8px; color: #fff;">
+                    <strong>Items:</strong>
+                    <div style="background:#1a2233; color:#fff; padding:8px 12px; border-radius:6px; margin-top:4px; font-size:0.97rem; word-break:break-word;">
+                        ${tx.purchase_list || ''}
+                    </div>
+                </div>
+                <div style="margin-bottom: 8px; color: #fff;"><strong>Subtotal:</strong> <span style="color:#22c55e">₱${parseFloat(tx.subtotal_amount || 0).toFixed(2)}</span></div>
+                <div style="margin-bottom: 8px; color: #fff;"><strong>Cash:</strong> <span style="color:#22c55e">₱${parseFloat(tx.cash_amount || 0).toFixed(2)}</span></div>
+                <div style="margin-bottom: 8px; color: #fff;"><strong>Change:</strong> <span style="color:#22c55e">₱${parseFloat(tx.change_amount || 0).toFixed(2)}</span></div>
+                <div style="margin-bottom: 8px; color: #fff;"><strong>Total:</strong> <span style="color:#22c55e">₱${parseFloat(tx.total_amount || 0).toFixed(2)}</span></div>
+                <div style="margin-bottom: 8px; color: #fff;"><strong>Payment method:</strong> <span style="color:#fff">${tx.payment_method || ''}</span></div>
+                <div style="margin-bottom: 8px; color: #fff;"><strong>Transaction date:</strong> <span style="color:#fff">${tx.transaction_date || ''}</span></div>
             `;
             document.getElementById('transaction-details-modal').style.display = 'flex';
         }
@@ -1936,6 +1954,10 @@ $weeklyProfits = getWeeklyProfits();
                                 <td>₱${parseFloat(order.order_total).toFixed(2)}</td>
                                 <td>${order.payment_method}</td>
                             `;
+                            row.style.cursor = 'pointer';
+                            row.addEventListener('click', function() {
+                                showOrderDetailsModal(order);
+                            });
                             tbody.appendChild(row);
                         });
                     } else {
@@ -1946,6 +1968,33 @@ $weeklyProfits = getWeeklyProfits();
                     const tbody = document.getElementById('orders-table-body');
                     tbody.innerHTML = '<tr><td colspan="10">Failed to load orders.</td></tr>';
                 });
+        }
+
+        // Show order details modal
+        function showOrderDetailsModal(order) {
+            const body = document.getElementById('order-details-body');
+            body.innerHTML = `
+                <div style="margin-bottom: 8px; color: #fff;"><strong>ID:</strong> <span style="color:#fff">${order.id}</span></div>
+                <div style="margin-bottom: 8px; color: #fff;"><strong>Order ID:</strong> <span style="color:#fff">${order.order_id}</span></div>
+                <div style="margin-bottom: 8px; color: #fff;"><strong>Name:</strong> <span style="color:#fff">${order.name}</span></div>
+                <div style="margin-bottom: 8px; color: #fff;"><strong>Email:</strong> <span style="color:#fff">${order.email}</span></div>
+                <div style="margin-bottom: 8px; color: #fff;"><strong>Shipping Address:</strong> <span style="color:#fff">${order.shipping_address}</span></div>
+                <div style="margin-bottom: 8px; color: #fff;"><strong>Phone:</strong> <span style="color:#fff">${order.phone}</span></div>
+                <div style="margin-bottom: 8px; color: #fff;"><strong>Order Date:</strong> <span style="color:#fff">${order.order_date}</span></div>
+                <div style="margin-bottom: 8px; color: #fff;">
+                    <strong>Items Ordered:</strong>
+                    <div style="background:#1a2233; color:#fff; padding:8px 12px; border-radius:6px; margin-top:4px; font-size:0.97rem; word-break:break-word;">
+                        ${order.items_ordered}
+                    </div>
+                </div>
+                <div style="margin-bottom: 8px; color: #fff;"><strong>Order Total:</strong> <span style="color:#22c55e">₱${parseFloat(order.order_total).toFixed(2)}</span></div>
+                <div style="margin-bottom: 8px; color: #fff;"><strong>Payment Method:</strong> <span style="color:#fff">${order.payment_method}</span></div>
+            `;
+            document.getElementById('order-details-modal').style.display = 'flex';
+        }
+
+        function closeOrderDetailsModal() {
+            document.getElementById('order-details-modal').style.display = 'none';
         }
 
     </script>
