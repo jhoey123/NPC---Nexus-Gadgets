@@ -9,7 +9,8 @@ if (!isset($_SESSION['email'])) {
     include "php/conn_db.php";
     include "php/functions.php";
     $email = $_SESSION['email'];
-    $stmt = $conn->prepare("SELECT u.email, r.rank_name FROM users u JOIN ranks r ON u.rank_id = r.rank_id WHERE u.email = ?");
+    // Fetch first_name and last_name
+    $stmt = $conn->prepare("SELECT u.email, u.firstname, u.lastname, r.rank_name FROM users u JOIN ranks r ON u.rank_id = r.rank_id WHERE u.email = ?");
     $stmt->bind_param("s", $email);
     $stmt->execute();
     $result = $stmt->get_result();
@@ -19,6 +20,8 @@ if (!isset($_SESSION['email'])) {
 
     if ($email_rank) {
         $rank = $email_rank['rank_name'];
+        // Build full name
+        $cashier_fullname = trim($email_rank['firstname'] . ' ' . $email_rank['lastname']);
         if ($rank === "Admin") {
             header("Location: adminpanel.php");
             exit();
@@ -31,8 +34,6 @@ if (!isset($_SESSION['email'])) {
         exit();
     }
 }
-
-
 ?>
 
 <!DOCTYPE html>
@@ -456,6 +457,9 @@ if (!isset($_SESSION['email'])) {
             document.getElementById('cash-modal').style.display = 'none';
         }
 
+        // Pass cashier full name from PHP
+        const cashierName = <?php echo json_encode(isset($cashier_fullname) ? $cashier_fullname : ''); ?>;
+
         function generateReceipt(method, cashAmount = null) {
             const subtotal = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
             const tax = subtotal * 0.12;
@@ -467,6 +471,7 @@ if (!isset($_SESSION['email'])) {
                 <h2 style="text-align:center;">NexusGadgets POS</h2>
                 <hr>
                 <div style="font-size:0.95rem;">Date: ${now.toLocaleString()}</div>
+                <div style="font-size:0.95rem;">Cashier: <b>${cashierName}</b></div>
                 <div style="font-size:0.95rem;">Payment: <b>${method}</b></div>
                 <hr>
                 <table style="width:100%; font-size:0.95rem; margin:1rem 0;">
@@ -519,7 +524,8 @@ if (!isset($_SESSION['email'])) {
                     totalAmount: parseFloat(total.toFixed(2)),
                     paymentMethod: method,
                     cashAmount: parseFloat((method === 'Cash' ? cashAmount : total).toFixed(2)),
-                    changeAmount: parseFloat((method === 'Cash' ? change : 0).toFixed(2))
+                    changeAmount: parseFloat((method === 'Cash' ? change : 0).toFixed(2)),
+                    cashierName: cashierName // <-- send cashier name to backend
                 })
             }).catch(error => console.error('Error recording transaction:', error));
 

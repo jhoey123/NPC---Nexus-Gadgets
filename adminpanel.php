@@ -553,12 +553,14 @@ $weeklyProfits = getWeeklyProfits();
             <table>
                 <thead>
                     <tr>
-                        <th>Date</th>
-                        <th>Customer Name</th>
+                        <th>Cashier name</th>
+                        <th>Transaction id</th>
                         <th>Item</th>
-                        <th>Price</th>
-                        <th>Quantity</th>
+                        <th>Subtotal</th>
+                        <th>Cash</th>
+                        <th>Change</th>
                         <th>Total</th>
+                        <th>Transaction date</th>
                     </tr>
                 </thead>
                 <tbody id="transaction-table-body">
