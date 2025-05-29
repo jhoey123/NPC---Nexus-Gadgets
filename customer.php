@@ -610,28 +610,49 @@ if (!isset($_SESSION['email'])) {
         // Product data will be loaded from the server
         let products = [];
         
-        // Sample order data
-        let orders = [
-            {
-                id: "ORD-12345",
-                date: "2023-06-15",
-                status: "Delivered",
-                items: [
-                    { productId: 1, name: "Wireless Headphones Pro", quantity: 1, price: 149.99 },
-                    { productId: 5, name: "Wireless Earbuds", quantity: 1, price: 129.99 }
-                ],
-                total: 279.98
-            },
-            {
-                id: "ORD-12346",
-                date: "2023-06-20",
-                status: "Shipped",
-                items: [
-                    { productId: 3, name: "Gaming Laptop", quantity: 1, price: 1599.99 }
-                ],
-                total: 1599.99
+        // Get the logged-in user's email from PHP session
+        const userEmail = <?php echo json_encode($_SESSION['email']); ?>;
+
+        // Use a unique key for each user's orders in localStorage
+        const ordersKey = 'customer_orders_' + userEmail;
+
+        // Load orders from localStorage for this user, otherwise use sample data
+        let orders = [];
+        try {
+            const savedOrders = localStorage.getItem(ordersKey);
+            if (savedOrders) {
+                orders = JSON.parse(savedOrders);
+            } else {
+                orders = [
+                    {
+                        id: "ORD-12345",
+                        date: "2023-06-15",
+                        status: "Delivered",
+                        items: [
+                            { productId: 1, name: "Wireless Headphones Pro", quantity: 1, price: 149.99 },
+                            { productId: 5, name: "Wireless Earbuds", quantity: 1, price: 129.99 }
+                        ],
+                        total: 279.98
+                    },
+                    {
+                        id: "ORD-12346",
+                        date: "2023-06-20",
+                        status: "Shipped",
+                        items: [
+                            { productId: 3, name: "Gaming Laptop", quantity: 1, price: 1599.99 }
+                        ],
+                        total: 1599.99
+                    }
+                ];
             }
-        ];
+        } catch (e) {
+            orders = [];
+        }
+        
+        // Assign persistent trackingId to each order at load
+        orders.forEach(order => {
+            order.trackingId = getPersistentTrackingId(order.id);
+        });
         
         // Shopping cart
         let cart = [];
@@ -670,6 +691,31 @@ if (!isset($_SESSION['email'])) {
         const paymentMethods = document.querySelectorAll('input[name="paymentMethod"]');
         const currentOrderElement = document.getElementById('currentOrder');
         
+        // Generate a random tracking ID (e.g., "TRK-ABC1234567")
+        function generateTrackingId() {
+            const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+            let result = 'TRK-';
+            for (let i = 0; i < 10; i++) {
+                result += chars.charAt(Math.floor(Math.random() * chars.length));
+            }
+            return result;
+        }
+
+        // Helper: Get or generate a persistent tracking ID for an order
+        function getPersistentTrackingId(orderId) {
+            let trackingMap = {};
+            try {
+                trackingMap = JSON.parse(localStorage.getItem('order_tracking_map')) || {};
+            } catch (e) {
+                trackingMap = {};
+            }
+            if (!trackingMap[orderId]) {
+                trackingMap[orderId] = generateTrackingId();
+                localStorage.setItem('order_tracking_map', JSON.stringify(trackingMap));
+            }
+            return trackingMap[orderId];
+        }
+
         // Initialize the app
         document.addEventListener('DOMContentLoaded', function() {
             // Fetch products from the server
@@ -924,25 +970,26 @@ if (!isset($_SESSION['email'])) {
         // Load orders
         function loadOrders() {
             ordersList.innerHTML = '';
-            
             if (orders.length === 0) {
                 ordersList.innerHTML = '<div class="p-4 text-center text-gray-500">You don\'t have any orders yet.</div>';
                 return;
             }
-            
-            orders.forEach(order => {
+            orders.forEach((order, idx) => {
+                // Always use persistent trackingId
+                order.trackingId = getPersistentTrackingId(order.id);
                 const orderElement = document.createElement('div');
                 orderElement.className = 'p-4';
-                
                 orderElement.innerHTML = `
                     <div class="flex justify-between items-start mb-2">
                         <div>
                             <h4 class="font-semibold">Order #${order.id}</h4>
                             <p class="text-sm text-gray-500">Placed on ${order.date}</p>
+                            <p class="text-xs text-blue-400 mt-1">Tracking ID: <span class="font-mono">${order.trackingId}</span></p>
                         </div>
                         <span class="px-2 py-1 text-xs rounded-full ${
                             order.status === 'Delivered' ? 'bg-green-100 text-green-800' : 
                             order.status === 'Shipped' ? 'bg-blue-100 text-blue-800' : 
+                            order.status === 'Cancelled' ? 'bg-red-500 text-white' :
                             'bg-yellow-100 text-yellow-800'
                         }">${order.status}</span>
                     </div>
@@ -958,9 +1005,42 @@ if (!isset($_SESSION['email'])) {
                         <span class="font-medium">Total:</span>
                         <span class="font-bold">₱${order.total.toFixed(2)}</span>
                     </div>
+                    <div class="flex gap-2 mt-4">
+                        <button class="order-received-btn bg-green-600 hover:bg-green-700 text-white px-3 py-1 rounded text-sm font-medium transition duration-200"
+                            data-idx="${idx}" ${order.status === 'Delivered' || order.status === 'Cancelled' ? 'disabled style="opacity:0.5;cursor:not-allowed;"' : ''}>
+                            Order Received
+                        </button>
+                        <button class="cancel-order-btn bg-red-500 hover:bg-red-700 text-white px-3 py-1 rounded text-sm font-medium transition duration-200"
+                            data-idx="${idx}" ${order.status === 'Delivered' || order.status === 'Cancelled' ? 'disabled style="opacity:0.5;cursor:not-allowed;"' : ''}>
+                            Cancel Order
+                        </button>
+                    </div>
                 `;
-                
                 ordersList.appendChild(orderElement);
+            });
+
+            // Add event listeners for the buttons
+            ordersList.querySelectorAll('.order-received-btn').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const idx = parseInt(this.getAttribute('data-idx'));
+                    if (orders[idx].status !== 'Delivered' && orders[idx].status !== 'Cancelled') {
+                        orders[idx].status = 'Delivered';
+                        localStorage.setItem(ordersKey, JSON.stringify(orders));
+                        loadOrders();
+                        showToast('Order marked as received.');
+                    }
+                });
+            });
+            ordersList.querySelectorAll('.cancel-order-btn').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const idx = parseInt(this.getAttribute('data-idx'));
+                    if (orders[idx].status !== 'Delivered' && orders[idx].status !== 'Cancelled') {
+                        orders[idx].status = 'Cancelled';
+                        localStorage.setItem(ordersKey, JSON.stringify(orders));
+                        loadOrders();
+                        showToast('Order cancelled.');
+                    }
+                });
             });
         }
         
@@ -1205,11 +1285,13 @@ if (!isset($_SESSION['email'])) {
                 },
                 paymentMethod: paymentMethod === 'cod' ? 'Cash on Delivery' : 
                   paymentMethod === 'creditCard' ? 'Credit Card' :
-                  paymentMethod === 'paypal' ? 'PayPal' : 'Bank Transfer'
+                  paymentMethod === 'paypal' ? 'PayPal' : 'Bank Transfer',
+                trackingId: getPersistentTrackingId(orderId)
             };
 
-            // Add to orders (in a real app, this would be sent to a server)
             orders.unshift(currentOrder);
+            // Save updated orders to localStorage for this user
+            localStorage.setItem(ordersKey, JSON.stringify(orders));
 
             // --- Record order in database ---
             // Log for debugging
@@ -1451,6 +1533,13 @@ if (!isset($_SESSION['email'])) {
             } else {
                 showHome();
             }
+        });
+
+        // Also save orders to localStorage after any DOMContentLoaded initialization (to ensure sample orders are saved if not present)
+        document.addEventListener('DOMContentLoaded', function() {
+            // ...existing code...
+            localStorage.setItem(ordersKey, JSON.stringify(orders));
+            // ...existing code...
         });
     </script>
 </body>
