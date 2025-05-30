@@ -720,16 +720,16 @@ $weeklyProfits = getWeeklyProfits();
                     </div>
                     <div class="form-group">
                         <label for="edit-account-firstname">First Name</label>
-                        <input type="text" id="edit-account-firstname" name="first_name" required>
+                        <input type="text" id="edit-account-firstname" name="firstname" required>
                     </div>
-                    <div class="form-group">
+                    <div class="form-group">    
                         <label for="edit-account-lastname">Last Name</label>
-                        <input type="text" id="edit-account-lastname" name="last_name" required>
+                        <input type="text" id="edit-account-lastname" name="lastname" required>
                     </div>
                     <div class="form-group">
                         <label for="edit-account-password">Password <span style="font-weight:normal">(leave blank to keep current)</span></label>
                         <input type="password" id="edit-account-password" name="password" autocomplete="new-password">
-                    </div>
+                    </div>  
                     <div class="form-group">
                         <label for="edit-account-role">Role</label>
                         <select id="edit-account-role" name="rank_id" required>
@@ -1021,8 +1021,8 @@ $weeklyProfits = getWeeklyProfits();
                             const row = document.createElement('tr');
                             row.innerHTML = `
                                 <td>${user.user_id}</td>
-                                <td>${user.first_name}</td>
-                                <td>${user.last_name}</td>
+                                <td>${user.firstname}</td>
+                                <td>${user.lastname}</td>
                                 <td>${user.username}</td>
                                 <td>${user.email}</td>
                                 <td>${user.role}</td>
@@ -1104,8 +1104,8 @@ function editUser(userId) {
                 document.getElementById('edit-account-id').value = user.user_id;
                 document.getElementById('edit-account-username').value = user.username;
                 document.getElementById('edit-account-email').value = user.email;
-                document.getElementById('edit-account-firstname').value = user.first_name || '';
-                document.getElementById('edit-account-lastname').value = user.last_name || '';
+                document.getElementById('edit-account-firstname').value = user.firstname || '';
+                document.getElementById('edit-account-lastname').value = user.lastname || '';
                 // Set role select value
                 const roleMap = { 'Admin': '1', 'Staff': '2', 'Customer': '3' };
                 document.getElementById('edit-account-role').value = roleMap[user.role] || '2';
