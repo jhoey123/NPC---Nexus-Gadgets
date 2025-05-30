@@ -720,11 +720,11 @@ $weeklyProfits = getWeeklyProfits();
                     </div>
                     <div class="form-group">
                         <label for="edit-account-firstname">First Name</label>
-                        <input type="text" id="edit-account-firstname" name="firstname" required>
+                        <input type="text" id="edit-account-firstname" name="first_name" required>
                     </div>
                     <div class="form-group">
                         <label for="edit-account-lastname">Last Name</label>
-                        <input type="text" id="edit-account-lastname" name="lastname" required>
+                        <input type="text" id="edit-account-lastname" name="last_name" required>
                     </div>
                     <div class="form-group">
                         <label for="edit-account-password">Password <span style="font-weight:normal">(leave blank to keep current)</span></label>
@@ -1021,8 +1021,8 @@ $weeklyProfits = getWeeklyProfits();
                             const row = document.createElement('tr');
                             row.innerHTML = `
                                 <td>${user.user_id}</td>
-                                <td>${user.firstname || ''}</td>
-                                <td>${user.lastname || ''}</td>
+                                <td>${user.first_name}</td>
+                                <td>${user.last_name}</td>
                                 <td>${user.username}</td>
                                 <td>${user.email}</td>
                                 <td>${user.role}</td>
@@ -1065,6 +1065,61 @@ $weeklyProfits = getWeeklyProfits();
                 row.style.display = matches ? '' : 'none';
             });
         }
+
+        // Delete user function
+function deleteUser(userId) {
+    if (!confirm('Are you sure you want to delete this user? This action cannot be undone.')) {
+        return;
+    }
+    fetch('php/delete_user.php', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+        body: `user_id=${encodeURIComponent(userId)}`
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            showToast('User deleted successfully');
+            renderUserTable();
+        } else {
+            showToast(data.message || 'Failed to delete user', 'error');
+        }
+    })
+    .catch(() => {
+        showToast('Failed to delete user', 'error');
+    });
+}
+
+// Edit user function
+function editUser(userId) {
+    fetch('php/get_users.php')
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                const user = data.users.find(u => u.user_id == userId);
+                if (!user) {
+                    showToast('User not found', 'error');
+                    return;
+                }
+                document.getElementById('edit-account-id').value = user.user_id;
+                document.getElementById('edit-account-username').value = user.username;
+                document.getElementById('edit-account-email').value = user.email;
+                document.getElementById('edit-account-firstname').value = user.first_name || '';
+                document.getElementById('edit-account-lastname').value = user.last_name || '';
+                // Set role select value
+                const roleMap = { 'Admin': '1', 'Staff': '2', 'Customer': '3' };
+                document.getElementById('edit-account-role').value = roleMap[user.role] || '2';
+                // Clear password field
+                document.getElementById('edit-account-password').value = '';
+                document.getElementById('edit-account-modal').style.display = 'flex';
+            } else {
+                showToast('Failed to fetch user data', 'error');
+            }
+        })
+        .catch(() => {
+            showToast('Failed to fetch user data', 'error');
+        });
+}
         
         // Update dashboard stats
         function updateDashboardStats() {
@@ -1784,31 +1839,32 @@ $weeklyProfits = getWeeklyProfits();
     }
 
     function submitEditAccountForm() {
-        const form = document.getElementById('edit-account-form');
-        const formData = new FormData(form);
-        // If password is blank, remove it from the request
-        if (!formData.get('password')) {
-            formData.delete('password');
-        }
-        fetch('php/edit_account.php', {
-            method: 'POST',
-            body: new URLSearchParams(formData)
-        })
-        .then(response => response.json())
-        .then(data => {
-            if (data.success) {
-                showToast('Account updated successfully');
-                closeEditAccountModal();
-                renderEmployeeTable(); // Refresh the employee table
-            } else {
-                showToast(data.message || 'Failed to update account', 'error');
-            }
-        })
-        .catch(error => {
-            console.error('Error:', error);
-            showToast('Error updating account', 'error');
-        });
+    const form = document.getElementById('edit-account-form');
+    const formData = new FormData(form);
+    // If password is blank, remove it from the request
+    if (!formData.get('password')) {
+        formData.delete('password');
     }
+    fetch('php/edit_account.php', {
+        method: 'POST',
+        body: new URLSearchParams(formData)
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            showToast('Account updated successfully');
+            closeEditAccountModal();
+            renderEmployeeTable(); // Refresh the employee table
+            renderUserTable();     // Refresh the user table
+        } else {
+            showToast(data.message || 'Failed to update account', 'error');
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        showToast('Error updating account', 'error');
+    });
+}
 
     function deleteAccount(accountId, employeeId) {
         if (!confirm('Are you sure you want to delete this account? This action cannot be undone.')) {
@@ -1820,18 +1876,16 @@ $weeklyProfits = getWeeklyProfits();
             body: `account_id=${encodeURIComponent(accountId)}&employee_id=${encodeURIComponent(employeeId)}`
         })
         .then(response => response.json())
-        .then(data => {
-            if (data.success) {
-                showToast('Account deleted successfully');
-                closeAccountDetailsModal();
-                renderEmployeeTable();
-            } else {
-                showToast(data.message || 'Failed to delete account', 'error');
-            }
-        })
-        .catch(error => {
-            showToast('Error deleting account', 'error');
-        });
+       .then(data => {
+    if (data.success) {
+        showToast('Account updated successfully');
+        closeEditAccountModal();
+        renderEmployeeTable(); // Refresh the employee table
+        renderUserTable();     // Refresh the user table
+    } else {
+        showToast(data.message || 'Failed to update account', 'error');
+    }
+});
     }
 
     // employee END
